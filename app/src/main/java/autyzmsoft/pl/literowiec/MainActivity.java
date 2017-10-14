@@ -17,6 +17,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static autyzmsoft.pl.literowiec.R.id.tvInfo;
+import static autyzmsoft.pl.literowiec.R.id.tvInfo1;
 
 public class MainActivity extends Activity {
 
@@ -106,26 +109,144 @@ public class MainActivity extends Activity {
         lPar.leftMargin = 10;
         img.setLayoutParams(lPar);
 
-        //L01:
+        /* Ustawiam Literki/Etykiety L0n wzgledem obrazka i wzgledem siebie - na lewo od obrazka: */
+
+        //L01 (1-szy rząd):
         lPar = (RelativeLayout.LayoutParams) L01.getLayoutParams();
         lPar.leftMargin = ((RelativeLayout.LayoutParams) img.getLayoutParams()).leftMargin + img.getLayoutParams().width;
         L01.setLayoutParams(lPar);
-        //L02:
-        lPar = (RelativeLayout.LayoutParams) L02.getLayoutParams();
-        int rob = L01.getLayoutParams().width;
-        lPar.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + rob;
-        L02.setLayoutParams(lPar);
-        L02.requestLayout();
+
+        //L02:  //dalej trzeba uzywac Runnable - czekanie az obiekt L01 'usadowi' sie - inaczej wartosci nieustalobe, czyli ok. 0....
+        L01.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L01.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L02.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + 2*width1;
+            }
+        });
+
+        //L03:
+        L02.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L02.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + 2*width1;
+            }
+        });
+
+        //L04:
+        L03.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L03.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L04.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L03.getLayoutParams()).leftMargin + 2*width1;
+            }
+        });
 
 
+        //L05: (2-gi rząd):
+        lPar = (RelativeLayout.LayoutParams) L05.getLayoutParams();
+        lPar.leftMargin = ((RelativeLayout.LayoutParams) img.getLayoutParams()).leftMargin + img.getLayoutParams().width;
+        L05.setLayoutParams(lPar);
+
+        //L06
+        L05.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L05.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + (int) (1.5*width1);
+            }
+        });
+
+        //L07:
+        L06.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L06.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L07.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L06.getLayoutParams()).leftMargin + (int)(1.5*width1);
+            }
+        });
+
+        //L08:
+        L07.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L07.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L08.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L07.getLayoutParams()).leftMargin + (int)(1.5*width1);
+            }
+        });
 
 
+        //L09: (3-ci rząd):
+        lPar = (RelativeLayout.LayoutParams) L09.getLayoutParams();
+        lPar.leftMargin = ((RelativeLayout.LayoutParams) img.getLayoutParams()).leftMargin + img.getLayoutParams().width;
+        L09.setLayoutParams(lPar);
 
+        //L10
+        L09.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L09.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L10.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + 2*width1;
+            }
+        });
 
+        //L11:
+        L10.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L10.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + 2*width1;
+            }
+        });
 
+        //L11:
+        L10.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L10.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + 2*width1;
+            }
+        });
 
+        //L12:
+        L11.post(new Runnable() {
+            @Override
+            public void run() {
+                final int width1;
+                width1 = L11.getWidth();
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L12.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L11.getLayoutParams()).leftMargin + 2*width1;
+            }
+        });
 
-    }
+//        //dodatkowe rozsunięcie wzgledem siebie:
+//        TextView[] lbs = {L01,L02,L03,L04};
+//        for (int i = 1; i < lbs.length; i++) {
+//            lPar = (RelativeLayout.LayoutParams) lbs[i].getLayoutParams();
+//            lPar.leftMargin = 500;//lPar.leftMargin + 250;//*i;
+//            lbs[i].setLayoutParams(lPar);
+//        }
+
+    } //koniec Metody()
 
 
     private final class ChoiceTouchListener implements OnTouchListener {

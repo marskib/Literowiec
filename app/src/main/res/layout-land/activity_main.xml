@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
@@ -55,10 +55,10 @@
         android:textStyle="bold"
         android:text="D" />
 
-    i<!-- 3-co rząd -->
+    <!-- 3-co rząd -->
     <TextView
         android:id="@+id/L05"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100dp"
@@ -69,7 +69,7 @@
 
     <TextView
         android:id="@+id/L06"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100dp"
@@ -80,7 +80,7 @@
 
     <TextView
         android:id="@+id/L07"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100dp"
@@ -91,7 +91,7 @@
 
     <TextView
         android:id="@+id/L08"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="120dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100dp"
@@ -100,10 +100,11 @@
         android:textStyle="bold"
         android:text="H" />
 
-    i<!-- 3-co rząd -->
+    <!-- 3-co rząd -->
+    
     <TextView
         android:id="@+id/L09"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="240dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100dp"
@@ -114,7 +115,7 @@
 
     <TextView
         android:id="@+id/L10"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="240dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100dp"
@@ -125,7 +126,7 @@
 
     <TextView
         android:id="@+id/L11"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="240dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100dp"
@@ -136,7 +137,7 @@
 
     <TextView
         android:id="@+id/L12"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="240dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="100dp"

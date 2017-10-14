@@ -1,0 +1,172 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/view_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#26ce61" >
+
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:layout_margin="10dp"
+        android:src="@drawable/cytryna" />
+
+    <TextView
+        android:id="@+id/L01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="300dp"
+        android:textSize="100dp"
+        android:padding="21dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:text="A" />
+
+    <TextView
+        android:id="@+id/L02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="400dp"
+        android:textStyle="bold"
+        android:text="B" />
+    <TextView
+        android:id="@+id/L03"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="500dp"
+        android:textSize="100dp"
+        android:padding="21dp"
+        android:textStyle="bold"
+        android:text="C" />
+
+    <TextView
+        android:id="@+id/L04"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="600dp"
+        android:textStyle="bold"
+        android:text="D" />
+
+    i<!-- 3-co rząd -->
+    <TextView
+        android:id="@+id/L05"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="300dp"
+        android:textStyle="bold"
+        android:text="E" />
+
+    <TextView
+        android:id="@+id/L06"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="400dp"
+        android:textStyle="bold"
+        android:text="F" />
+
+    <TextView
+        android:id="@+id/L07"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="500dp"
+        android:textStyle="bold"
+        android:text="G" />
+
+    <TextView
+        android:id="@+id/L08"
+        android:layout_marginTop="100dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="600dp"
+        android:textStyle="bold"
+        android:text="H" />
+
+    i<!-- 3-co rząd -->
+    <TextView
+        android:id="@+id/L09"
+        android:layout_marginTop="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="300dp"
+        android:textStyle="bold"
+        android:text="I" />
+
+    <TextView
+        android:id="@+id/L10"
+        android:layout_marginTop="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="400dp"
+        android:textStyle="bold"
+        android:text="J" />
+
+    <TextView
+        android:id="@+id/L11"
+        android:layout_marginTop="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="500dp"
+        android:textStyle="bold"
+        android:text="K" />
+
+    <TextView
+        android:id="@+id/L12"
+        android:layout_marginTop="200dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="100dp"
+        android:padding="20dp"
+        android:layout_marginLeft="600dp"
+        android:textStyle="bold"
+        android:text="L" />
+
+
+
+<!-- Kontrolki 'kontrolne' -->
+    <TextView
+        android:id="@+id/tvInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:text="Wspolrzedne Kontrolki" />
+    <TextView
+        android:id="@+id/tvInfo1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="50dp"
+        android:layout_toEndOf="@+id/tvInfo"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:text="Wspolrzedne Palca" />
+
+</RelativeLayout>
+
+

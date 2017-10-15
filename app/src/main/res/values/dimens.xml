@@ -4,5 +4,5 @@
     <dimen name="margin_top_size_2nd_row">60dp</dimen>
     <dimen name="margin_top_size_3rd_row">130dp</dimen>
 
-    <dimen name="poprawka">20dp</dimen>
+    <dimen name="poprawka">85dp</dimen>
 </resources>

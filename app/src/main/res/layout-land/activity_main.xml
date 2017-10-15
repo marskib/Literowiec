@@ -17,10 +17,11 @@
 
     <TextView
         android:id="@+id/L01"
+        android:layout_marginTop="@dimen/margin_top_size_1st_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="300dp"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="21dp"
         android:textStyle="bold"
         android:textColor="@color/colorAccent"
@@ -28,28 +29,31 @@
 
     <TextView
         android:id="@+id/L02"
+        android:layout_marginTop="@dimen/margin_top_size_1st_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="400dp"
         android:textStyle="bold"
         android:text="B" />
     <TextView
         android:id="@+id/L03"
+        android:layout_marginTop="@dimen/margin_top_size_1st_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="500dp"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="21dp"
         android:textStyle="bold"
         android:text="C" />
 
     <TextView
         android:id="@+id/L04"
+        android:layout_marginTop="@dimen/margin_top_size_1st_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="600dp"
         android:textStyle="bold"
@@ -58,10 +62,10 @@
     <!-- 3-co rząd -->
     <TextView
         android:id="@+id/L05"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="@dimen/margin_top_size_2nd_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="300dp"
         android:textStyle="bold"
@@ -69,10 +73,10 @@
 
     <TextView
         android:id="@+id/L06"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="@dimen/margin_top_size_2nd_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="400dp"
         android:textStyle="bold"
@@ -80,10 +84,10 @@
 
     <TextView
         android:id="@+id/L07"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="@dimen/margin_top_size_2nd_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="500dp"
         android:textStyle="bold"
@@ -91,10 +95,10 @@
 
     <TextView
         android:id="@+id/L08"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="@dimen/margin_top_size_2nd_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="600dp"
         android:textStyle="bold"
@@ -104,10 +108,10 @@
     
     <TextView
         android:id="@+id/L09"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="@dimen/margin_top_size_3rd_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="300dp"
         android:textStyle="bold"
@@ -115,10 +119,10 @@
 
     <TextView
         android:id="@+id/L10"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="@dimen/margin_top_size_3rd_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="400dp"
         android:textStyle="bold"
@@ -126,10 +130,10 @@
 
     <TextView
         android:id="@+id/L11"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="@dimen/margin_top_size_3rd_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="500dp"
         android:textStyle="bold"
@@ -137,14 +141,15 @@
 
     <TextView
         android:id="@+id/L12"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="@dimen/margin_top_size_3rd_row"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="100dp"
+        android:textSize="@dimen/litera_size"
         android:padding="20dp"
         android:layout_marginLeft="600dp"
         android:textStyle="bold"
         android:text="L" />
+
 
 
 
@@ -154,9 +159,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:textSize="30sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:text="Wspolrzedne Kontrolki" />
+
     <TextView
         android:id="@+id/tvInfo1"
         android:layout_width="wrap_content"
@@ -164,9 +170,19 @@
         android:layout_alignParentBottom="true"
         android:layout_marginLeft="50dp"
         android:layout_toEndOf="@+id/tvInfo"
-        android:textSize="30sp"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:text="Wspolrzedne Palca" />
+
+    <Button
+        android:id="@+id/bZnowu"
+        android:onClick="bZnowuOnClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="8dp"
+        android:text="\@" />
 
 </RelativeLayout>
 

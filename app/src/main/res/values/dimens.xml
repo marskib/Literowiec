@@ -1,0 +1,8 @@
+<resources>
+    <dimen name="litera_size">40sp</dimen>
+    <dimen name="margin_top_size_1st_row">-10dp</dimen>
+    <dimen name="margin_top_size_2nd_row">60dp</dimen>
+    <dimen name="margin_top_size_3rd_row">130dp</dimen>
+
+    <dimen name="poprawka">20dp</dimen>
+</resources>

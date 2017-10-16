@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import static android.R.attr.width;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static java.lang.Thread.sleep;
 
 public class MainActivity extends Activity {
 
@@ -331,7 +332,15 @@ public class MainActivity extends Activity {
     } //koniec Metody()
 
     public void bZnowuOnClick(View v) {
+
         ustawLadnieEtykiety();
+        try {
+            sleep(500);
+            ustawLadnieEtykiety();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void bUpperLowerOnClick(View v) {

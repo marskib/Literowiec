@@ -1,8 +1,9 @@
 <resources>
-    <dimen name="litera_size">80sp</dimen>
+    <dimen name="litera_size">100sp</dimen>
     <dimen name="margin_top_size_1st_row">10dp</dimen>
     <dimen name="margin_top_size_2nd_row">120dp</dimen>
     <dimen name="margin_top_size_3rd_row">240dp</dimen>
 
+    <!-- wartosc na rozsuniecie etykiet wzgledem siebie w rzędzie; wykorzystywana w kodzie: -->
     <dimen name="poprawka">210dp</dimen>
 </resources>

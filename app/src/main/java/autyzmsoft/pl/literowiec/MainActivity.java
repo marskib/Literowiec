@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 import static android.R.attr.width;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
@@ -27,25 +29,25 @@ public class MainActivity extends Activity {
 
     //Placeholders'y na etykiety:
     TextView L01, L02, L03,
-             L04, L05, L06,
-             L07, L08, L09,
-             L10, L11, L12;
+            L04, L05, L06,
+            L07, L08, L09,
+            L10, L11, L12;
 
-    TextView tvInfo, tvInfo1;
+    TextView tvInfo, tvInfo1, tvInfo2, tvInfo3;
 
     private int _xDelta;
     private int _yDelta;
 
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
-    private Button bZnowu;
+    private Button bZnowu, bUpperLower;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //na caly ekran:
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);
@@ -53,6 +55,8 @@ public class MainActivity extends Activity {
 
         tvInfo = (TextView) findViewById(R.id.tvInfo);
         tvInfo1 = (TextView) findViewById(R.id.tvInfo1);
+        tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
+        tvInfo3 = (TextView) findViewById(R.id.tvInfo3);
 
         L01 = (TextView) findViewById(R.id.L01);
         L02 = (TextView) findViewById(R.id.L02);
@@ -85,10 +89,11 @@ public class MainActivity extends Activity {
         L12.setOnTouchListener(new ChoiceTouchListener());
 
         //Poprawienie wydajnosci? (zeby w onTouch nie tworzyc stale obiektow) L01 - placeholder
-        lParams      =  (RelativeLayout.LayoutParams) L01.getLayoutParams();
-        layoutParams =  (RelativeLayout.LayoutParams) L01.getLayoutParams();
+        lParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
+        layoutParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
 
         bZnowu = (Button) findViewById(R.id.bZnowu);
+        bUpperLower =(Button) findViewById(R.id.bUpperLower);
 
         dostosujDoUrzadzen();
 
@@ -103,13 +108,15 @@ public class MainActivity extends Activity {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         width = displaymetrics.widthPixels;
-        height= displaymetrics.heightPixels;
+        height = displaymetrics.heightPixels;
+
+        tvInfo3.setText(Integer.toString(width) + "x" + Integer.toString(height));
 
         //Obrazek - ustawiam w lewym górnym rogu:
         lPar = (RelativeLayout.LayoutParams) img.getLayoutParams();
-        lPar.width=width/3;
-        lPar.height=height/2;
-        lPar.topMargin  = 5;
+        lPar.width = width / 3;
+        lPar.height = height / 2;
+        lPar.topMargin = 5;
         lPar.leftMargin = 10;
         img.setLayoutParams(lPar);
         //Ustawienie etykiet w 'ladnym' kwadracie 4x3:
@@ -296,13 +303,20 @@ public class MainActivity extends Activity {
                     lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
                     _xDelta = X - lParams.leftMargin;
                     _yDelta = Y - lParams.topMargin;
-                    tvInfo.setText("ACTION_DOWN");
+                    //tvInfo.setText("ACTION_DOWN");
+                    //Pokazanie szerokosci kontrolki:
+                    tvInfo.setText(Integer.toString(view.getWidth()));
                     break;
                 case MotionEvent.ACTION_UP:
                     int Xstop = X;
                     //tvInfo.setText("x="+Integer.toString(Xstop));
-                    tvInfo.setText("xKontrolki="+Integer.toString(layoutParams.leftMargin));
-                    tvInfo1.setText("xPalca="+Integer.toString(Xstop));
+                    tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
+                    tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
+
+                    final int padding = (int) (getResources().getDimension(R.dimen.padding_ski) / 2);
+                    int w = view.getWidth();
+                    int lm = layoutParams.leftMargin;
+                    tvInfo2.setText("xLitery=" + Integer.toString(lm + padding + (int) (w / 4.0)));
                     break;
                 /*
                 case MotionEvent.ACTION_POINTER_DOWN:
@@ -319,6 +333,22 @@ public class MainActivity extends Activity {
     public void bZnowuOnClick(View v) {
         ustawLadnieEtykiety();
     }
+
+    public void bUpperLowerOnClick(View v) {
+        //ZMiana male/duze litery (w obie strony)
+        TextView[] lbs = {L01,L02,L03,L04,L05,L06,L07,L08,L09,L10,L11,L12};
+
+        for (TextView lb : lbs) {
+            String str = (String) lb.getText();
+
+            if (lb.getText().equals(str.toUpperCase(Locale.getDefault()))) {
+                str = str.toLowerCase(Locale.getDefault());
+            } else {
+                str = str.toUpperCase(Locale.getDefault());
+            }
+            lb.setText(str);
+        }
+    } //koniec Metody()
 
 
 

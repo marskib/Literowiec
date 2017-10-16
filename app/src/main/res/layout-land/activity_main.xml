@@ -154,10 +154,10 @@
 <!-- Prostokat - Obszar -->
     <LinearLayout
         android:id="@+id/l_Obszar"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="0dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
         android:background="@drawable/border_skib"
 
         >

@@ -5,6 +5,7 @@ package autyzmsoft.pl.literowiec;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,8 +21,6 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
-import static android.R.attr.width;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static java.lang.Thread.sleep;
 
 public class MainActivity extends Activity {
@@ -106,12 +105,13 @@ public class MainActivity extends Activity {
         int width, height;
         RelativeLayout.LayoutParams lPar;
 
-        //Pobieram wymiary ekranu na potrzeby dostosowania wielkosci Ludzika do aktualnego ekranu:
+        //Pobieram wymiary ekranu na potrzeby dostosowania wielkosci Obrazka i Prostokata/Obszaru 'gorącego' do ekranu urządzenia:
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         width = displaymetrics.widthPixels;
         height = displaymetrics.heightPixels;
 
+        //pokazania wymiarow urządzenia
         tvInfo3.setText(Integer.toString(width) + "x" + Integer.toString(height));
 
         //Obrazek - ustawiam w lewym górnym rogu:
@@ -121,6 +121,16 @@ public class MainActivity extends Activity {
         lPar.topMargin = 5;
         lPar.leftMargin = 10;
         img.setLayoutParams(lPar);
+
+        //Obszar-Prostokat na ukladanie wyrazu:
+        LinearLayout lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
+        RelativeLayout.LayoutParams lPar1 = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
+        lPar1.topMargin = (int) (height/1.6);
+        lPar1.leftMargin = 20;
+        lPar1.rightMargin = 20;
+        lPar1.height = height/4;
+      
+
         //Ustawienie etykiet w 'ladnym' kwadracie 4x3:
         ustawLadnieEtykiety();
     } //koniec Metody()

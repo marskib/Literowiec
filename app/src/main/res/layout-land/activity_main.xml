@@ -151,6 +151,20 @@
         android:text="L" />
 
 
+<!-- Prostokat - Obszar -->
+    <LinearLayout
+        android:id="@+id/l_Obszar"
+        android:layout_marginTop="200dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@drawable/border_skib"
+
+        >
+
+    </LinearLayout>
+
+
 
 
 <!-- Kontrolki 'kontrolne' -->

@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -318,6 +319,19 @@ public class MainActivity extends Activity {
                     int w = view.getWidth();
                     int lm = layoutParams.leftMargin;
                     tvInfo2.setText("xLitery=" + Integer.toString(lm + padding + (int) (w / 4.0)));
+
+                    //czy wiev is within l_Obszar
+                    LinearLayout lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
+
+                    if (lObszar.findViewById(R.id.L01) == null) {
+                        tvInfo.setText("TRUE");
+                    } else
+                        tvInfo.setText("FALSE");
+
+
+                    //yourview.findViewById(R.id.childView);
+
+
                     break;
                 /*
                 case MotionEvent.ACTION_POINTER_DOWN:

@@ -16,6 +16,15 @@
         android:src="@drawable/cytryna" />
 
     <TextView
+        android:id="@+id/tvoInfoObszar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:textStyle="bold"
+        android:layout_marginTop="-30dp"
+        android:text="wsp. Obszaru"/>
+
+    <TextView
         android:id="@+id/L01"
         android:layout_marginTop="@dimen/margin_top_size_1st_row"
         android:layout_width="wrap_content"
@@ -155,16 +164,13 @@
     <LinearLayout
         android:id="@+id/l_Obszar"
         android:layout_marginTop="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/border_skib"
-
-        >
-
+        android:background="@drawable/border_skib">
     </LinearLayout>
-
-
 
 
 <!-- Kontrolki 'kontrolne' -->

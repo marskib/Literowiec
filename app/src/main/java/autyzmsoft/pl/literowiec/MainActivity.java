@@ -1,11 +1,7 @@
 package autyzmsoft.pl.literowiec;
 
-//Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
-//YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +17,13 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
+import autyzmsoft.pl.literowiec.R;
+
 import static java.lang.Thread.sleep;
+
+//import autyzmsoft.pl.literowiec.R;opackage autyzmsoft.pl.literowiec;
+//Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
+//YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
 
 public class MainActivity extends Activity {
 
@@ -34,7 +36,7 @@ public class MainActivity extends Activity {
             L07, L08, L09,
             L10, L11, L12;
 
-    TextView tvInfo, tvInfo1, tvInfo2, tvInfo3;
+    TextView tvInfo, tvInfo1, tvInfo2, tvInfo3, tvInfoObszar;
 
     private int _xDelta;
     private int _yDelta;
@@ -42,6 +44,7 @@ public class MainActivity extends Activity {
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
     private Button bZnowu, bUpperLower;
+    private LinearLayout lObszar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,11 +56,13 @@ public class MainActivity extends Activity {
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);
         img = (ImageView) rootLayout.findViewById(R.id.imageView);
+        lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
 
         tvInfo = (TextView) findViewById(R.id.tvInfo);
         tvInfo1 = (TextView) findViewById(R.id.tvInfo1);
         tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
         tvInfo3 = (TextView) findViewById(R.id.tvInfo3);
+        tvInfoObszar = (TextView) findViewById(R.id.tvoInfoObszar);
 
         L01 = (TextView) findViewById(R.id.L01);
         L02 = (TextView) findViewById(R.id.L02);
@@ -98,6 +103,8 @@ public class MainActivity extends Activity {
 
         dostosujDoUrzadzen();
 
+        dajWspObszaruInfo();
+
     }
 
 
@@ -123,13 +130,12 @@ public class MainActivity extends Activity {
         img.setLayoutParams(lPar);
 
         //Obszar-Prostokat na ukladanie wyrazu:
-        LinearLayout lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         RelativeLayout.LayoutParams lPar1 = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
         lPar1.topMargin = (int) (height/1.6);
-        lPar1.leftMargin = 20;
-        lPar1.rightMargin = 20;
+        //lPar1.leftMargin = 20;
+        //lPar1.rightMargin = 20;
         lPar1.height = height/4;
-      
+
 
         //Ustawienie etykiet w 'ladnym' kwadracie 4x3:
         ustawLadnieEtykiety();
@@ -315,7 +321,6 @@ public class MainActivity extends Activity {
                     lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
                     _xDelta = X - lParams.leftMargin;
                     _yDelta = Y - lParams.topMargin;
-                    //tvInfo.setText("ACTION_DOWN");
                     //Pokazanie szerokosci kontrolki:
                     tvInfo.setText(Integer.toString(view.getWidth()));
                     break;
@@ -325,10 +330,11 @@ public class MainActivity extends Activity {
                     tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
                     tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
 
-                    final int padding = (int) (getResources().getDimension(R.dimen.padding_ski) / 2);
-                    int w = view.getWidth();
+                    final int padding = (int) getResources().getDimension(R.dimen.padding_ski);
+                    int w  = view.getWidth();
                     int lm = layoutParams.leftMargin;
-                    tvInfo2.setText("xLitery=" + Integer.toString(lm + padding + (int) (w / 4.0)));
+                    //tvInfo2.setText("xLitery=" + Integer.toString(lm + padding + (int) (w / 4.0)));
+                    tvInfo2.setText("xLitery="+Integer.toString(lm + dpToPx(padding)+ (int) (w / 2.0)));
 
                     //czy wiev is within l_Obszar
                     LinearLayout lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
@@ -383,6 +389,36 @@ public class MainActivity extends Activity {
         }
     } //koniec Metody()
 
+
+    private void dajWspObszaruInfo() {
+        lObszar.post(new Runnable() { //czekanie az obszar sie narysuje
+            @Override
+            public void run() {
+                int[] location = new int[2];
+                lObszar.getLocationOnScreen(location);  //getLocationOnScreen(location);
+                int x = location[0];
+                int y = location[1];
+                tvInfoObszar.setText(Integer.toString(x)+","+Integer.toString(y));
+            }
+        });
+   } //koniec Metody()
+
+
+
+
+    public int dpToPx(int dp) {
+//Convert dp to pixel:
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+
+
+    public int pxToDp(int px) {
+//Convert pixel to dp:
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
+        return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
 
 
 }

@@ -311,6 +311,8 @@ public class MainActivity extends Activity {
             final int Y = (int) event.getRawY();
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_MOVE:
+
+
                     layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
                     layoutParams.leftMargin = X - _xDelta;
                     layoutParams.topMargin = Y - _yDelta;
@@ -341,7 +343,8 @@ public class MainActivity extends Activity {
                     int yLit = tm + (int) (h/2.0);
 
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
-                        layoutParams.topMargin = 440;
+                        //layoutParams.topMargin = yLg+ ( (int) ((yLd-yLg)/2.0));
+                        layoutParams.topMargin = yLg+ ((int) ((yLd-yLg)/2.0)) - (int) (h/2.0);
                     }
 
 

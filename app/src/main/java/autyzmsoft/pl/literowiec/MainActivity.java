@@ -41,6 +41,8 @@ public class MainActivity extends Activity {
     private int _xDelta;
     private int _yDelta;
 
+    private int yLg,yLd,xLl,xLp; //wspolrzedne pionowe ygrek Linij Górnej i Dolnej oraz wspolrzedne poziome ix linij Lewej i Prawej obszaru 'gorącego'
+
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
     private Button bZnowu, bUpperLower;
@@ -330,24 +332,20 @@ public class MainActivity extends Activity {
                     tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
                     tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
 
-                    final int padding = (int) getResources().getDimension(R.dimen.padding_ski);
+                    //Policzenie wspolrzednych srodka Litery: (zakladam, ze srodek litery jest w srodku kontrolki o szer w i wys. h)
                     int w  = view.getWidth();
                     int lm = layoutParams.leftMargin;
-                    //tvInfo2.setText("xLitery=" + Integer.toString(lm + padding + (int) (w / 4.0)));
-                    tvInfo2.setText("xLitery="+Integer.toString(lm + dpToPx(padding)+ (int) (w / 2.0)));
+                    int h = view.getHeight();
+                    int tm = layoutParams.topMargin;
+                    int xLit = lm + (int) (w/2.0);
+                    int yLit = tm + (int) (h/2.0);
 
-                    //czy wiev is within l_Obszar
-                    LinearLayout lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
-
-                    if (lObszar.findViewById(R.id.L01) == null) {
-                        tvInfo.setText("TRUE");
-                    } else
-                        tvInfo.setText("FALSE");
+                    if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
+                        layoutParams.topMargin = 440;
+                    }
 
 
-                    //yourview.findViewById(R.id.childView);
-
-
+                    tvInfo2.setText("xLit="+Integer.toString(xLit)+" yLit="+Integer.toString(yLit));
                     break;
                 /*
                 case MotionEvent.ACTION_POINTER_DOWN:
@@ -399,6 +397,13 @@ public class MainActivity extends Activity {
                 int x = location[0];
                 int y = location[1];
                 tvInfoObszar.setText(Integer.toString(x)+","+Integer.toString(y));
+
+                //Przekazanie do zmiennych klasy parametrow geograficznych Obszaru
+                xLl = x;
+                yLg = y;
+
+                xLp = xLl + lObszar.getWidth();
+                yLd = yLg + lObszar.getHeight();
             }
         });
    } //koniec Metody()

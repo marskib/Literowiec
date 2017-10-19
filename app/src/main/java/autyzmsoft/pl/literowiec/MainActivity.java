@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -66,6 +67,23 @@ public class MainActivity extends Activity {
         tvInfo3 = (TextView) findViewById(R.id.tvInfo3);
         tvInfoObszar = (TextView) findViewById(R.id.tvoInfoObszar);
 
+        przypiszLabelsyAndListenery();
+
+        //Poprawienie wydajnosci? (zeby w onTouch nie tworzyc stale obiektow) L01 - placeholder
+        lParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
+        layoutParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
+
+        bZnowu = (Button) findViewById(R.id.bZnowu);
+        bUpperLower =(Button) findViewById(R.id.bUpperLower);
+
+        dostosujDoUrzadzen();
+
+        dajWspObszaruInfo();
+
+    }  //koniec Metody()
+
+    private void przypiszLabelsyAndListenery() {
+        //Dla poprawienia czytelnosci kodu
         L01 = (TextView) findViewById(R.id.L01);
         L02 = (TextView) findViewById(R.id.L02);
         L03 = (TextView) findViewById(R.id.L03);
@@ -79,10 +97,6 @@ public class MainActivity extends Activity {
         L11 = (TextView) findViewById(R.id.L11);
         L12 = (TextView) findViewById(R.id.L12);
 
-        //RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(150, 150);
-        //img.setLayoutParams(layoutParams);
-        //img.setOnTouchListener(new ChoiceTouchListener());
-
         L01.setOnTouchListener(new ChoiceTouchListener());
         L02.setOnTouchListener(new ChoiceTouchListener());
         L03.setOnTouchListener(new ChoiceTouchListener());
@@ -95,18 +109,6 @@ public class MainActivity extends Activity {
         L10.setOnTouchListener(new ChoiceTouchListener());
         L11.setOnTouchListener(new ChoiceTouchListener());
         L12.setOnTouchListener(new ChoiceTouchListener());
-
-        //Poprawienie wydajnosci? (zeby w onTouch nie tworzyc stale obiektow) L01 - placeholder
-        lParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
-        layoutParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
-
-        bZnowu = (Button) findViewById(R.id.bZnowu);
-        bUpperLower =(Button) findViewById(R.id.bUpperLower);
-
-        dostosujDoUrzadzen();
-
-        dajWspObszaruInfo();
-
     }
 
 
@@ -311,26 +313,25 @@ public class MainActivity extends Activity {
             final int Y = (int) event.getRawY();
             switch (event.getAction() & MotionEvent.ACTION_MASK) {
                 case MotionEvent.ACTION_MOVE:
-
-
                     layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
                     layoutParams.leftMargin = X - _xDelta;
                     layoutParams.topMargin = Y - _yDelta;
                     layoutParams.rightMargin = -250;
                     layoutParams.bottomMargin = -250;
                     view.setLayoutParams(layoutParams);
-                    //tvInfo.setText("ACTION_MOVE");
                     break;
                 case MotionEvent.ACTION_DOWN:
                     lParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
                     _xDelta = X - lParams.leftMargin;
                     _yDelta = Y - lParams.topMargin;
+
+                    //sledzenie:
                     //Pokazanie szerokosci kontrolki:
                     tvInfo.setText(Integer.toString(view.getWidth()));
                     break;
                 case MotionEvent.ACTION_UP:
+                    //sledzenie:
                     int Xstop = X;
-                    //tvInfo.setText("x="+Integer.toString(Xstop));
                     tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
                     tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
 
@@ -343,11 +344,18 @@ public class MainActivity extends Activity {
                     int yLit = tm + (int) (h/2.0);
 
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
-                        //layoutParams.topMargin = yLg+ ( (int) ((yLd-yLg)/2.0));
                         layoutParams.topMargin = yLg+ ((int) ((yLd-yLg)/2.0)) - (int) (h/2.0);
                     }
 
+                    //Jesli litera zostala wyciagnieta za bande - dosuwam z powrotem:
+                    if (xLit<0) {
+                        Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
+                        layoutParams.leftMargin = xLl-10;
+                        rootLayout.invalidate();
+                        return true;
+                    }
 
+                    //sledzenie:
                     tvInfo2.setText("xLit="+Integer.toString(xLit)+" yLit="+Integer.toString(yLit));
                     break;
                 /*

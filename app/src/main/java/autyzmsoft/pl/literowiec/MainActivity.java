@@ -351,7 +351,7 @@ public class MainActivity extends Activity {
                         layoutParams.topMargin = yLtrim - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
                     }
                     else {
-                    //3.  //Jesli litera zostala wyciagnieta za bande - dosuwam z powrotem:
+                    //3.Jesli litera zostala wyciagnieta za bande - dosuwam z powrotem:
                         if (xLit < 0) {   //dosuniecie w prawo
                             //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
                             layoutParams.leftMargin = xLl - 10; //dosuniecie w prawo
@@ -360,8 +360,8 @@ public class MainActivity extends Activity {
                         }
                         if (xLit > xLp) {   //dosuniecie w lewo
                             //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
-                            layoutParams.leftMargin = xLp - 40; //dosuniecie w lewo
-                            if (yLit>yLg && yLit<yLd)           //jezeli po dosunieciu w prawo wyląduje w Obszarze, to dosuwam do yLtrim
+                            layoutParams.leftMargin = xLp - w;  //dosuniecie w lewo
+                            if (yLit>yLg && yLit<yLd)           //jezeli po dosunieciu w lewo wyląduje w Obszarze, to dosuwam do yLtrim
                                 layoutParams.topMargin = yLtrim - (int) (h/2.0);
                         }
                     }

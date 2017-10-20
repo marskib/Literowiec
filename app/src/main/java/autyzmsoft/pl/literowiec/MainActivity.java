@@ -170,8 +170,6 @@ public class MainActivity extends Activity {
         L01.post(new Runnable() {
             @Override
             public void run() { //czekanie aż policzy sie L01
-                final int width1;
-                width1 = L01.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L02.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
@@ -183,8 +181,6 @@ public class MainActivity extends Activity {
         L02.post(new Runnable() {
             @Override
             public void run() { //czekanie aż policzy się L02
-                final int width1;
-                width1 = L02.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
@@ -196,8 +192,6 @@ public class MainActivity extends Activity {
         L03.post(new Runnable() {
             @Override
             public void run() { //czekanie aż policzy się L03
-                final int width1;
-                width1 = L03.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L04.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L03.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
@@ -217,8 +211,6 @@ public class MainActivity extends Activity {
         L05.post(new Runnable() {
             @Override
             public void run() {
-                final int width1;
-                width1 = L05.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
@@ -230,8 +222,6 @@ public class MainActivity extends Activity {
         L06.post(new Runnable() {
             @Override
             public void run() {
-                final int width1;
-                width1 = L06.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L07.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L06.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
@@ -243,8 +233,6 @@ public class MainActivity extends Activity {
         L07.post(new Runnable() {
             @Override
             public void run() {
-                final int width1;
-                width1 = L07.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L08.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L07.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
@@ -264,8 +252,6 @@ public class MainActivity extends Activity {
         L09.post(new Runnable() {
             @Override
             public void run() {
-                final int width1;
-                width1 = L09.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L10.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
@@ -277,8 +263,6 @@ public class MainActivity extends Activity {
         L10.post(new Runnable() {
             @Override
             public void run() {
-                final int width1;
-                width1 = L10.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
@@ -290,8 +274,6 @@ public class MainActivity extends Activity {
         L11.post(new Runnable() {
             @Override
             public void run() {
-                final int width1;
-                width1 = L10.getWidth();
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L12.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L11.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
@@ -350,20 +332,20 @@ public class MainActivity extends Activity {
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
                         layoutParams.topMargin = yLtrim - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
                     }
-                    else {
                     //3.Jesli litera zostala wyciagnieta za bande - dosuwam z powrotem:
-                        if (xLit < 0) {   //dosuniecie w prawo
-                            //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
-                            layoutParams.leftMargin = xLl - 10; //dosuniecie w prawo
-                            if (yLit>yLg && yLit<yLd)           //jezeli po dosunieciu w prawo wyląduje w Obszarze, to dosuwam do yLtrim
-                              layoutParams.topMargin = yLtrim - (int) (h/2.0);
-                        }
-                        if (xLit > xLp) {   //dosuniecie w lewo
-                            //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
-                            layoutParams.leftMargin = xLp - w;  //dosuniecie w lewo
-                            if (yLit>yLg && yLit<yLd)           //jezeli po dosunieciu w lewo wyląduje w Obszarze, to dosuwam do yLtrim
-                                layoutParams.topMargin = yLtrim - (int) (h/2.0);
-                        }
+                    if (xLit < 0) {   //dosuniecie w prawo
+                        //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
+                        layoutParams.leftMargin = xLl - view.getPaddingLeft()+2 ; //dosuniecie w prawo
+                        rootLayout.invalidate();
+                        //Ponowne wywolanie eventa - spowoduje, ze wykona sie onTouch na tym samym view z zastanym (=ACTION_UP) eventem/parametrem, ale na innym polozeniu litery,
+                        //litera bedzie w Obszarze i zostanie 'dotrimowana'"
+                        view.dispatchTouchEvent(event); // Dispatch touch event to view
+                    }
+                    if (xLit > xLp) {   //dosuniecie w lewo
+                        //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
+                        layoutParams.leftMargin = xLp - w + view.getPaddingRight(); //dosuniecie w lewo
+                        rootLayout.invalidate();
+                        view.dispatchTouchEvent(event);
                     }
 
                     //sledzenie:
@@ -374,7 +356,7 @@ public class MainActivity extends Activity {
                     break;
                 case MotionEvent.ACTION_POINTER_UP:
                     break;
-                 */
+                */
             }
             rootLayout.invalidate();
             return true;

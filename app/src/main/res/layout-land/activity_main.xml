@@ -209,10 +209,11 @@
         android:id="@+id/tvInfo3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:textSize="15sp"
         android:textStyle="bold"
-        android:layout_toRightOf="@+id/tvInfo2"
+        android:layout_toRightOf="@+id/tvoInfoObszar"
+        android:layout_alignTop="@+id/tvoInfoObszar"
+
         android:layout_marginLeft="50dp"
         android:text="Rozdzielczosc" />
 
@@ -223,7 +224,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="8dp"
         android:text="\@" />
 
     <Button
@@ -231,10 +231,10 @@
         android:onClick="bUpperLowerOnClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_above="@id/bZnowu"
-        android:layout_marginBottom="8dp"
-        android:text="UpLoCase" />
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/bZnowu"
+        android:text="UpLoCase"
+        android:layout_above="@+id/tvInfo2"/>
 
 </RelativeLayout>
 

@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import autyzmsoft.pl.literowiec.R;
 
+import static android.R.attr.y;
 import static java.lang.Thread.sleep;
 
 //import autyzmsoft.pl.literowiec.R;opackage autyzmsoft.pl.literowiec;
@@ -124,8 +125,8 @@ public class MainActivity extends Activity {
         width = displaymetrics.widthPixels;
         height = displaymetrics.heightPixels;
 
-        //pokazania wymiarow urządzenia
-        tvInfo3.setText(Integer.toString(width) + "x" + Integer.toString(height));
+        //pokazania wymiarow urządzenia i rozdzielczosci dpi
+        tvInfo3.setText(Integer.toString(width) + "x" + Integer.toString(height)+" dpi="+Integer.toString(displaymetrics.densityDpi));
 
         //Obrazek - ustawiam w lewym górnym rogu:
         lPar = (RelativeLayout.LayoutParams) img.getLayoutParams();
@@ -325,6 +326,7 @@ public class MainActivity extends Activity {
                     int lm = layoutParams.leftMargin;
                     int h = view.getHeight();
                     int tm = layoutParams.topMargin;
+
                     //srodek litery:
                     int xLit = lm + (int) (w/2.0);
                     int yLit = tm + (int) (h/2.0);
@@ -332,8 +334,8 @@ public class MainActivity extends Activity {
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
                         layoutParams.topMargin = yLtrim - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
                     }
-                    //3.Jesli litera zostala wyciagnieta za bande - dosuwam z powrotem:
-                    if (xLit < 0) {   //dosuniecie w prawo
+                    //3.Jesli srodek litery zostala wyciagnieta za bande - dosuwam z powrotem:
+                    if (xLit < xLl) {   //dosuniecie w prawo
                         //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
                         layoutParams.leftMargin = xLl - view.getPaddingLeft()+2 ; //dosuniecie w prawo
                         rootLayout.invalidate();
@@ -347,6 +349,14 @@ public class MainActivity extends Activity {
                         rootLayout.invalidate();
                         view.dispatchTouchEvent(event);
                     }
+                    //3.Jezeli srodek litery za górnym lub dolnym brzegiem ekranu - dosuwam z powrotem:
+                    if (yLit<0) {
+                        layoutParams.topMargin += Math.abs(layoutParams.topMargin);
+                    }
+                    if (yLit>1128) {
+                        layoutParams.topMargin = 1128 - 2*w;
+                    }
+
 
                     //sledzenie:
                     tvInfo2.setText("xLit="+Integer.toString(xLit)+" yLit="+Integer.toString(yLit));

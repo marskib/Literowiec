@@ -42,12 +42,14 @@ public class MainActivity extends Activity {
     private int _xDelta;
     private int _yDelta;
 
-    private int yLg,yLd,xLl,xLp; //wspolrzedne pionowe ygrek Linij Górnej i Dolnej oraz wspolrzedne poziome ix linij Lewej i Prawej obszaru 'gorącego'
+    private int yLg,yLd,xLl,xLp; //wspolrzedne pionowe ygrek Linij Górnej i Dolnej oraz wspolrzedne poziome x linij Lewej i Prawej obszaru 'gorącego'
+    private int yLtrim;          ///polozenie y linii 'Trimowania' - srodek Obszaru, do tej linii dosuwam etykiety (kosmetyka znaczaca)
 
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
     private Button bZnowu, bUpperLower;
     private LinearLayout lObszar;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -335,24 +337,33 @@ public class MainActivity extends Activity {
                     tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
                     tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
 
-                    //Policzenie wspolrzednych srodka Litery: (zakladam, ze srodek litery jest w srodku kontrolki o szer w i wys. h)
+                    /* Sprawdzenie, czy srodek etykiety jest w Obszarze; Jezeli tak - dosuniecie do lTrim. : */
+                    //1.Policzenie wspolrzednych srodka Litery: (zakladam, ze srodek litery jest w srodku kontrolki o szer w i wys. h)
                     int w  = view.getWidth();
                     int lm = layoutParams.leftMargin;
                     int h = view.getHeight();
                     int tm = layoutParams.topMargin;
+                    //srodek litery:
                     int xLit = lm + (int) (w/2.0);
                     int yLit = tm + (int) (h/2.0);
-
+                    //2.Dosunirecie Litery na poziomy srodek Obszaru (linia yLtrim); srodek etykiety ma wypasc na yLtrim:
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
-                        layoutParams.topMargin = yLg+ ((int) ((yLd-yLg)/2.0)) - (int) (h/2.0);
+                        layoutParams.topMargin = yLtrim - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
                     }
-
-                    //Jesli litera zostala wyciagnieta za bande - dosuwam z powrotem:
-                    if (xLit<0) {
-                        Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
-                        layoutParams.leftMargin = xLl-10;
-                        rootLayout.invalidate();
-                        return true;
+                    else {
+                    //3.  //Jesli litera zostala wyciagnieta za bande - dosuwam z powrotem:
+                        if (xLit < 0) {   //dosuniecie w prawo
+                            //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
+                            layoutParams.leftMargin = xLl - 10; //dosuniecie w prawo
+                            if (yLit>yLg && yLit<yLd)           //jezeli po dosunieciu w prawo wyląduje w Obszarze, to dosuwam do yLtrim
+                              layoutParams.topMargin = yLtrim - (int) (h/2.0);
+                        }
+                        if (xLit > xLp) {   //dosuniecie w lewo
+                            //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
+                            layoutParams.leftMargin = xLp - 40; //dosuniecie w lewo
+                            if (yLit>yLg && yLit<yLd)           //jezeli po dosunieciu w prawo wyląduje w Obszarze, to dosuwam do yLtrim
+                                layoutParams.topMargin = yLtrim - (int) (h/2.0);
+                        }
                     }
 
                     //sledzenie:
@@ -412,9 +423,10 @@ public class MainActivity extends Activity {
                 //Przekazanie do zmiennych klasy parametrow geograficznych Obszaru
                 xLl = x;
                 yLg = y;
-
                 xLp = xLl + lObszar.getWidth();
                 yLd = yLg + lObszar.getHeight();
+                //Przekazanie do zmiennek klasy współrzędnej y linii 'Trymowania':
+                yLtrim = yLg+ ((int) ((yLd-yLg)/2.0));
             }
         });
    } //koniec Metody()

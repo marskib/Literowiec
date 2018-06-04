@@ -66,6 +66,7 @@
             android:textSize="@dimen/litera_size"
             android:textStyle="bold"
             android:paddingLeft="@dimen/litera_size"
+            android:letterSpacing="0.1"
             android:visibility="invisible"
         />
 

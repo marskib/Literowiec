@@ -1,8 +1,14 @@
 <resources>
-    <dimen name="litera_size">100sp</dimen>
+
+    <dimen name="nazwa_text_rozmiar_uwaga_na_huawei">28sp</dimen>
+
+    <dimen name="litera_size">120sp</dimen>
     <dimen name="margin_top_size_1st_row">10dp</dimen>
-    <dimen name="margin_top_size_2nd_row">120dp</dimen>
-    <dimen name="margin_top_size_3rd_row">240dp</dimen>
+    <dimen name="margin_top_size_2nd_row">140dp</dimen>
+    <dimen name="margin_top_size_3rd_row">280dp</dimen>
+
+    <!--odstep 1-szej litery 1=go rzedu od obrazka od obrazka: -->
+    <dimen name="od_obrazka">80dp</dimen>
 
     <!-- wartosc na rozsuniecie etykiet wzgledem siebie w rzędzie; wykorzystywana w kodzie: -->
     <dimen name="poprawka">210dp</dimen>

@@ -1,8 +1,14 @@
 package autyzmsoft.pl.literowiec;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -16,29 +22,39 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Random;
 
-import autyzmsoft.pl.literowiec.R;
 
-import static android.R.attr.y;
-import static java.lang.Thread.sleep;
-
-//import autyzmsoft.pl.literowiec.R;opackage autyzmsoft.pl.literowiec;
-//Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
+//Prowadzenie litery po ekranie Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
 //YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
 
 public class MainActivity extends Activity {
 
+    Intent intModalDialog;  //Na okienko dialogu 'modalnego' orzy starcie aplikacji
+
     private ViewGroup rootLayout;
-    private ImageView img;
+
+    //Obrazek:
+    private ImageView imageView;
 
     //Placeholders'y na etykiety:
-    TextView L01, L02, L03,
-            L04, L05, L06,
-            L07, L08, L09,
-            L10, L11, L12;
+    MojTV L00, L01, L02,
+          L03, L04, L05,
+          L06, L07, L08,
+          L09, L10, L11;
+
+
+    MojTV[] lbs;  //tablica zawierajaca (oryginalne) litery wyrazu; onomastyka: lbs = 'labels'
+
 
     TextView tvInfo, tvInfo1, tvInfo2, tvInfo3, tvInfoObszar;
+
+    private int sizeH, sizeW;    //wymiary Urzadzenia
 
     private int _xDelta;
     private int _yDelta;
@@ -50,6 +66,13 @@ public class MainActivity extends Activity {
 
     private Button bZnowu, bUpperLower;
     private LinearLayout lObszar;
+    private Button bDalej;          //button pod obrazkiem na przechodzenie po kolejne cwiczenie
+
+    File dirObrazkiNaSD;                                 //katalog z obrazkami na SD (internal i external)
+    public static ArrayList<File> myObrazkiSD;           //lista obrazkow w SD    //katalog z obrazkami na SD (internal i external)
+    public static String katalog = null;                 //Katalogu w Assets, w ktorym trzymane beda obrazki
+    public static String listaObrazkowAssets[] = null;   //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
+    public int currImage = -1;   //indeks biezacego obrazka
 
 
     @Override
@@ -61,9 +84,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);
-        img = (ImageView) rootLayout.findViewById(R.id.imageView);
+        imageView = (ImageView) rootLayout.findViewById(R.id.imageView);
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
+        bDalej  = (Button) findViewById(R.id.bDalej);
+        bZnowu = (Button) findViewById(R.id.bZnowu);
+        bUpperLower =(Button) findViewById(R.id.bUpperLower);
 
+        //kontrolki do sledzenia:
         tvInfo = (TextView) findViewById(R.id.tvInfo);
         tvInfo1 = (TextView) findViewById(R.id.tvInfo1);
         tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
@@ -76,220 +103,199 @@ public class MainActivity extends Activity {
         lParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
         layoutParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
 
-        bZnowu = (Button) findViewById(R.id.bZnowu);
-        bUpperLower =(Button) findViewById(R.id.bUpperLower);
+        //ustalam polozenie obrazkow - przy pelnej wersji - duuzo więcej... ;):
+        katalog = "obrazki_demo_ver";
+        if (ZmienneGlobalne.getInstance().PELNA_WERSJA) {
+            katalog = "obrazki_pelna_ver";
+        }
+
+
+
 
         dostosujDoUrzadzen();
 
         dajWspObszaruInfo();
 
+        pokazUkryjEtykietySledzenia(false);
+
+
+        resetujLabelsy();
+        ustawLadnieEtykiety();
+
+
+        //pokazModal();   //Okienko modalne z informacjami o aplikacji; tam naczytanie SharepPreferences
+
+        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG == false) {
+            //Pobranie listy obrazkow z Assets:
+            AssetManager mgr = getAssets();
+            try {
+                listaObrazkowAssets = mgr.list(katalog);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+
+        currImage = dajNextObrazek();       //daje index currImage obrazka do prezentacji
+        setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
+        rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
+
     }  //koniec Metody()
 
-    private void przypiszLabelsyAndListenery() {
-        //Dla poprawienia czytelnosci kodu
-        L01 = (TextView) findViewById(R.id.L01);
-        L02 = (TextView) findViewById(R.id.L02);
-        L03 = (TextView) findViewById(R.id.L03);
-        L04 = (TextView) findViewById(R.id.L04);
-        L05 = (TextView) findViewById(R.id.L05);
-        L06 = (TextView) findViewById(R.id.L06);
-        L07 = (TextView) findViewById(R.id.L07);
-        L08 = (TextView) findViewById(R.id.L08);
-        L09 = (TextView) findViewById(R.id.L09);
-        L10 = (TextView) findViewById(R.id.L10);
-        L11 = (TextView) findViewById(R.id.L11);
-        L12 = (TextView) findViewById(R.id.L12);
 
-        L01.setOnTouchListener(new ChoiceTouchListener());
-        L02.setOnTouchListener(new ChoiceTouchListener());
-        L03.setOnTouchListener(new ChoiceTouchListener());
-        L04.setOnTouchListener(new ChoiceTouchListener());
-        L05.setOnTouchListener(new ChoiceTouchListener());
-        L06.setOnTouchListener(new ChoiceTouchListener());
-        L07.setOnTouchListener(new ChoiceTouchListener());
-        L08.setOnTouchListener(new ChoiceTouchListener());
-        L09.setOnTouchListener(new ChoiceTouchListener());
-        L10.setOnTouchListener(new ChoiceTouchListener());
-        L11.setOnTouchListener(new ChoiceTouchListener());
-        L12.setOnTouchListener(new ChoiceTouchListener());
+
+
+    public void setCurrentImage() {
+
+        String nazwaObrazka; //zawiera rozrzerzenie (.jpg , .bmp , ...)
+
+        try {
+            if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG) { //pobranie z Directory
+                nazwaObrazka = "aaaa";//myObrazkiSD[currImage];
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 2;
+                String robAbsolutePath = dirObrazkiNaSD + "/" + nazwaObrazka;
+                Bitmap bm = BitmapFactory.decodeFile(robAbsolutePath, options);
+                imageView.setImageBitmap(bm);
+            } else {  //pobranie obrazka z Assets
+                nazwaObrazka = listaObrazkowAssets[currImage];
+                InputStream stream = getAssets().open(katalog + "/" + nazwaObrazka);
+                Drawable drawable = Drawable.createFromStream(stream, null);
+                imageView.setImageDrawable(drawable);
+            }
+        } catch (Exception e) {
+            Log.e("4321", e.getMessage());
+            Toast.makeText(this, "Problem z wyswietleniem obrazka...", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }  //koniecMetody()
+
+
+
+
+      private int dajNextObrazek() {
+
+        return dajLosowyNumerObrazka();
+
+      } //koniec Metody()
+
+
+
+   private void rozrzucWyraz() {
+
+       int k;  //na losowa pozycje
+
+       //char[] wyraz = "ABCDEFGHIJKL".toCharArray();
+       //char[] wyraz = "abcdefghijkł".toCharArray();
+       //char[] wyraz = "cytryna".toCharArray();
+
+       String nazwaPliku = listaObrazkowAssets[currImage];
+       nazwaPliku =  getRemovedExtensionName(nazwaPliku);
+
+       char[] wyraz = nazwaPliku.toCharArray();
+
+       Random rand = new Random();
+
+       //Kazda litera wyrazu ląduje w losowej komorce tablicy lbs :
+       for (int i = 0; i < wyraz.length; i++) {
+
+           String z = Character.toString(wyraz[i]); //pobranie litery z wyrazu
+
+           //Losowanie pozycji w tablicy lbs:
+           do {
+               k = rand.nextInt(lbs.length);
+           }
+           while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w pususte (=niwidoczne) etykiety
+
+           //Umieszczenie litery w wylosowanej pozycji:
+           lbs[k].setText(z);
+           lbs[k].setOrigL(String.valueOf(wyraz[i]));
+           lbs[k].setVisibility(View.VISIBLE);
+
+       } //for
+
+   } //koniecMetody();
+
+    private void resetujLabelsy() {
+        //Resetowanie tablicy i zwiazanycyh z nia kontrolek ekranowych:
+        for (MojTV lb : lbs) {
+            lb.setText("*");
+            lb.setInArea(false);
+            lb.setVisibility(View.INVISIBLE);
+        }
     }
 
 
-    private void dostosujDoUrzadzen() {
-        int width, height;
-        RelativeLayout.LayoutParams lPar;
+    public void bDalejOnClick(View v) {
 
-        //Pobieram wymiary ekranu na potrzeby dostosowania wielkosci Obrazka i Prostokata/Obszaru 'gorącego' do ekranu urządzenia:
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        width = displaymetrics.widthPixels;
-        height = displaymetrics.heightPixels;
-
-        //pokazania wymiarow urządzenia i rozdzielczosci dpi
-        tvInfo3.setText(Integer.toString(width) + "x" + Integer.toString(height)+" dpi="+Integer.toString(displaymetrics.densityDpi));
-
-        //Obrazek - ustawiam w lewym górnym rogu:
-        lPar = (RelativeLayout.LayoutParams) img.getLayoutParams();
-        lPar.width = width / 3;
-        lPar.height = height / 2;
-        lPar.topMargin = 5;
-        lPar.leftMargin = 10;
-        img.setLayoutParams(lPar);
-
-        //Obszar-Prostokat na ukladanie wyrazu:
-        RelativeLayout.LayoutParams lPar1 = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
-        lPar1.topMargin = (int) (height/1.6);
-        //lPar1.leftMargin = 20;
-        //lPar1.rightMargin = 20;
-        lPar1.height = height/4;
-
-
-        //Ustawienie etykiet w 'ladnym' kwadracie 4x3:
+        resetujLabelsy();
         ustawLadnieEtykiety();
+        currImage = dajNextObrazek();       //daje indeks currImage obrazka do prezentacji
+        setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
+        rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
+
     } //koniec Metody()
 
-    private void ustawLadnieEtykiety() {
-    /* *************************************************************************************************** */
-    /* Ustawiam Literki/Etykiety L0n wzgledem obrazka i wzgledem siebie - na lewo od obrazka               */
-    /* Kazdy rząd (3 rzedy) ustawiam niejako osobno, poczynajac od 1-go elementu w rzedzie jako od wzorca. */
-    /* *************************************************************************************************** */
 
-        RelativeLayout.LayoutParams lPar;
-        //L01 (1-szy rząd):
-        lPar = (RelativeLayout.LayoutParams) L01.getLayoutParams();
-        lPar.leftMargin = ((RelativeLayout.LayoutParams) img.getLayoutParams()).leftMargin + img.getLayoutParams().width + 20;
-        lPar.topMargin = ((RelativeLayout.LayoutParams) img.getLayoutParams()).topMargin;
+    public void bZnowuOnClick(View v) {
 
-        int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-        lPar.topMargin = marginesTop;
+        ustawLadnieEtykiety();
+        resetujLabelsy();
+        rozrzucWyraz();
+    }
 
-        L01.setLayoutParams(lPar);
 
-        final int poprawka = (int) getResources().getDimension(R.dimen.poprawka);
+    public void bUpperLowerOnClick(View v) {
+        //Zmiana male/duze litery (w obie strony)
+        TextView[] lbs = {L00, L01,L02,L03,L04,L05,L06,L07,L08,L09,L10,L11};
 
-        //L02:  //dalej trzeba uzywac Runnable - czekanie az obiekt L01 'usadowi' sie - inaczej wartosci nieustalobe, czyli ok. 0....
-        L01.post(new Runnable() {
-            @Override
-            public void run() { //czekanie aż policzy sie L01
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L02.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                lParX.topMargin = marginesTop;
+        for (TextView lb : lbs) {
+            String str = (String) lb.getText();
+
+            if (lb.getText().equals(str.toUpperCase(Locale.getDefault()))) {
+                str = str.toLowerCase(Locale.getDefault());
+            } else {
+                str = str.toUpperCase(Locale.getDefault());
             }
-        });
-
-        //L03:
-        L02.post(new Runnable() {
-            @Override
-            public void run() { //czekanie aż policzy się L02
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                lParX.topMargin = marginesTop;
-            }
-        });
-
-        //L04:
-        L03.post(new Runnable() {
-            @Override
-            public void run() { //czekanie aż policzy się L03
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L04.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L03.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                lParX.topMargin = marginesTop;
-            }
-        });
+            lb.setText(str);
+        }
+    } //koniec Metody()
 
 
-        //L05: (2-gi rząd):
-        lPar = (RelativeLayout.LayoutParams) L05.getLayoutParams();
-        lPar.leftMargin = ((RelativeLayout.LayoutParams) img.getLayoutParams()).leftMargin + img.getLayoutParams().width;
-        marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
-        lPar.topMargin = marginesTop;
-        L05.setLayoutParams(lPar);
-
-        //L06
-        L05.post(new Runnable() {
+    private void dajWspObszaruInfo() {
+        lObszar.post(new Runnable() { //czekanie az obszar sie narysuje
             @Override
             public void run() {
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
-                lParX.topMargin = marginesTop;
+                int[] location = new int[2];
+                lObszar.getLocationOnScreen(location);
+                int x = location[0];
+                int y = location[1];
+                tvInfoObszar.setText(Integer.toString(x)+","+Integer.toString(y));
+
+                //Przekazanie do zmiennych klasy parametrow geograficznych Obszaru
+                xLl = x;
+                yLg = y;
+                xLp = xLl + lObszar.getWidth();
+                yLd = yLg + lObszar.getHeight();
+                //Przekazanie do zmiennek klasy współrzędnej y linii 'Trymowania':
+                yLtrim = yLg+ ((int) ((yLd-yLg)/2.0));
             }
         });
-
-        //L07:
-        L06.post(new Runnable() {
-            @Override
-            public void run() {
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L07.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L06.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
-                lParX.topMargin = marginesTop;
-            }
-        });
-
-        //L08:
-        L07.post(new Runnable() {
-            @Override
-            public void run() {
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L08.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L07.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
-                lParX.topMargin = marginesTop;
-            }
-        });
+   } //koniec Metody()
 
 
-        //L09: (3-ci rząd):
-        lPar = (RelativeLayout.LayoutParams) L09.getLayoutParams();
-        lPar.leftMargin = ((RelativeLayout.LayoutParams) img.getLayoutParams()).leftMargin + img.getLayoutParams().width + 40;
-        marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-        lPar.topMargin = marginesTop;
-        L09.setLayoutParams(lPar);
 
-        //L10:
-        L09.post(new Runnable() {
-            @Override
-            public void run() {
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L10.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                lParX.topMargin = marginesTop;
-            }
-        });
-
-        //L11:
-        L10.post(new Runnable() {
-            @Override
-            public void run() {
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                lParX.topMargin = marginesTop;
-            }
-        });
-
-        //L12:
-        L11.post(new Runnable() {
-            @Override
-            public void run() {
-                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L12.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L11.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                lParX.topMargin = marginesTop;
-            }
-        });
-
-        // dodatkowe rozsunięcie wzgledem siebie:
-//        TextView[] lbs = {L01,L02,L03,L04};
-//        for (int i = 1; i < lbs.length; i++) {
-//            lPar = (RelativeLayout.LayoutParams) lbs[i].getLayoutParams();
-//            lPar.leftMargin = 500;//lPar.leftMargin + 250;//*i;
-//            lbs[i].setLayoutParams(lPar);
-//        }
-    }  //koniec Metody()
+    private void pokazUkryjEtykietySledzenia(boolean czyPokazac) {
+        int rob;
+        rob = TextView.INVISIBLE;
+        if (czyPokazac) rob = TextView.VISIBLE;
+        tvInfo.setVisibility(rob);
+        tvInfo1.setVisibility(rob);
+        tvInfo2.setVisibility(rob);
+        tvInfo3.setVisibility(rob);
+        tvInfoObszar.setVisibility(rob);
+    } //koniec Metody();
 
 
     private final class ChoiceTouchListener implements OnTouchListener {
@@ -351,10 +357,11 @@ public class MainActivity extends Activity {
                     }
                     //3.Jezeli srodek litery za górnym lub dolnym brzegiem ekranu - dosuwam z powrotem:
                     if (yLit<0) {
-                        layoutParams.topMargin += Math.abs(layoutParams.topMargin);
+                        //layoutParams.topMargin += Math.abs(layoutParams.topMargin);
+                        layoutParams.topMargin = 0;
                     }
-                    if (yLit>1128) {
-                        layoutParams.topMargin = 1128 - 2*w;
+                    if (yLit>sizeH) {
+                        layoutParams.topMargin = sizeH - (int) (0.7*h);
                     }
 
 
@@ -373,61 +380,336 @@ public class MainActivity extends Activity {
         }
     } //koniec Metody()
 
-    public void bZnowuOnClick(View v) {
 
-        ustawLadnieEtykiety();
-        try {
-            sleep(500);
-            ustawLadnieEtykiety();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+
+    @Override protected void onResume() {
+        /* *************************************   */
+        /* Aplikowanie zmian wprowadzonych w menu  */
+        /* Bądż pierwsze uruchomienie (po splashu) */
+        /* *************************************   */
+        super.onResume();
+        //Pokazujemy zupelnie nowe cwiczenie z paramatrami ustawionymi na Zmiennych Glob. (np. poprzez splashScreena Ustawienia):
+        final boolean wszystkieRozne = ZmienneGlobalne.getInstance().WSZYSTKIE_ROZNE;
+        final boolean roznicujObrazki = ZmienneGlobalne.getInstance().ROZNICUJ_OBRAZKI;
+
+        //Tworzenie listy obrazków z Katalogu lub Assets:
+        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG == true) {
+            dirObrazkiNaSD = new File(ZmienneGlobalne.getInstance().WYBRANY_KATALOG);
+            myObrazkiSD = findObrazki(dirObrazkiNaSD);
         }
 
-    }
-
-    public void bUpperLowerOnClick(View v) {
-        //ZMiana male/duze litery (w obie strony)
-        TextView[] lbs = {L01,L02,L03,L04,L05,L06,L07,L08,L09,L10,L11,L12};
-
-        for (TextView lb : lbs) {
-            String str = (String) lb.getText();
-
-            if (lb.getText().equals(str.toUpperCase(Locale.getDefault()))) {
-                str = str.toLowerCase(Locale.getDefault());
-            } else {
-                str = str.toUpperCase(Locale.getDefault());
+        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG == false) {
+            //Pobranie listy obrazkow z Assets:
+            AssetManager mgr = getAssets();
+            try {
+                listaObrazkowAssets = mgr.list(katalog);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            lb.setText(str);
+        }
+
+        //setCurrentImage();
+
+    } //koniec Metody()
+
+
+    public static ArrayList<File> findObrazki(File katalog) {
+        /* ******************************************************************************************************************* */
+        /* Zwraca liste obrazkow (plikow graficznych .jpg .bmp .png) z katalogu katalog - uzywana tylko dla przypadku SD karty */
+        /* ******************************************************************************************************************* */
+        ArrayList<File> al = new ArrayList<File>(); //al znaczy "Array List"
+        File[] files = katalog.listFiles(); //w files WSZYSTKIE pliki z katalogu (rowniez nieporządane)
+        if (files != null) { //lepiej sprawdzic, bo wali sie w petli for na niektorych emulatorach...
+            for (File singleFile : files) {
+                if ((singleFile.getName().toUpperCase().endsWith(".JPG"))
+                        || (singleFile.getName().toUpperCase().endsWith(".PNG"))
+                        || (singleFile.getName().toUpperCase().endsWith(".BMP"))
+                        || (singleFile.getName().toUpperCase().endsWith(".WEBP"))
+                        || (singleFile.getName().toUpperCase().endsWith(".JPEG"))) {
+                    al.add(singleFile);
+                }
+            }
+        }
+        return al;
+    }  //koniec Matody()
+
+
+    private int dajLosowyNumerObrazka() {
+        int rob;
+        int rozmiar_tab;
+        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG)
+            rozmiar_tab = myObrazkiSD.size();
+        else
+            rozmiar_tab = listaObrazkowAssets.length;
+        //Generujemy losowy numer, ale tak, zeby nie wypadl ten sam:
+        if (rozmiar_tab !=1 ) { //przy tylko jednym obrazku kod ponizej jest petla nieskonczona, więc if
+            do {
+                rob = (int) (Math.random() * rozmiar_tab);
+            } while (rob == currImage);
+        }
+        else
+            rob = 0; //bo 0-to jest de facto numer obrazka
+
+        return rob;
+    } //koniec Metody()
+
+
+
+    private void przypiszLabelsyAndListenery() {
+
+        L00 = (MojTV) findViewById(R.id.L00);
+        L01 = (MojTV) findViewById(R.id.L01);
+        L02 = (MojTV) findViewById(R.id.L02);
+        L03 = (MojTV) findViewById(R.id.L03);
+        L04 = (MojTV) findViewById(R.id.L04);
+        L05 = (MojTV) findViewById(R.id.L05);
+        L06 = (MojTV) findViewById(R.id.L06);
+        L07 = (MojTV) findViewById(R.id.L07);
+        L08 = (MojTV) findViewById(R.id.L08);
+        L09 = (MojTV) findViewById(R.id.L09);
+        L10 = (MojTV) findViewById(R.id.L10);
+        L11 = (MojTV) findViewById(R.id.L11);
+
+
+        //ustawienie tablicy do operowania na ww. etykietach:
+        lbs = new MojTV[] {L00, L01, L02, L03, L04, L05, L06, L07, L08, L09, L10, L11};
+
+        //podpiecie listenerow:
+        for (MojTV lb : lbs) {
+            lb.setOnTouchListener(new ChoiceTouchListener());
         }
     } //koniec Metody()
 
 
-    private void dajWspObszaruInfo() {
-        lObszar.post(new Runnable() { //czekanie az obszar sie narysuje
-            @Override
-            public void run() {
-                int[] location = new int[2];
-                lObszar.getLocationOnScreen(location);  //getLocationOnScreen(location);
-                int x = location[0];
-                int y = location[1];
-                tvInfoObszar.setText(Integer.toString(x)+","+Integer.toString(y));
+    private void dostosujDoUrzadzen() {
+        RelativeLayout.LayoutParams lPar;
 
-                //Przekazanie do zmiennych klasy parametrow geograficznych Obszaru
-                xLl = x;
-                yLg = y;
-                xLp = xLl + lObszar.getWidth();
-                yLd = yLg + lObszar.getHeight();
-                //Przekazanie do zmiennek klasy współrzędnej y linii 'Trymowania':
-                yLtrim = yLg+ ((int) ((yLd-yLg)/2.0));
+        //Pobieram wymiary ekranu na potrzeby dostosowania wielkosci Obrazka i Prostokata/Obszaru 'gorącego' do ekranu urządzenia:
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        //przekazanie na zewnatrz:
+        sizeW = displaymetrics.widthPixels;
+        sizeH = displaymetrics.heightPixels;
+
+        //pokazania wymiarow urządzenia i rozdzielczosci dpi
+        tvInfo3.setText(Integer.toString(sizeW) + "x" + Integer.toString(sizeH)+" dpi="+Integer.toString(displaymetrics.densityDpi));
+
+        //Obrazek - ustawiam w lewym górnym rogu:
+        lPar = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+        lPar.width = sizeW / 3;
+        lPar.height = sizeH / 2;
+        lPar.topMargin = 5;
+        lPar.leftMargin = 10;
+        imageView.setLayoutParams(lPar);
+
+        //Obszar-Prostokat na ukladanie wyrazu:
+        RelativeLayout.LayoutParams lPar1 = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
+        lPar1.topMargin = (int) (sizeH/1.6);
+        //lPar1.leftMargin = 20;
+        //lPar1.rightMargin = 20;
+        lPar1.height = sizeH/4;
+
+    } //koniec Metody()
+
+    private void ustawLadnieEtykiety() {
+        /* *************************************************************************************************** */
+        /* Ustawiam Literki/Etykiety L0n wzgledem obrazka i wzgledem siebie - na lewo od obrazka               */
+        /* Kazdy rząd (3 rzedy) ustawiam niejako osobno, poczynajac od 1-go elementu w rzedzie jako od wzorca. */
+        /* *************************************************************************************************** */
+
+        int od_obrazka = (int) getResources().getDimension(R.dimen.od_obrazka); //odstep 1-szej litery 1-go rzedu od obrazka
+
+        RelativeLayout.LayoutParams lPar;
+        //L00 (1-szy rząd):
+        lPar = (RelativeLayout.LayoutParams) L00.getLayoutParams();
+        lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + od_obrazka;
+        lPar.topMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).topMargin;
+
+        int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+        lPar.topMargin = marginesTop;
+
+        L00.setLayoutParams(lPar);
+
+        final int poprawka = (int) getResources().getDimension(R.dimen.poprawka);
+
+        //L01:  //dalej trzeba uzywac Runnable - czekanie az obiekt L00 'usadowi' sie - inaczej wartosci nieustalobe, czyli ok. 0....
+        L00.post(new Runnable() {
+            @Override
+            public void run() { //czekanie aż policzy sie L01
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L01.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L00.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                lParX.topMargin = marginesTop;
+                L01.setLayoutParams(lParX); //n
             }
         });
-   } //koniec Metody()
 
+        //L02:
+        L01.post(new Runnable() {
+            @Override
+            public void run() { //czekanie aż policzy się L01
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L02.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                lParX.topMargin = marginesTop;
+                L02.setLayoutParams(lParX); //n
+            }
+        });
+
+        //L03:
+        L02.post(new Runnable() {
+            @Override
+            public void run() { //czekanie aż policzy się L02
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                lParX.topMargin = marginesTop;
+                L03.setLayoutParams(lParX); //n
+            }
+        });
+
+
+        //L04: (2-gi rząd):
+        lPar = (RelativeLayout.LayoutParams) L04.getLayoutParams();
+        lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + ((int) (od_obrazka/4));
+        marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+        lPar.topMargin = marginesTop;
+        L04.setLayoutParams(lPar);
+
+        //L05
+        L04.post(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L05.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L04.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                lParX.topMargin = marginesTop;
+                L05.setLayoutParams(lParX); //n
+            }
+        });
+
+        //L06:
+        L05.post(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                lParX.topMargin = marginesTop;
+                L06.setLayoutParams(lParX); //n
+            }
+        });
+
+        //L07:
+        L06.post(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L07.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L06.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                lParX.topMargin = marginesTop;
+                L07.setLayoutParams(lParX); //n
+            }
+        });
+
+
+        //L08: (3-ci rząd):
+        lPar = (RelativeLayout.LayoutParams) L08.getLayoutParams();
+        lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + ((int) (od_obrazka/2));
+        marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+        lPar.topMargin = marginesTop;
+        L08.setLayoutParams(lPar);
+
+        //L09:
+        L08.post(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L09.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L08.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                lParX.topMargin = marginesTop;
+                L09.setLayoutParams(lParX); //n
+            }
+        });
+
+        //L10:
+        L09.post(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L10.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                lParX.topMargin = marginesTop;
+                L10.setLayoutParams(lParX); //n
+            }
+        });
+
+        //L11:
+        L10.post(new Runnable() {
+            @Override
+            public void run() {
+                RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;
+                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                lParX.topMargin = marginesTop;
+                L11.setLayoutParams(lParX); //n
+            }
+        });
+
+
+        //Dodatkowe przemieszanie wyzej-nizej po kazdej etykiecie:
+        for (final MojTV lb : lbs) {
+            lb.post(new Runnable() {
+                @Override
+                public void run() {
+                    RelativeLayout.LayoutParams lParX =
+                            (RelativeLayout.LayoutParams) lb.getLayoutParams();
+                    Random rand = new Random();
+                    int k = rand.nextInt(3);
+                    if (k == 0) k =   0;
+                    if (k == 1) k = +15;
+                    if (k == 2) k = -15;
+                    lParX.topMargin += k;
+                    lb.setLayoutParams(lParX);
+                }
+            });
+        }
+
+    }  //koniec Metody()
+
+    public static String getRemovedExtensionName(String name){
+        /**
+         * Pomocnicza, widoczna wszedzie metodka na pozbycie sie rozszerzenia z nazwy pliku - dostajemy "goly" wyraz
+         */
+        String baseName;
+        if(name.lastIndexOf(".")==-1){
+            baseName=name;
+        }else{
+            int index=name.lastIndexOf(".");
+            baseName=name.substring(0,index);
+        }
+        return baseName;
+    }  //koniec metody()
+
+
+    private boolean pokazModal() {
+        //Pokazanie modalnego okienka.
+        //Okienko realizowane jest jako Activity  o nazwie DialogModalny
+
+        //intModalDialog = new Intent("autyzmsoft.pl.literowiec.DialogModalny");
+
+
+        intModalDialog = new Intent(getApplicationContext(), DialogModalny.class);
+
+        startActivity(intModalDialog);
+
+        return true;
+    }  //koniec Metody()
 
 
 
     public int dpToPx(int dp) {
-//Convert dp to pixel:
+    //Convert dp to pixel:
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
@@ -435,10 +717,11 @@ public class MainActivity extends Activity {
 
 
     public int pxToDp(int px) {
-//Convert pixel to dp:
+    //Convert pixel to dp:
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
+
 
 
 }

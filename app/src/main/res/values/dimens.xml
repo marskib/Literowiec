@@ -1,11 +1,18 @@
 <resources>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="maly_odstep">8dp</dimen>
+
+
     <dimen name="litera_size">50sp</dimen>
-    <dimen name="margin_top_size_1st_row">-10dp</dimen>
-    <dimen name="margin_top_size_2nd_row">60dp</dimen>
-    <dimen name="margin_top_size_3rd_row">130dp</dimen>
+    <dimen name="margin_top_size_1st_row">-15dp</dimen>
+    <dimen name="margin_top_size_2nd_row">52dp</dimen>
+    <dimen name="margin_top_size_3rd_row">124dp</dimen>
+
+    <!--odstep 1-szej litery 1=go rzedu od obrazka od obrazka: -->
+    <dimen name="od_obrazka">30dp</dimen>
 
     <!-- wartosc na rozsuniecie etykiet wzgledem siebie w rzędzie; wykorzystywana w kodzie: -->
-    <dimen name="poprawka">85dp</dimen>
+    <dimen name="poprawka">100dp</dimen>
 
     <!--padding etykiety; wykorzystywany w kodzie do obliczenia dokladnej pozycji litery: -->
     <dimen name="padding_ski">10dp</dimen>

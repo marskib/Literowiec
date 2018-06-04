@@ -2,11 +2,15 @@ package autyzmsoft.pl.literowiec;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -36,6 +40,7 @@ import java.util.Random;
 public class MainActivity extends Activity {
 
     Intent intModalDialog;  //Na okienko dialogu 'modalnego' orzy starcie aplikacji
+    static MediaPlayer mp = null;
 
     private ViewGroup rootLayout;
 
@@ -49,10 +54,12 @@ public class MainActivity extends Activity {
           L09, L10, L11;
 
 
-    MojTV[] lbs;  //tablica zawierajaca (oryginalne) litery wyrazu; onomastyka: lbs = 'labels'
+    public static MojTV[] lbs;  //tablica zawierajaca (oryginalne) litery wyrazu; onomastyka: lbs = 'labels'
 
 
     TextView tvInfo, tvInfo1, tvInfo2, tvInfo3, tvInfoObszar;
+
+    TextView tvCurrentWord; //na umieszczenie wyrazu po Zwyciestwie
 
     private int sizeH, sizeW;    //wymiary Urzadzenia
 
@@ -60,24 +67,33 @@ public class MainActivity extends Activity {
     private int _yDelta;
 
     private int yLg,yLd,xLl,xLp; //wspolrzedne pionowe ygrek Linij Górnej i Dolnej oraz wspolrzedne poziome x linij Lewej i Prawej obszaru 'gorącego'
-    private int yLtrim;          ///polozenie y linii 'Trimowania' - srodek Obszaru, do tej linii dosuwam etykiety (kosmetyka znaczaca)
+    private int yLtrim;          ///polozenie  linii 'Trimowania' - srodek Obszaru, do tej linii dosuwam etykiety (kosmetyka znaczaca)
 
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
-    private Button bZnowu, bUpperLower;
+    private Button bZnowu;
+
+    public static Button bUpperLower;
+
+
     private LinearLayout lObszar;
     private Button bDalej;          //button pod obrazkiem na przechodzenie po kolejne cwiczenie
 
-    File dirObrazkiNaSD;                                 //katalog z obrazkami na SD (internal i external)
+    public static File   dirObrazkiNaSD;                 //katalog z obrazkami na SD (internal i external)
     public static ArrayList<File> myObrazkiSD;           //lista obrazkow w SD    //katalog z obrazkami na SD (internal i external)
     public static String katalog = null;                 //Katalogu w Assets, w ktorym trzymane beda obrazki
     public static String listaObrazkowAssets[] = null;   //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
-    public int currImage = -1;   //indeks biezacego obrazka
+
+    public int    currImage = -1;     //indeks biezacego obrazka
+    public String currWord  = "*";    //bieżacy wyraz
+
+    public static int inAreaLicznik = 0;     //licznik liter znajdujacych sie aktualnie w Obszarze
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         //na caly ekran:
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -88,6 +104,7 @@ public class MainActivity extends Activity {
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
         bZnowu = (Button) findViewById(R.id.bZnowu);
+        tvCurrentWord = (TextView) findViewById(R.id.tvCurrentWord);
         bUpperLower =(Button) findViewById(R.id.bUpperLower);
 
         //kontrolki do sledzenia:
@@ -111,34 +128,22 @@ public class MainActivity extends Activity {
 
 
 
-
         dostosujDoUrzadzen();
 
         dajWspObszaruInfo();
 
         pokazUkryjEtykietySledzenia(false);
 
-
         resetujLabelsy();
         ustawLadnieEtykiety();
 
-
-        //pokazModal();   //Okienko modalne z informacjami o aplikacji; tam naczytanie SharepPreferences
-
-        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG == false) {
-            //Pobranie listy obrazkow z Assets:
-            AssetManager mgr = getAssets();
-            try {
-                listaObrazkowAssets = mgr.list(katalog);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-
-        currImage = dajNextObrazek();       //daje index currImage obrazka do prezentacji
+        tworzListyObrazkow();
+        dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
+
+        pokazModal();
+
 
     }  //koniec Metody()
 
@@ -168,21 +173,168 @@ public class MainActivity extends Activity {
             Toast.makeText(this, "Problem z wyswietleniem obrazka...", Toast.LENGTH_SHORT).show();
         }
 
+        //ODEGRANIE DŹWIĘKU
+        odegrajWyraz(400);
 
     }  //koniecMetody()
 
 
+    private void odegrajWyraz(int opozniacz) {
+        /*************************************************/
+        /* Odegranie prezentowanego wyrazu               */
+        /*************************************************/
+        //najpierw sprawdzam, czy trzeba:
+        //Jezeli w ustawieniech jest, zeby nie grac - to wychodzimy:
+        if (ZmienneGlobalne.getInstance().BEZ_DZWIEKU == true) {
+            return;
+        }
+//        ski ski 2018.06.04
+//        //zeby nie gral zaraz po po starcie apki:
+//        if (nieGraj) {
+//            nieGraj = false;
+//            return;
+//        }
+        //Granie wlasciwe:
+
+        if (!ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG) {
+            //odeggranie z Assets (tam TYLKO ogg):
+            String nazwaObrazka = listaObrazkowAssets[currImage];
+            String rdzenNazwy = usunLastDigitIfAny(getRemovedExtensionName(nazwaObrazka));
+            String sciezka_do_pliku_dzwiekowego = "nagrania/" + rdzenNazwy + ".ogg";
+            odegrajZAssets(sciezka_do_pliku_dzwiekowego, opozniacz);
+        } else {  //pobranie nagrania z directory
+            //odegranie z SD (na razie nie zajmujemy sie rozszerzeniem=typ pliku dzwiekowego jest (prawie) dowolny):
+
+            /* ski ski 2018.06.04
+            String nazwaObrazka =  .getAktWybrZasob();  //zawiera rozrzerzenie (.jpg , .bmp , ...)
+            String rdzenNazwy = Rozdzielacz.getRemovedExtensionName(nazwaObrazka);
+            rdzenNazwy = Rozdzielacz.usunLastDigitIfAny(rdzenNazwy); //zakladam, ze plik dźwiękowy nie ma cyfry na koncu: pies1.jpg,pies1.jpg,pies2.jpg --> pies.ogg
 
 
-      private int dajNextObrazek() {
+            String sciezka_do_pliku_dzwiekowego = dirObrazkiNaSD + "/" + rdzenNazwy; //tutaj przekazujemy rdzen nazwy, bez rozszerzenia, bo mogą być różne (.mp3, ogg, .wav...)
+            odegrajZkartySD(sciezka_do_pliku_dzwiekowego, opozniacz);
+            */
+        }
+        return;
+    }  //koniec Metody()
 
-        return dajLosowyNumerObrazka();
+    public void odegrajZAssets(final String sciezka_do_pliku_parametr, int delay_milisek) {
+        /* ***************************************************************** */
+        // Odegranie dzwieku umieszczonego w Assets (w katalogu 'nagrania'):
+        /* ***************************************************************** */
+
+        if (ZmienneGlobalne.getInstance().nieGrajJestemW105) return; //na czas developmentu....
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                try {
+                    if (mp != null) {
+                        mp.release();
+                        mp = new MediaPlayer();
+                    } else {
+                        mp = new MediaPlayer();
+                    }
+                    final String sciezka_do_pliku = sciezka_do_pliku_parametr; //udziwniam, bo klasa wewn. i kompilator sie czepia....
+                    AssetFileDescriptor descriptor = getAssets().openFd(sciezka_do_pliku);
+                    mp.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+                    descriptor.close();
+                    mp.prepare();
+                    mp.setVolume(1f, 1f);
+                    mp.setLooping(false);
+                    mp.start();
+                    //Toast.makeText(getApplicationContext(),"Odgrywam: "+sciezka_do_pliku,Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    //Toast.makeText(getApplicationContext(), "Nie można odegrać pliku z dźwiękiem.", Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                }
+            }
+        }, delay_milisek);
+    } //koniec Metody()
+
+
+    public void odegrajZkartySD(final String sciezka_do_pliku_parametr, int delay_milisek) {
+        /* ************************************** */
+        /* Odegranie pliku dzwiekowego z karty SD */
+        /* ************************************** */
+
+        if (ZmienneGlobalne.getInstance().nieGrajJestemW105) return; //na czas developmentu....
+
+        //Na pdst. parametru metody szukam odpowiedniego pliku do odegrania:
+        //(typuję, jak moglby sie nazywac plik i sprawdzam, czy istbieje. jezeli istnieje - OK, wychodze ze sprawdzania majac wytypowaną nazwe pliku)
+        String pliczek;
+        pliczek = sciezka_do_pliku_parametr + ".m4a";
+        File file = new File(pliczek);
+        if (!file.exists()) {
+            pliczek = sciezka_do_pliku_parametr + ".mp3";
+            file = new File(pliczek);
+            if (!file.exists()) {
+                pliczek = sciezka_do_pliku_parametr + ".ogg";
+                file = new File(pliczek);
+                if (!file.exists()) {
+                    pliczek = sciezka_do_pliku_parametr + ".wav";
+                    file = new File(pliczek);
+                    if (!file.exists()) {
+                        pliczek = sciezka_do_pliku_parametr + ".amr";
+                        file = new File(pliczek);
+                        if (!file.exists()) {
+                            pliczek = ""; //to trzeba zrobic, zeby 'gracefully wyjsc z metody (na Android 4.4 sie wali, jesli odgrywa plik nie istniejacy...)
+                            //dalej nie sprawdzam/nie typuję... (na razie) (.wma nie sa odtwarzane na Androidzie)
+                        }
+                    }
+                }
+            }
+        }
+        //Odegranie znalezionego (if any) poliku:
+        if (pliczek.equals("")) {
+            return;  //bo Android 4.2 wali sie, kiedy próbujemy odegrac plik nie istniejący
+        }
+        Handler handler = new Handler();
+        final String finalPliczek = pliczek; //klasa wewnetrzna ponizej - trzeba "kombinowac"...
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                try {
+                    Uri u = Uri.parse(finalPliczek); //parse(file.getAbsolutePath());
+                    mp = MediaPlayer.create(getApplicationContext(), u);
+                    mp.start();
+                } catch (Exception e) {
+                    //toast("Nie udalo się odegrać pliku z podanego katalogu...");
+                    Log.e("4321", e.getMessage()); //"wytłumiam" komunikat
+                } finally {
+                    //Trzeba koniecznie zakonczyc Playera, bo inaczej nie slychac dzwieku:
+                    //mozna tak:
+                    mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        public void onCompletion(MediaPlayer mp) {
+                            mp.release();
+                        }
+                    });
+                    //albo mozna tak:
+                    //mPlayer.setOnCompletionListener(getApplicationContext()); ,
+                    //a dalej w kodzie klasy zdefiniowac tego listenera, czyli public void onCompletion(MediaPlayer xx) {...}
+                }
+            }
+        }, delay_milisek);
+    } //koniec metody odegrajZkartySD
+
+
+      private void dajNextObrazek() {
+     //Daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
+
+        currImage = dajLosowyNumerObrazka();
+
+        //Nazwe odpowiadajacego pliku oczyszczamy z nalecialosci:
+        String nazwaPliku = listaObrazkowAssets[currImage];
+        nazwaPliku = getRemovedExtensionName(nazwaPliku);
+        nazwaPliku = usunLastDigitIfAny(nazwaPliku);
+
+        currWord = nazwaPliku;
 
       } //koniec Metody()
 
 
 
    private void rozrzucWyraz() {
+   /* Rozrzucenie currWord po tablicy lbs (= po Ekranie) */
 
        int k;  //na losowa pozycje
 
@@ -190,10 +342,7 @@ public class MainActivity extends Activity {
        //char[] wyraz = "abcdefghijkł".toCharArray();
        //char[] wyraz = "cytryna".toCharArray();
 
-       String nazwaPliku = listaObrazkowAssets[currImage];
-       nazwaPliku =  getRemovedExtensionName(nazwaPliku);
-
-       char[] wyraz = nazwaPliku.toCharArray();
+       char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
        Random rand = new Random();
 
@@ -208,9 +357,9 @@ public class MainActivity extends Activity {
            }
            while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w pususte (=niwidoczne) etykiety
 
-           //Umieszczenie litery w wylosowanej pozycji:
+           //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV):
+           lbs[k].setOrigL(z);
            lbs[k].setText(z);
-           lbs[k].setOrigL(String.valueOf(wyraz[i]));
            lbs[k].setVisibility(View.VISIBLE);
 
        } //for
@@ -218,7 +367,7 @@ public class MainActivity extends Activity {
    } //koniecMetody();
 
     private void resetujLabelsy() {
-        //Resetowanie tablicy i zwiazanycyh z nia kontrolek ekranowych:
+    //Resetowanie tablicy i tym samym zwiazanycyh z nia kontrolek ekranowych:
         for (MojTV lb : lbs) {
             lb.setText("*");
             lb.setInArea(false);
@@ -231,9 +380,11 @@ public class MainActivity extends Activity {
 
         resetujLabelsy();
         ustawLadnieEtykiety();
-        currImage = dajNextObrazek();       //daje indeks currImage obrazka do prezentacji
+        dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz currWord = nazwa obrazka bez nalecialosci)
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
-        rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
+        rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currWord
+
+        tvCurrentWord.setVisibility(View.INVISIBLE);
 
     } //koniec Metody()
 
@@ -243,18 +394,19 @@ public class MainActivity extends Activity {
         ustawLadnieEtykiety();
         resetujLabelsy();
         rozrzucWyraz();
+
+        tvCurrentWord.setVisibility(View.INVISIBLE);
     }
 
 
     public void bUpperLowerOnClick(View v) {
         //Zmiana male/duze litery (w obie strony)
-        TextView[] lbs = {L00, L01,L02,L03,L04,L05,L06,L07,L08,L09,L10,L11};
 
-        for (TextView lb : lbs) {
+        for (MojTV lb : lbs) {
             String str = (String) lb.getText();
 
             if (lb.getText().equals(str.toUpperCase(Locale.getDefault()))) {
-                str = str.toLowerCase(Locale.getDefault());
+                str = lb.getOrigL(); //rozwiazuje problem Ola->OLA->Ola
             } else {
                 str = str.toUpperCase(Locale.getDefault());
             }
@@ -273,7 +425,7 @@ public class MainActivity extends Activity {
                 int y = location[1];
                 tvInfoObszar.setText(Integer.toString(x)+","+Integer.toString(y));
 
-                //Przekazanie do zmiennych klasy parametrow geograficznych Obszaru
+                //Przekazanie do zmiennych klasy parametrow geograficznych Obszaru:
                 xLl = x;
                 yLg = y;
                 xLp = xLl + lObszar.getWidth();
@@ -319,6 +471,12 @@ public class MainActivity extends Activity {
                     //sledzenie:
                     //Pokazanie szerokosci kontrolki:
                     tvInfo.setText(Integer.toString(view.getWidth()));
+
+                    //action_down wykonuje sie (chyba) ZAWSZE, wiec zakladam:
+                    ((MojTV) view).setInArea(false);
+                    policzInAreasy(); //sledzenie
+                    //a potem sie to ww. zmodyfikuje na action up....
+
                     break;
                 case MotionEvent.ACTION_UP:
                     //sledzenie:
@@ -339,6 +497,28 @@ public class MainActivity extends Activity {
                     //2.Dosunirecie Litery na poziomy srodek Obszaru (linia yLtrim); srodek etykiety ma wypasc na yLtrim:
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
                         layoutParams.topMargin = yLtrim - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
+
+                        //Bylo 'trimowanie' a wiec na pewno jestesmy w Obszarze :
+                        ((MojTV) view).setInArea(true);
+                        if (policzInAreasy() == currWord.length()) {
+                            if (poprawnieUlozono()) {
+                                //Toast.makeText(MainActivity.this, "ZWYCIESTWO!!!", Toast.LENGTH_LONG).show();
+                                odegrajZAssets("nagrania/komentarze/ding.mp3",10);
+                                odegrajZAssets("nagrania/komentarze/oklaski.ogg",400);
+                                //uporzadkowanie w Obszarze z lekkim opoznieniem:
+                                Handler mHandl = new Handler();
+                                mHandl.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        UporzadkujObszar();
+                                         } },600);
+                            } else {
+                                //Toast.makeText(MainActivity.this, "Żle.....", Toast.LENGTH_SHORT).show();
+                                odegrajZAssets("nagrania/komentarze/zle.mp3",50);
+                            }
+
+                        }
+
                     }
                     //3.Jesli srodek litery zostala wyciagnieta za bande - dosuwam z powrotem:
                     if (xLit < xLl) {   //dosuniecie w prawo
@@ -380,6 +560,65 @@ public class MainActivity extends Activity {
         }
     } //koniec Metody()
 
+    private void UporzadkujObszar() {
+        //Gasimy wszysko (litery w obszarze):
+        for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
+        tvCurrentWord.setText(currWord);
+        tvCurrentWord.setVisibility(View.VISIBLE);
+    }
+
+    private boolean poprawnieUlozono() {
+    /* **************************************** */
+    /* zalozenie wejsciowe:                     */
+    // Wszystkie litery znajduja sie w Obszarze */
+    /* Sprawdzenie, czy poprawnie ulozone.      */
+    /* **************************************** */
+
+        MojTV[] lbsRob; //tablica robocza, do dzialań
+
+        //najpierw przepisanie do roboczej - bedzie krotsza...; potem manipulacje na roboczej:
+        lbsRob = new MojTV[currWord.length()];
+        int i = 0;
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) {
+                lbsRob[i] = lb;
+                i++;
+            }
+        }
+        //lbsRob sortujemy rosnaco babelkowo wg. wspolrzednej x.
+        //Wynikiem jest tablica w ktorej kolejne elementy odpowiadają etykietom w Obszarze, ulozonym od lewej do prawej:
+        MojTV elRob = new MojTV(this);             //element roboczy
+        boolean bylSort = true;
+        while (bylSort) {
+            bylSort = false;
+            for (int j = 0; j < (currWord.length()-1);  j++) {
+                if (lbsRob[j].getX() > lbsRob[j +1].getX()) {
+                   elRob       = lbsRob[j +1];
+                   lbsRob[j+1] = lbsRob[j];
+                   lbsRob[j]   = elRob;
+                   bylSort = true;
+                }
+            }
+        }
+
+        //Na pdst. tablicy lbsRob skladam wyraz jaki widac w Obszarze:
+        String wyrazWObszarze = new String();
+        for (MojTV el : lbsRob) {
+            wyrazWObszarze += el.getOrigL();
+        }
+
+        return wyrazWObszarze.equals(currWord);
+
+    } //koniec Metody();
+
+    private int policzInAreasy() {
+        int licznik = 0;
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) licznik++;
+        }
+        bUpperLower.setText(Integer.toString(licznik)); //sledzenie
+        return licznik;
+    }
 
 
     @Override protected void onResume() {
@@ -391,8 +630,12 @@ public class MainActivity extends Activity {
         //Pokazujemy zupelnie nowe cwiczenie z paramatrami ustawionymi na Zmiennych Glob. (np. poprzez splashScreena Ustawienia):
         final boolean wszystkieRozne = ZmienneGlobalne.getInstance().WSZYSTKIE_ROZNE;
         final boolean roznicujObrazki = ZmienneGlobalne.getInstance().ROZNICUJ_OBRAZKI;
+        tworzListyObrazkow(); //konieczne, bo moglo zmienic sie zrodlo obrazkow
+    } //koniec Metody()
 
+    private void tworzListyObrazkow() {
         //Tworzenie listy obrazków z Katalogu lub Assets:
+
         if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG == true) {
             dirObrazkiNaSD = new File(ZmienneGlobalne.getInstance().WYBRANY_KATALOG);
             myObrazkiSD = findObrazki(dirObrazkiNaSD);
@@ -407,9 +650,6 @@ public class MainActivity extends Activity {
                 e.printStackTrace();
             }
         }
-
-        //setCurrentImage();
-
     } //koniec Metody()
 
 
@@ -510,6 +750,49 @@ public class MainActivity extends Activity {
         lPar1.height = sizeH/4;
 
     } //koniec Metody()
+
+
+
+    public static String getRemovedExtensionName(String name){
+        /**
+         * Pomocnicza, widoczna wszedzie metodka na pozbycie sie rozszerzenia z nazwy pliku - dostajemy "goly" wyraz
+         */
+        String baseName;
+        if(name.lastIndexOf(".")==-1){
+            baseName=name;
+        }else{
+            int index=name.lastIndexOf(".");
+            baseName=name.substring(0,index);
+        }
+        return baseName;
+    }  //koniec metody()
+
+    public static String usunLastDigitIfAny(String name) {
+        /**
+         * Pomocnicza, widoczna wszedzie, usuwa ewentualna ostatnia cyfre w nazwie zdjecia (bo moze byc pies1.jpg, pies1.hjpg. pies2.jpg - rozne psy)
+         * Zakladamy, ze dostajemy nazwe bez rozszerzenia i bez kropki na koncu
+         */
+        int koniec = name.length()-1;
+        if (name.charAt(koniec)=='1'||name.charAt(koniec)=='2'||name.charAt(koniec)=='3'||name.charAt(koniec)=='4'||name.charAt(koniec)=='5'||
+                name.charAt(koniec)=='6'||name.charAt(koniec)=='7'||name.charAt(koniec)=='8'||name.charAt(koniec)=='9'||name.charAt(koniec)=='0') {
+
+            return name.substring(0,koniec);
+        }
+        else {
+
+            return name;
+        }
+    } //koniec Metody()
+
+
+    private boolean pokazModal() {
+        //Pokazanie modalnego okienka.
+        //Okienko realizowane jest jako Activity  o nazwie DialogModalny
+        intModalDialog = new Intent(getApplicationContext(), DialogModalny.class);
+        startActivity(intModalDialog);
+        return true;
+    }
+
 
     private void ustawLadnieEtykiety() {
         /* *************************************************************************************************** */
@@ -677,43 +960,11 @@ public class MainActivity extends Activity {
 
     }  //koniec Metody()
 
-    public static String getRemovedExtensionName(String name){
-        /**
-         * Pomocnicza, widoczna wszedzie metodka na pozbycie sie rozszerzenia z nazwy pliku - dostajemy "goly" wyraz
-         */
-        String baseName;
-        if(name.lastIndexOf(".")==-1){
-            baseName=name;
-        }else{
-            int index=name.lastIndexOf(".");
-            baseName=name.substring(0,index);
-        }
-        return baseName;
-    }  //koniec metody()
-
-
-    private boolean pokazModal() {
-        //Pokazanie modalnego okienka.
-        //Okienko realizowane jest jako Activity  o nazwie DialogModalny
-
-        //intModalDialog = new Intent("autyzmsoft.pl.literowiec.DialogModalny");
-
-
-        intModalDialog = new Intent(getApplicationContext(), DialogModalny.class);
-
-        startActivity(intModalDialog);
-
-        return true;
-    }  //koniec Metody()
-
-
-
     public int dpToPx(int dp) {
     //Convert dp to pixel:
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         return Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
-
 
 
     public int pxToDp(int px) {

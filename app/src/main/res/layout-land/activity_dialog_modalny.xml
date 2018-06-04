@@ -1,44 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#26ce61"
+                android:background="#26ce61">
 
-                android:id="@+id/sv_DialogModalny"
-
-
->
-
-
-
-
-    <TextView
-        android:id="@+id/tvoInfoObszar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView"
-        android:textStyle="bold"
-        android:layout_marginTop="-30dp"
-        android:text="wsp. Obszaru"/>
-
-</RelativeLayout>
-
-
-<!--
-
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     android:id="@+id/sv_DialogModalny"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="@dimen/text_margin"
-
     android:scrollbars="vertical"
     android:fadeScrollbars="false"
-
     android:orientation="vertical">
-
 
 
     <LinearLayout
@@ -57,7 +32,7 @@
         android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
         android:layout_marginLeft="@dimen/maly_odstep"
         android:layout_marginRight="@dimen/maly_odstep"
-        android:text="Czytanie globalne. Na podstawie metody Domana."/>
+        android:text="Układanie wyrazów z liter."/>
 
     <ImageView
         android:id="@+id/imageView1"
@@ -114,4 +89,6 @@
 
 </ScrollView>
 
--->
+</RelativeLayout>
+
+

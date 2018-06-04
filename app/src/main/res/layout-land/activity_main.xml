@@ -55,6 +55,22 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@drawable/border_skib">
+
+
+        <TextView
+            android:id="@+id/tvCurrentWord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="aaaaaaaa"
+            android:textAlignment="center"
+            android:textSize="@dimen/litera_size"
+            android:textStyle="bold"
+            android:paddingLeft="@dimen/litera_size"
+            android:visibility="invisible"
+        />
+
+
+
     </LinearLayout>
 
     <!--Miesce na obrazek: -->

@@ -1,3 +1,20 @@
 <resources>
+
+    <!--Mozliwe, ze tem dimens (normal) obowiazuje TYLKO do mojego malego smsunga - sprawdzic!!!-->\
+    <!--nie - obowiazuje rowniez na Huaweju.... -->
+
+
     <dimen name="nazwa_text_rozmiar_uwaga_na_huawei">18sp</dimen>
+
+
+
+    <!-- wartosc na rozsuniecie etykiet wzgledem siebie w rzędzie; wykorzystywana w kodzie: -->
+    <dimen name="poprawka">90dp</dimen>
+
+    <!--bylo 90-->
+
+    <!--odstep 1-szej litery 1=go rzedu od obrazka od obrazka: -->
+    <dimen name="od_obrazka">25dp</dimen>
+
+
 </resources>

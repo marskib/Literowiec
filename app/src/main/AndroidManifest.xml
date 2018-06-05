@@ -20,7 +20,7 @@
 
         <activity
             android:name=".DialogModalny"
-            android:theme="@style/Base.Theme.AppCompat.Dialog">
+            android:theme="@android:style/Theme.Dialog">
         </activity>
 
 

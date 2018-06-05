@@ -81,6 +81,8 @@ public class MainActivity extends Activity {
 
     public static File   dirObrazkiNaSD;                 //katalog z obrazkami na SD (internal i external)
     public static ArrayList<File> myObrazkiSD;           //lista obrazkow w SD    //katalog z obrazkami na SD (internal i external)
+    boolean nieGraj = true;
+    //przelacznik(semafar) : grac/nie grac - jesli start apk. to ma nie grac slowa (bo glupio..)
     public static String katalog = null;                 //Katalogu w Assets, w ktorym trzymane beda obrazki
     public static String listaObrazkowAssets[] = null;   //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
 
@@ -188,12 +190,11 @@ public class MainActivity extends Activity {
         if (ZmienneGlobalne.getInstance().BEZ_DZWIEKU == true) {
             return;
         }
-//        ski ski 2018.06.04
-//        //zeby nie gral zaraz po po starcie apki:
-//        if (nieGraj) {
-//            nieGraj = false;
-//            return;
-//        }
+        //zeby nie gral zaraz po po starcie apki:
+        if (nieGraj) {
+            nieGraj = false;
+            return;
+        }
         //Granie wlasciwe:
 
         if (!ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG) {
@@ -386,6 +387,8 @@ public class MainActivity extends Activity {
 
         tvCurrentWord.setVisibility(View.INVISIBLE);
 
+        bDalej.setVisibility(View.INVISIBLE);
+
     } //koniec Metody()
 
 
@@ -560,12 +563,35 @@ public class MainActivity extends Activity {
         }
     } //koniec Metody()
 
+    private int dajLeftmostX() {
+    //Daje wspolrzedną X najbardziej na lewo polozonej etykiety z Obszaru
+
+        int min = Integer.MAX_VALUE;
+        for (MojTV lb : lbs) {
+            if (lb.isInArea())
+              if (lb.getX() < min) min = (int) lb.getX();
+        }
+        return min;
+    }
+
     private void UporzadkujObszar() {
-        //Gasimy wszysko (litery w obszarze):
+        //Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz:
+
         for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
+
+        //Wyswietlenie wyrazu rozpoczybnajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
+        LinearLayout.LayoutParams lPar;
+        lPar = (LinearLayout.LayoutParams) tvCurrentWord.getLayoutParams();
+        int leftMost = dajLeftmostX();
+        if (leftMost<10) leftMost=20; //jak za bardzo na lewo, to korygujemy
+        lPar.leftMargin = leftMost;
+        tvCurrentWord.setLayoutParams(lPar);
+
         tvCurrentWord.setText(currWord);
         tvCurrentWord.setVisibility(View.VISIBLE);
-    }
+
+        bDalej.setVisibility(View.VISIBLE);
+    } //koniec Metody()
 
     private boolean poprawnieUlozono() {
     /* **************************************** */
@@ -576,7 +602,7 @@ public class MainActivity extends Activity {
 
         MojTV[] lbsRob; //tablica robocza, do dzialań
 
-        //najpierw przepisanie do roboczej - bedzie krotsza...; potem manipulacje na roboczej:
+        //najpierw przepisanie do tab. roboczej - bedzie krotsza...; potem manipulacje na roboczej:
         lbsRob = new MojTV[currWord.length()];
         int i = 0;
         for (MojTV lb : lbs) {
@@ -585,9 +611,9 @@ public class MainActivity extends Activity {
                 i++;
             }
         }
-        //lbsRob sortujemy rosnaco babelkowo wg. wspolrzednej x.
-        //Wynikiem jest tablica w ktorej kolejne elementy odpowiadają etykietom w Obszarze, ulozonym od lewej do prawej:
-        MojTV elRob = new MojTV(this);             //element roboczy
+        //tab roboczą sortujemy rosnaco babelkowo wg. wspolrzednej X.
+        //Wynikiem jest tablica rob. lbsRob, w ktorej kolejne elementy odpowiadają etykietom w Obszarze, ulozonym od lewej do prawej:
+        MojTV elRob = new MojTV(this);    //element roboczy
         boolean bylSort = true;
         while (bylSort) {
             bylSort = false;
@@ -611,7 +637,11 @@ public class MainActivity extends Activity {
 
     } //koniec Metody();
 
+
+
+
     private int policzInAreasy() {
+    //Zlicza, ile elementow znajduje sie aktualnie w Obszarze
         int licznik = 0;
         for (MojTV lb : lbs) {
             if (lb.isInArea()) licznik++;
@@ -631,6 +661,8 @@ public class MainActivity extends Activity {
         final boolean wszystkieRozne = ZmienneGlobalne.getInstance().WSZYSTKIE_ROZNE;
         final boolean roznicujObrazki = ZmienneGlobalne.getInstance().ROZNICUJ_OBRAZKI;
         tworzListyObrazkow(); //konieczne, bo moglo zmienic sie zrodlo obrazkow
+        dajNextObrazek();
+        setCurrentImage();
     } //koniec Metody()
 
     private void tworzListyObrazkow() {

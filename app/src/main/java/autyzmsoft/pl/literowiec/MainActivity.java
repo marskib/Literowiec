@@ -71,9 +71,8 @@ public class MainActivity extends Activity {
 
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
-    private Button bZnowu;
-
-    public static Button bUpperLower;
+    public static Button bUpperLower; //wielkie/male litery
+    public Button bAgain;             //wymieszanie liter
 
 
     private LinearLayout lObszar;
@@ -105,7 +104,7 @@ public class MainActivity extends Activity {
         imageView = (ImageView) rootLayout.findViewById(R.id.imageView);
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
-        bZnowu = (Button) findViewById(R.id.bZnowu);
+        bAgain = (Button) findViewById(R.id.bAgain);
         tvCurrentWord = (TextView) findViewById(R.id.tvCurrentWord);
         bUpperLower =(Button) findViewById(R.id.bUpperLower);
 
@@ -328,7 +327,7 @@ public class MainActivity extends Activity {
         nazwaPliku = getRemovedExtensionName(nazwaPliku);
         nazwaPliku = usunLastDigitIfAny(nazwaPliku);
 
-        currWord = nazwaPliku;
+        currWord = "miś";//nazwaPliku;
 
       } //koniec Metody()
 
@@ -501,7 +500,7 @@ public class MainActivity extends Activity {
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
                         layoutParams.topMargin = yLtrim - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
 
-                        //Bylo 'trimowanie' a wiec na pewno jestesmy w Obszarze :
+                        //Bylo 'trimowanie' a wiec na pewno jestesmy w Obszarze- dajemy znac i badanie ewentualnego ZWYCIESTWA :
                         ((MojTV) view).setInArea(true);
                         if (policzInAreasy() == currWord.length()) {
                             if (poprawnieUlozono()) {
@@ -564,7 +563,7 @@ public class MainActivity extends Activity {
     } //koniec Metody()
 
     private int dajLeftmostX() {
-    //Daje wspolrzedną X najbardziej na lewo polozonej etykiety z Obszaru
+    //Daje wspolrzedną X najbardziej na lewo polozonej etykiety z Obszaru; pomocnicza
 
         int min = Integer.MAX_VALUE;
         for (MojTV lb : lbs) {
@@ -574,24 +573,65 @@ public class MainActivity extends Activity {
         return min;
     }
 
-    private void UporzadkujObszar() {
-        //Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz:
+    private int dajWspYetykiet() {
+    //Daje wspolrzedną Y dowolnej (=wszystkich, bo trimowanych) etykiet z Obszaru; pomocnicza
+        int wsp = 0;
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) {
+                wsp = (int) lb.getY();
+                break; //bo reszta tak samo (trim) -> "panzerfaust rwie na pierwszej przeszkodzie" ;)
+            }
+        }
+        return  wsp;
+    }
 
+    private void UporzadkujObszar() {
+        //Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz, przywracamy klawisz bDalej:
+
+        //Gasimy wszystkie etykiety:
         for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
 
-        //Wyswietlenie wyrazu rozpoczybnajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
+        tvCurrentWord.setText(currWord);
+        tvCurrentWord.setVisibility(View.VISIBLE);
+
+        //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvCurrentWord.getLayoutParams();
         int leftMost = dajLeftmostX();
         if (leftMost<10) leftMost=20; //jak za bardzo na lewo, to korygujemy
         lPar.leftMargin = leftMost;
+        //Gdzie (by) sie skończy tekst z wyrazem - jezeli za prawa linia Obszaru - korekta:
+
+        float szer = tvCurrentWord.getWidth();
+
+        bUpperLower.setText(Float.toString(szer)); //sledzenie
+        bAgain.setText(" "); //sledzenie - wymazanie
+
+        if (leftMost+szer > xLp) {
+
+            int pozycja = (int) (xLp-szer);
+
+            bAgain.setText(Integer.toString(pozycja));
+
+            lPar.leftMargin = pozycja;
+        }
+        lPar.topMargin  = dajWspYetykiet()-yLg + dpToPx(3) + 6; //uwzgledniam border width
+
         tvCurrentWord.setLayoutParams(lPar);
 
-        tvCurrentWord.setText(currWord);
-        tvCurrentWord.setVisibility(View.VISIBLE);
 
-        bDalej.setVisibility(View.VISIBLE);
+
+        //Przywrocenie/pokazanie klawisza bDalej (z lekkim opoznieniem):
+        Handler mHandl = new Handler();
+        mHandl.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bDalej.setVisibility(View.VISIBLE);
+            } },2500); //zeby dziecko mialo czas na 'podziwianie' ;)
+
     } //koniec Metody()
+
+
 
     private boolean poprawnieUlozono() {
     /* **************************************** */
@@ -646,7 +686,7 @@ public class MainActivity extends Activity {
         for (MojTV lb : lbs) {
             if (lb.isInArea()) licznik++;
         }
-        bUpperLower.setText(Integer.toString(licznik)); //sledzenie
+        //bUpperLower.setText(Integer.toString(licznik)); //sledzenie
         return licznik;
     }
 
@@ -661,8 +701,8 @@ public class MainActivity extends Activity {
         final boolean wszystkieRozne = ZmienneGlobalne.getInstance().WSZYSTKIE_ROZNE;
         final boolean roznicujObrazki = ZmienneGlobalne.getInstance().ROZNICUJ_OBRAZKI;
         tworzListyObrazkow(); //konieczne, bo moglo zmienic sie zrodlo obrazkow
-        dajNextObrazek();
-        setCurrentImage();
+        //dajNextObrazek();
+        //setCurrentImage();
     } //koniec Metody()
 
     private void tworzListyObrazkow() {

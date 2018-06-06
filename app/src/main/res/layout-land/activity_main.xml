@@ -27,7 +27,7 @@
 
 
     <Button
-        android:id="@+id/bZnowu"
+        android:id="@+id/bAgain"
         android:onClick="bZnowuOnClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toStartOf="@+id/bZnowu"
+        android:layout_toStartOf="@+id/bAgain"
         android:text="UpLoCase"
         android:layout_above="@+id/tvInfo2"/>
 

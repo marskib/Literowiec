@@ -343,6 +343,8 @@ public class MainActivity extends Activity {
 
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
+       //
+       // currWord = "WWWWWWW";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
@@ -439,13 +441,13 @@ public class MainActivity extends Activity {
                 lObszar.getLocationOnScreen(location);
                 int x = location[0];
                 int y = location[1];
-                tvInfoObszar.setText(Integer.toString(x)+","+Integer.toString(y));
 
                 //Przekazanie do zmiennych klasy parametrow geograficznych Obszaru:
                 xLl = x;
                 yLg = y;
                 xLp = xLl + lObszar.getWidth();
                 yLd = yLg + lObszar.getHeight();
+                //tvInfoObszar.setText(Integer.toString(xLp)+","+Integer.toString(yLg)); //sledzenie
                 //Przekazanie do zmiennek klasy współrzędnej y linii 'Trymowania':
                 yLtrim = yLg+ ((int) ((yLd-yLg)/2.0));
             }
@@ -462,7 +464,7 @@ public class MainActivity extends Activity {
         tvInfo1.setVisibility(rob);
         tvInfo2.setVisibility(rob);
         tvInfo3.setVisibility(rob);
-        tvInfoObszar.setVisibility(rob);
+        tvInfoObszar.setVisibility(View.VISIBLE);
     } //koniec Metody();
 
 
@@ -603,7 +605,11 @@ public class MainActivity extends Activity {
     //daje srednia szerokosc etykiety w Obszarze (=szr.lit. w currWord)
         int sum=0;
         for (MojTV lb : lbs) {
-            if (lb.isInArea()) sum += lb.getWidth();
+            if (lb.isInArea()) {
+                sum += lb.getWidth();
+                sum -= lb.getPaddingRight(); //na razie nie wiem, dlaczego odejmowac tylko z jednej strony...
+            }
+
         }
         return (int)  sum / currWord.length();
     }
@@ -633,6 +639,8 @@ public class MainActivity extends Activity {
             bDalej.setText("Odsunalem o "+szer); //sledzenie
         }
         if (leftMost<10) leftMost=20;
+
+        tvInfoObszar.setText(Integer.toString(xLp)+", leftmost="+Integer.toString(leftMost)); //sledzenie
 
         lPar.leftMargin = leftMost;
         lPar.topMargin  = dajWspYetykiet()-yLg + dpToPx(3) + 6; //uwzgledniam border width
@@ -727,8 +735,10 @@ public class MainActivity extends Activity {
         final boolean wszystkieRozne = ZmienneGlobalne.getInstance().WSZYSTKIE_ROZNE;
         final boolean roznicujObrazki = ZmienneGlobalne.getInstance().ROZNICUJ_OBRAZKI;
         tworzListyObrazkow(); //konieczne, bo moglo zmienic sie zrodlo obrazkow
-        //dajNextObrazek();
-        //setCurrentImage();
+
+//        dajNextObrazek();
+//        setCurrentImage();
+//        rozrzucWyraz();
     } //koniec Metody()
 
     private void tworzListyObrazkow() {
@@ -965,7 +975,7 @@ public class MainActivity extends Activity {
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L04.getLayoutParams()).leftMargin + poprawka;
                 int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
                 lParX.topMargin = marginesTop;
-                L05.setLayoutParams(lParX); //n
+                L05.setLayoutParams(lParX);
             }
         });
 

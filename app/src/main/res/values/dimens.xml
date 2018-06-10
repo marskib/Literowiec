@@ -16,4 +16,6 @@
 
     <!--padding etykiety; wykorzystywany w kodzie do obliczenia dokladnej pozycji litery: -->
     <dimen name="padding_ski">10dp</dimen>
+
+
 </resources>

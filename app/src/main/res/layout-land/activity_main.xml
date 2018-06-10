@@ -12,7 +12,7 @@
         android:id="@+id/bDalej"
         android:onClick="bDalejOnClick"
         android:layout_above="@+id/l_Obszar"
-        android:layout_toLeftOf="@+id/bUpperLower"
+        android:layout_toLeftOf="@+id/bPomin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/arrow_right"
@@ -28,7 +28,7 @@
 
     <Button
         android:id="@+id/bAgain"
-        android:onClick="bZnowuOnClick"
+        android:onClick="bAgainOnClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -44,6 +44,17 @@
         android:layout_toStartOf="@+id/bAgain"
         android:text="UpLoCase"
         android:layout_above="@+id/tvInfo2"/>
+
+    <Button
+        android:id="@+id/bPomin"
+        android:onClick="bPominClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=" X "
+        android:layout_toStartOf="@+id/bUpperLower"
+        android:layout_alignParentBottom="true"
+    />
+
 
     <!-- Prostokat - Obszar -->
     <LinearLayout
@@ -67,9 +78,8 @@
             android:textSize="@dimen/litera_size"
             android:textStyle="bold"
             android:letterSpacing="0.1"
-            android:visibility="invisible"
-        />
-
+            android:visibility="gone"
+            android:maxLines="1"/>
     </LinearLayout>
 
     <!--Miesce na obrazek: -->

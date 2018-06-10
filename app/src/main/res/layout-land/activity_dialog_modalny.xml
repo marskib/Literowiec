@@ -32,7 +32,7 @@
         android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
         android:layout_marginLeft="@dimen/maly_odstep"
         android:layout_marginRight="@dimen/maly_odstep"
-        android:text="Układanie wyrazów z liter."/>
+        android:text="Układanie wyrazów z liter"/>
 
     <ImageView
         android:id="@+id/imageView1"

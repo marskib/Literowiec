@@ -32,7 +32,7 @@ public class DialogModalny extends Activity {
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int szer = displaymetrics.widthPixels;
         View layoutSki = findViewById(R.id.sv_DialogModalny);
-        layoutSki.getLayoutParams().width = (int) (szer*0.80f);
+        layoutSki.getLayoutParams().width = (int) (szer*0.85f);
         layoutSki.requestLayout(); //teraz nastepuje zaaplikowanie zmian
 
         //Pobranie zapisanych ustawien i zaladowanie do -> ZmiennychGlobalnych, (if any) gdy startujemy aplikacje :

@@ -34,6 +34,8 @@ import java.util.Locale;
 import java.util.Random;
 
 
+
+
 //Prowadzenie litery po ekranie Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
 //YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
 
@@ -326,8 +328,9 @@ public class MainActivity extends Activity {
         String nazwaPliku = listaObrazkowAssets[currImage];
         nazwaPliku = getRemovedExtensionName(nazwaPliku);
         nazwaPliku = usunLastDigitIfAny(nazwaPliku);
+        nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
-        currWord = "miś";//nazwaPliku;
+        currWord = nazwaPliku;
 
       } //koniec Metody()
 
@@ -338,9 +341,8 @@ public class MainActivity extends Activity {
 
        int k;  //na losowa pozycje
 
-       //char[] wyraz = "ABCDEFGHIJKL".toCharArray();
-       //char[] wyraz = "abcdefghijkł".toCharArray();
-       //char[] wyraz = "cytryna".toCharArray();
+       //currWord = "ABCDEFGHIJKL";
+       //currWord = "cytryna";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
@@ -378,6 +380,10 @@ public class MainActivity extends Activity {
 
     public void bDalejOnClick(View v) {
 
+        //sledzenie:
+        bAgain.setText("*");
+        bUpperLower.setText("*");
+
         resetujLabelsy();
         ustawLadnieEtykiety();
         dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz currWord = nazwa obrazka bez nalecialosci)
@@ -391,13 +397,21 @@ public class MainActivity extends Activity {
     } //koniec Metody()
 
 
-    public void bZnowuOnClick(View v) {
+    public void bAgainOnClick(View v) {
+
+        //sledzenie:
+        bAgain.setText("*");
+        bUpperLower.setText("*");
 
         ustawLadnieEtykiety();
         resetujLabelsy();
         rozrzucWyraz();
 
         tvCurrentWord.setVisibility(View.INVISIBLE);
+    }
+
+    public void bPominClick(View v) {
+        bDalej.callOnClick();
     }
 
 
@@ -585,41 +599,53 @@ public class MainActivity extends Activity {
         return  wsp;
     }
 
+    private int dajSredniaSzerLitery() {
+    //daje srednia szerokosc etykiety w Obszarze (=szr.lit. w currWord)
+        int sum=0;
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) sum += lb.getWidth();
+        }
+        return (int)  sum / currWord.length();
+    }
+
+
+
     private void UporzadkujObszar() {
-        //Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz, przywracamy klawisz bDalej:
-
-        //Gasimy wszystkie etykiety:
-        for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
-
-        tvCurrentWord.setText(currWord);
-        tvCurrentWord.setVisibility(View.VISIBLE);
+    /* ******************************************************************************************* */
+    /* Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz, przywracamy klawisz bDalej */
+    /* Jesli trzeba - robimy korekcje miejsca wyswietlania (zeby wyeaz sie miescil w Obszarze)     */
+    /* ******************************************************************************************* */
 
         //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvCurrentWord.getLayoutParams();
         int leftMost = dajLeftmostX();
-        if (leftMost<10) leftMost=20; //jak za bardzo na lewo, to korygujemy
-        lPar.leftMargin = leftMost;
-        //Gdzie (by) sie skończy tekst z wyrazem - jezeli za prawa linia Obszaru - korekta:
+        //jak za bardzo na lewo, to korygujemy:
 
-        float szer = tvCurrentWord.getWidth();
 
-        bUpperLower.setText(Float.toString(szer)); //sledzenie
-        bAgain.setText(" "); //sledzenie - wymazanie
-
-        if (leftMost+szer > xLp) {
-
-            int pozycja = (int) (xLp-szer);
-
-            bAgain.setText(Integer.toString(pozycja));
-
-            lPar.leftMargin = pozycja;
+        //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt lisko prawej krawedzi Obszaru -
+        //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja:
+        int n = currWord.length();
+        int szer = n*dajSredniaSzerLitery();  //szacowana szerokosc wyrazu
+        bDalej.setText(" "); //sledzenie
+        if ( (leftMost + szer) > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
+            leftMost = xLp - szer;
+            bDalej.setText("Odsunalem o "+szer); //sledzenie
         }
+        if (leftMost<10) leftMost=20;
+
+        lPar.leftMargin = leftMost;
         lPar.topMargin  = dajWspYetykiet()-yLg + dpToPx(3) + 6; //uwzgledniam border width
 
         tvCurrentWord.setLayoutParams(lPar);
+        tvCurrentWord.setText(currWord);
+        //Gasimy wszystkie etykiety:
+        for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
+        //Pokazanie wyrazu:
+        tvCurrentWord.setVisibility(View.VISIBLE);
 
-
+        //bAgain.setText(Integer.toString(lPar.leftMargin));      //sledzenie
+        //bUpperLower.setText(Float.toString(tvCurrentWord.getWidth()));         //sledzenie
 
         //Przywrocenie/pokazanie klawisza bDalej (z lekkim opoznieniem):
         Handler mHandl = new Handler();
@@ -627,7 +653,7 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 bDalej.setVisibility(View.VISIBLE);
-            } },2500); //zeby dziecko mialo czas na 'podziwianie' ;)
+            } },2000); //zeby dziecko mialo czas na 'podziwianie' ;)
 
     } //koniec Metody()
 

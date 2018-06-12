@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#26ce61"
+  android:padding="-100dp"
+  android:layout_margin="0dp"
     tools:context=".MainActivity"
 >
 
@@ -112,7 +114,7 @@
     <!-- 1-szy rząd -->
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L00"
-        android:layout_marginTop="@dimen/margin_top_size_1st_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="300dp"
@@ -120,10 +122,11 @@
         android:padding="@dimen/padding_ski"
         android:textStyle="bold"
         android:text="Ą" />
+    <!--android:layout_marginTop="@dimen/margin_top_size_1st_row"-->
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L01"
-        android:layout_marginTop="@dimen/margin_top_size_1st_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -134,7 +137,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L02"
-        android:layout_marginTop="@dimen/margin_top_size_1st_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="500dp"
@@ -145,7 +148,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L03"
-        android:layout_marginTop="@dimen/margin_top_size_1st_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -157,7 +160,7 @@
     <!-- 2-gi rząd -->
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L04"
-        android:layout_marginTop="@dimen/margin_top_size_2nd_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -168,7 +171,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L05"
-        android:layout_marginTop="@dimen/margin_top_size_2nd_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -179,7 +182,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L06"
-        android:layout_marginTop="@dimen/margin_top_size_2nd_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -190,7 +193,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L07"
-        android:layout_marginTop="@dimen/margin_top_size_2nd_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -203,7 +206,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L08"
-        android:layout_marginTop="@dimen/margin_top_size_3rd_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -214,7 +217,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L09"
-        android:layout_marginTop="@dimen/margin_top_size_3rd_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -225,7 +228,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L10"
-        android:layout_marginTop="@dimen/margin_top_size_3rd_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"
@@ -236,7 +239,7 @@
 
     <autyzmsoft.pl.literowiec.MojTV
         android:id="@+id/L11"
-        android:layout_marginTop="@dimen/margin_top_size_3rd_row"
+
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/litera_size"

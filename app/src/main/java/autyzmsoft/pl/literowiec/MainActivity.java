@@ -138,7 +138,14 @@ public class MainActivity extends Activity {
         pokazUkryjEtykietySledzenia(false);
 
         resetujLabelsy();
-        ustawLadnieEtykiety();
+
+        //Trzeba czekac, bo prblemy (doswiadczalnie):
+        lObszar.post(new Runnable() {
+            @Override
+            public void run() {
+                ustawLadnieEtykiety();
+            }
+        });
 
         tworzListyObrazkow();
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
@@ -562,7 +569,6 @@ public class MainActivity extends Activity {
                         layoutParams.topMargin = sizeH - (int) (0.7*h);
                     }
 
-
                     //sledzenie:
                     tvInfo2.setText("xLit="+Integer.toString(xLit)+" yLit="+Integer.toString(yLit));
                     break;
@@ -609,7 +615,6 @@ public class MainActivity extends Activity {
                 sum += lb.getWidth();
                 sum -= lb.getPaddingRight(); //na razie nie wiem, dlaczego odejmowac tylko z jednej strony...
             }
-
         }
         return (int)  sum / currWord.length();
     }
@@ -629,7 +634,7 @@ public class MainActivity extends Activity {
         //jak za bardzo na lewo, to korygujemy:
 
 
-        //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt lisko prawej krawedzi Obszaru -
+        //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt blisko prawej krawedzi Obszaru -
         //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja:
         int n = currWord.length();
         int szer = n*dajSredniaSzerLitery();  //szacowana szerokosc wyrazu
@@ -908,15 +913,17 @@ public class MainActivity extends Activity {
         /* Kazdy rząd (3 rzedy) ustawiam niejako osobno, poczynajac od 1-go elementu w rzedzie jako od wzorca. */
         /* *************************************************************************************************** */
 
+        final int odstepWpionie = (int) yLg/4; //od gory ekranu do Obszaru sa 3 wiersze etykiet, wiec 4 przerwy
+
         int od_obrazka = (int) getResources().getDimension(R.dimen.od_obrazka); //odstep 1-szej litery 1-go rzedu od obrazka
 
         RelativeLayout.LayoutParams lPar;
         //L00 (1-szy rząd):
         lPar = (RelativeLayout.LayoutParams) L00.getLayoutParams();
-        lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + od_obrazka;
-        lPar.topMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).topMargin;
 
-        int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+        int marginesTop = 1*odstepWpionie - (int) L00.getHeight()/2;  //*1 - bo 1-szy wiersz
+
         lPar.topMargin = marginesTop;
 
         L00.setLayoutParams(lPar);
@@ -926,10 +933,11 @@ public class MainActivity extends Activity {
         //L01:  //dalej trzeba uzywac Runnable - czekanie az obiekt L00 'usadowi' sie - inaczej wartosci nieustalobe, czyli ok. 0....
         L00.post(new Runnable() {
             @Override
-            public void run() { //czekanie aż policzy sie L01
+            public void run() { //czekanie aż policzy/usadowi sie L01
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L01.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L00.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                int marginesTop = 1*odstepWpionie  - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L01.setLayoutParams(lParX); //n
             }
@@ -938,10 +946,11 @@ public class MainActivity extends Activity {
         //L02:
         L01.post(new Runnable() {
             @Override
-            public void run() { //czekanie aż policzy się L01
+            public void run() { //czekanie aż policzy/usadowi się L01
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L02.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                int marginesTop = 1*odstepWpionie  - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L02.setLayoutParams(lParX); //n
             }
@@ -950,10 +959,11 @@ public class MainActivity extends Activity {
         //L03:
         L02.post(new Runnable() {
             @Override
-            public void run() { //czekanie aż policzy się L02
+            public void run() { //czekanie aż policzy/usadowi się L02
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+                int marginesTop = 1*odstepWpionie - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L03.setLayoutParams(lParX); //n
             }
@@ -963,7 +973,8 @@ public class MainActivity extends Activity {
         //L04: (2-gi rząd):
         lPar = (RelativeLayout.LayoutParams) L04.getLayoutParams();
         lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + ((int) (od_obrazka/4));
-        marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+        //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+        marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2; //2- bo 2-gi wiersz
         lPar.topMargin = marginesTop;
         L04.setLayoutParams(lPar);
 
@@ -973,7 +984,8 @@ public class MainActivity extends Activity {
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L05.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L04.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                int marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L05.setLayoutParams(lParX);
             }
@@ -985,7 +997,8 @@ public class MainActivity extends Activity {
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                int marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L06.setLayoutParams(lParX); //n
             }
@@ -997,7 +1010,8 @@ public class MainActivity extends Activity {
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L07.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L06.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+                int marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L07.setLayoutParams(lParX); //n
             }
@@ -1007,7 +1021,8 @@ public class MainActivity extends Activity {
         //L08: (3-ci rząd):
         lPar = (RelativeLayout.LayoutParams) L08.getLayoutParams();
         lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + ((int) (od_obrazka/2));
-        marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+        //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+        marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2; //3- bo 3-szy wiersz
         lPar.topMargin = marginesTop;
         L08.setLayoutParams(lPar);
 
@@ -1017,7 +1032,8 @@ public class MainActivity extends Activity {
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L09.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L08.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L09.setLayoutParams(lParX); //n
             }
@@ -1029,7 +1045,8 @@ public class MainActivity extends Activity {
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L10.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L10.setLayoutParams(lParX); //n
             }
@@ -1041,7 +1058,8 @@ public class MainActivity extends Activity {
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;
-                int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2;
                 lParX.topMargin = marginesTop;
                 L11.setLayoutParams(lParX); //n
             }
@@ -1060,7 +1078,8 @@ public class MainActivity extends Activity {
                     if (k == 0) k =   0;
                     if (k == 1) k = +15;
                     if (k == 2) k = -15;
-                    lParX.topMargin += k;
+                    lParX.topMargin  += k;
+                    lParX.leftMargin += k;
                     lb.setLayoutParams(lParX);
                 }
             });

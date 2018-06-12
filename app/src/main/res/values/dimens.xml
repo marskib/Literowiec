@@ -4,10 +4,11 @@
 
 
     <dimen name="litera_size">50sp</dimen>
+ <!--  wyrzucam - bedą wyliczalne:
     <dimen name="margin_top_size_1st_row">-15dp</dimen>
     <dimen name="margin_top_size_2nd_row">52dp</dimen>
     <dimen name="margin_top_size_3rd_row">124dp</dimen>
-
+-->
     <!--odstep 1-szej litery 1=go rzedu od obrazka od obrazka: -->
     <dimen name="od_obrazka">30dp</dimen>
 

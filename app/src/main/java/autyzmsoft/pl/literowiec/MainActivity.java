@@ -50,10 +50,9 @@ public class MainActivity extends Activity {
     private ImageView imageView;
 
     //Placeholders'y na etykiety:
-    MojTV L00, L01, L02,
-          L03, L04, L05,
-          L06, L07, L08,
-          L09, L10, L11;
+    MojTV L00, L01, L02, L03,
+          L04, L05, L06, L07,
+          L08, L09, L10, L11;
 
 
     public static MojTV[] lbs;  //tablica zawierajaca (oryginalne) litery wyrazu; onomastyka: lbs = 'labels'
@@ -350,8 +349,9 @@ public class MainActivity extends Activity {
 
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
-       //
-       // currWord = "WWWWWWW";
+       //currWord = "************";
+       //currWord   = "abcdefghijkl";
+       //currWord   = "wwwwwwwwwwww";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
@@ -366,9 +366,9 @@ public class MainActivity extends Activity {
            do {
                k = rand.nextInt(lbs.length);
            }
-           while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w pususte (=niwidoczne) etykiety
+           while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niwidoczne) etykiety
 
-           //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV):
+           //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
            lbs[k].setOrigL(z);
            lbs[k].setText(z);
            lbs[k].setVisibility(View.VISIBLE);
@@ -924,7 +924,10 @@ public class MainActivity extends Activity {
         //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
         int marginesTop = 1*odstepWpionie - (int) L00.getHeight()/2;  //*1 - bo 1-szy wiersz
 
-        lPar.topMargin = marginesTop;
+        final int poprPion   = 25;
+        lPar.topMargin = marginesTop - poprPion;
+        int poprPoziom = (int) ((rootLayout.getRight()-imageView.getRight())/12);
+        lPar.leftMargin = imageView.getRight()-L00.getPaddingLeft()  + poprPoziom;
 
         L00.setLayoutParams(lPar);
 
@@ -937,7 +940,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L01.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L00.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                int marginesTop = 1*odstepWpionie  - (int) L00.getHeight()/2;
+                int marginesTop = 1*odstepWpionie  - (int) L00.getHeight()/2 - poprPion;
                 lParX.topMargin = marginesTop;
                 L01.setLayoutParams(lParX); //n
             }
@@ -950,7 +953,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L02.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                int marginesTop = 1*odstepWpionie  - (int) L00.getHeight()/2;
+                int marginesTop = 1*odstepWpionie  - (int) L00.getHeight()/2 - poprPion;
                 lParX.topMargin = marginesTop;
                 L02.setLayoutParams(lParX); //n
             }
@@ -963,7 +966,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                int marginesTop = 1*odstepWpionie - (int) L00.getHeight()/2;
+                int marginesTop = 1*odstepWpionie - (int) L00.getHeight()/2 - poprPion;
                 lParX.topMargin = marginesTop;
                 L03.setLayoutParams(lParX); //n
             }
@@ -976,6 +979,7 @@ public class MainActivity extends Activity {
         //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
         marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2; //2- bo 2-gi wiersz
         lPar.topMargin = marginesTop;
+        lPar.leftMargin = imageView.getRight() + poprPoziom/3;
         L04.setLayoutParams(lPar);
 
         //L05
@@ -1023,7 +1027,8 @@ public class MainActivity extends Activity {
         lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + ((int) (od_obrazka/2));
         //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
         marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2; //3- bo 3-szy wiersz
-        lPar.topMargin = marginesTop;
+        lPar.topMargin = marginesTop + poprPion;
+        lPar.leftMargin = imageView.getRight()-L00.getPaddingLeft() + poprPoziom;
         L08.setLayoutParams(lPar);
 
         //L09:
@@ -1033,7 +1038,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L09.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L08.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2;
+                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2 + poprPion;
                 lParX.topMargin = marginesTop;
                 L09.setLayoutParams(lParX); //n
             }
@@ -1046,7 +1051,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L10.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2;
+                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2 + poprPion;
                 lParX.topMargin = marginesTop;
                 L10.setLayoutParams(lParX); //n
             }
@@ -1059,7 +1064,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2;
+                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2 + poprPion;
                 lParX.topMargin = marginesTop;
                 L11.setLayoutParams(lParX); //n
             }
@@ -1078,8 +1083,22 @@ public class MainActivity extends Activity {
                     if (k == 0) k =   0;
                     if (k == 1) k = +15;
                     if (k == 2) k = -15;
-                    lParX.topMargin  += k;
-                    lParX.leftMargin += k;
+
+                    //Zmieniamy dowolnie tylko w 2-gim wierszu (inne - problemy z wychodzeniem poza ekran):
+                    if (lb==lbs[4] || lb==lbs[5] || lb==lbs[6] || lb==lbs[7]) {
+                        lParX.topMargin += k;
+                    }
+
+                    if (lb==lbs[0] || lb==lbs[1] || lb==lbs[2] || lb==lbs[3]) { //w 1-szym wierszu pozwalam tylko w dol
+                        k = -Math.abs(k);
+                        lParX.topMargin += k;
+                    }
+
+                    if (lb==lbs[8] || lb==lbs[9] || lb==lbs[10] || lb==lbs[11]) { //w 3-cim wierszu pozwalam tylko w gore
+                        k = Math.abs(k);
+                        lParX.topMargin -= k;
+                    }
+
                     lb.setLayoutParams(lParX);
                 }
             });

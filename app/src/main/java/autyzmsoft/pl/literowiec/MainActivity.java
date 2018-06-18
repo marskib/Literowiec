@@ -353,7 +353,12 @@ public class MainActivity extends Activity {
        //currWord = "************";
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
-       currWord   = "pomarańczowy";
+       //currWord   = "pomarańczowy";
+       //currWord   = "rękawiczki";
+       //currWord   = "jękywiłzkó";
+       //currWord   = "mmmmmmmmmmmm";
+       //currWord   = "mikrofalówka";
+       //currWord   = "pies";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
@@ -592,7 +597,7 @@ public class MainActivity extends Activity {
         int min = Integer.MAX_VALUE;
         for (MojTV lb : lbs) {
             if (lb.isInArea())
-              if (lb.getX() < min) min = (int) lb.getX();
+              if (lb.getLeft() < min) min = (int) lb.getLeft();
         }
         return min;
     }
@@ -917,14 +922,14 @@ public class MainActivity extends Activity {
 
 
 
-        //wstawka vdla duzych ekranow - powiekszam litery:
-        if (sizeW>100) {
+        //wstawka dla duzych ekranow - powiekszam litery:
+        if (sizeW>1100) {
             int litera_size = (int) getResources().getDimension(R.dimen.litera_size);
-            for (MojTV lb : lbs) lb.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                (float) (1.2*litera_size));
+            float wsp = 1.07f;
+            if (sizeW>1900) wsp = 1.2f;
+            for (MojTV lb : lbs) lb.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size);
+            tvCurrentWord.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size); //wyraz wyswietlany nie powinien roznic sie od liter
         }
-
-
 
 
         final int odstepWpionie = (int) yLg/4; //od gory ekranu do Obszaru sa 3 wiersze etykiet, wiec 4 przerwy
@@ -941,7 +946,11 @@ public class MainActivity extends Activity {
         final int poprPion   = 25;
         lPar.topMargin = marginesTop - poprPion;
         int poprPoziom = (int) ((rootLayout.getRight()-imageView.getRight())/12);
-        lPar.leftMargin = imageView.getRight()-L00.getPaddingLeft()  + poprPoziom;
+        //troche w prawo, jesli dobre urzadzenie:
+
+        if (sizeW>1100) poprPoziom = (int) (1.24*poprPoziom);
+
+        lPar.leftMargin = imageView.getRight()-L00.getPaddingLeft() + poprPoziom;
 
         L00.setLayoutParams(lPar);
 
@@ -993,7 +1002,7 @@ public class MainActivity extends Activity {
         //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
         marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2; //2- bo 2-gi wiersz
         lPar.topMargin = marginesTop;
-        lPar.leftMargin = imageView.getRight() + poprPoziom/3;
+        lPar.leftMargin = imageView.getRight() + poprPoziom/4;
         L04.setLayoutParams(lPar);
 
         //L05

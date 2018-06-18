@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -352,6 +353,7 @@ public class MainActivity extends Activity {
        //currWord = "************";
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
+       currWord   = "pomarańczowy";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
@@ -390,8 +392,8 @@ public class MainActivity extends Activity {
     public void bDalejOnClick(View v) {
 
         //sledzenie:
-        bAgain.setText("*");
-        bUpperLower.setText("*");
+        //bAgain.setText("*");
+        bUpperLower.setText(sizeW+"x"+sizeH);
 
         resetujLabelsy();
         ustawLadnieEtykiety();
@@ -912,6 +914,18 @@ public class MainActivity extends Activity {
         /* Ustawiam Literki/Etykiety L0n wzgledem obrazka i wzgledem siebie - na lewo od obrazka               */
         /* Kazdy rząd (3 rzedy) ustawiam niejako osobno, poczynajac od 1-go elementu w rzedzie jako od wzorca. */
         /* *************************************************************************************************** */
+
+
+
+        //wstawka vdla duzych ekranow - powiekszam litery:
+        if (sizeW>100) {
+            int litera_size = (int) getResources().getDimension(R.dimen.litera_size);
+            for (MojTV lb : lbs) lb.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                (float) (1.2*litera_size));
+        }
+
+
+
 
         final int odstepWpionie = (int) yLg/4; //od gory ekranu do Obszaru sa 3 wiersze etykiet, wiec 4 przerwy
 

@@ -358,7 +358,7 @@ public class MainActivity extends Activity {
        //currWord   = "jękywiłzkó";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "mikrofalówka";
-       //currWord   = "pies";
+       currWord   = "pies";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 

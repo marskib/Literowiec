@@ -357,7 +357,7 @@ public class MainActivity extends Activity {
        //currWord   = "wwwwwwwwwwww";
        //currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
-       //currWord     = "jękywiłzkóśp";
+       currWord     = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "mikrofalówka";
        //currWord   = "pies";

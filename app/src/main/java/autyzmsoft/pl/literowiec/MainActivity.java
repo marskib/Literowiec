@@ -357,7 +357,7 @@ public class MainActivity extends Activity {
        //currWord   = "wwwwwwwwwwww";
        //currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
-       currWord     = "jękywiłzkóśp";
+       //currWord     = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "mikrofalówka";
        //currWord   = "pies";
@@ -1162,16 +1162,16 @@ public class MainActivity extends Activity {
                     if (k == 1) k = +15;
                     if (k == 2) k = -15;
 
-                    //Zmieniamy dowolnie tylko w 2-gim wierszu (inne - problemy z wychodzeniem poza ekran):
+                    //Zmieniamy w 2-gim wierszu :
                     if (lb==lbs[4] || lb==lbs[5] || lb==lbs[6] || lb==lbs[7]) {
                         lParX.topMargin += k;
                     }
-
+                    //Zmieniamy w 1-szym wierszu :
                     if (lb==lbs[0] || lb==lbs[1] || lb==lbs[2] || lb==lbs[3]) { //w 1-szym wierszu pozwalam tylko w dol
                         k = -Math.abs(k);
                         lParX.topMargin += k;
                     }
-
+                    //Zmieniamy w 3-cim wierszu :
                     if (lb==lbs[8] || lb==lbs[9] || lb==lbs[10] || lb==lbs[11]) { //w 3-cim wierszu pozwalam tylko w gore
                         k = Math.abs(k);
                         lParX.topMargin -= k;

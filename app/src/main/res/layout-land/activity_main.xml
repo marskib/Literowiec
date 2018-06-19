@@ -57,6 +57,26 @@
         android:layout_alignParentBottom="true"
     />
 
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/bDajGestosc"
+      android:onClick="bDajGestoscOnClick"
+      android:layout_alignParentBottom="true"
+      android:layout_alignParentLeft="true"
+      android:text="Gestosc"
+      />
+
+    <Button
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:id="@+id/bDajWielkosc"
+      android:onClick="bDajWielkoscOnClick"
+      android:layout_alignParentBottom="true"
+      android:layout_toEndOf="@id/bDajGestosc"
+      android:text="Ekran-kwalifikacja"
+      />
+
 
     <!-- Prostokat - Obszar -->
     <LinearLayout

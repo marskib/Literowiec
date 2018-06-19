@@ -27,6 +27,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import  android.content.res.Configuration;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -355,10 +357,10 @@ public class MainActivity extends Activity {
        //currWord   = "wwwwwwwwwwww";
        //currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
-       //currWord   = "jękywiłzkó";
+       //currWord     = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "mikrofalówka";
-       currWord   = "pies";
+       //currWord   = "pies";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
@@ -373,7 +375,7 @@ public class MainActivity extends Activity {
            do {
                k = rand.nextInt(lbs.length);
            }
-           while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niwidoczne) etykiety
+           while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niewidoczne) etykiety
 
            //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
            lbs[k].setOrigL(z);
@@ -444,6 +446,59 @@ public class MainActivity extends Activity {
             }
             lb.setText(str);
         }
+    } //koniec Metody()
+
+
+    public void bDajGestoscOnClick(View v) {
+        int screenSize = getResources().getConfiguration().screenLayout &
+            Configuration.SCREENLAYOUT_SIZE_MASK;
+
+        int density= getResources().getDisplayMetrics().densityDpi;
+        switch(density)
+        {
+            case DisplayMetrics.DENSITY_LOW:
+                Toast.makeText(this, "LDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                Toast.makeText(this, "MDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+                Toast.makeText(this, "HDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_XHIGH:
+                Toast.makeText(this, "XHDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_XXHIGH:
+                Toast.makeText(this, "XXHDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                Toast.makeText(this, "XXXHDPI", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(this, "nie znalazłem...", Toast.LENGTH_SHORT).show();
+        }
+    } //koniec Metody()
+
+
+    public void bDajWielkoscOnClick(View v) {
+        int screenSize = getResources().getConfiguration().screenLayout &
+            Configuration.SCREENLAYOUT_SIZE_MASK;
+
+        String toastMsg;
+        switch(screenSize) {
+            case Configuration.SCREENLAYOUT_SIZE_LARGE:
+                toastMsg = "Large screen";
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_NORMAL:
+                toastMsg = "Normal screen";
+                break;
+            case Configuration.SCREENLAYOUT_SIZE_SMALL:
+                toastMsg = "Small screen";
+                break;
+            default:
+                toastMsg = "Screen size is neither large, normal or small";
+        }
+        Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
     } //koniec Metody()
 
 

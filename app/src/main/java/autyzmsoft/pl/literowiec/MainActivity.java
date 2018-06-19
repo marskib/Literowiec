@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -13,7 +14,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -26,8 +26,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import  android.content.res.Configuration;
 
 import java.io.File;
 import java.io.IOException;
@@ -486,6 +484,9 @@ public class MainActivity extends Activity {
 
         String toastMsg;
         switch(screenSize) {
+            case Configuration.SCREENLAYOUT_SIZE_XLARGE:
+                toastMsg = "XLarge screen";
+                break;
             case Configuration.SCREENLAYOUT_SIZE_LARGE:
                 toastMsg = "Large screen";
                 break;
@@ -496,7 +497,7 @@ public class MainActivity extends Activity {
                 toastMsg = "Small screen";
                 break;
             default:
-                toastMsg = "Screen size is neither large, normal or small";
+                toastMsg = "Screen size is neither xlarge, large, normal or small";
         }
         Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
     } //koniec Metody()
@@ -978,13 +979,13 @@ public class MainActivity extends Activity {
 
 
         //wstawka dla duzych ekranow - powiekszam litery:
-        if (sizeW>1100) {
-            int litera_size = (int) getResources().getDimension(R.dimen.litera_size);
-            float wsp = 1.07f;
-            if (sizeW>1900) wsp = 1.2f;
-            for (MojTV lb : lbs) lb.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size);
-            tvCurrentWord.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size); //wyraz wyswietlany nie powinien roznic sie od liter
-        }
+//        if (sizeW>1100) {
+//            int litera_size = (int) getResources().getDimension(R.dimen.litera_size);
+//            float wsp = 1.07f;
+//            if (sizeW>1900) wsp = 1.2f;
+//            for (MojTV lb : lbs) lb.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size);
+//            tvCurrentWord.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size); //wyraz wyswietlany nie powinien roznic sie od liter
+//        }
 
 
         final int odstepWpionie = (int) yLg/4; //od gory ekranu do Obszaru sa 3 wiersze etykiet, wiec 4 przerwy

@@ -355,10 +355,11 @@ public class MainActivity extends Activity {
        //currWord   = "wwwwwwwwwwww";
        //currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
-       //currWord     = "jękywiłzkóśp";
-       currWord   = "mmmmmmmmmmmm";
+       //currWord   = "jękywiłzkóśp";
+       //currWord   = "mmmmmmmmmmmm";
        //currWord   = "mikrofalówka";
        //currWord   = "pies";
+       //currWord   = "mmmm";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
@@ -679,7 +680,7 @@ public class MainActivity extends Activity {
         for (MojTV lb : lbs) {
             if (lb.isInArea()) {
                 sum += lb.getWidth();
-                sum -= lb.getPaddingRight(); //na razie nie wiem, dlaczego odejmowac tylko z jednej strony...
+                //sum -= lb.getPaddingRight(); //na razie nie wiem, dlaczego odejmowac tylko z jednej strony...
             }
         }
         return (int)  sum / currWord.length();
@@ -702,6 +703,7 @@ public class MainActivity extends Activity {
 
         //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt blisko prawej krawedzi Obszaru -
         //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja:
+        //(TRZEBA PO LITERACH, BO ISTNIEJA NA EKRABNIE, A CURRwORD JESZCZE NIE MA)
         int n = currWord.length();
         int szer = n*dajSredniaSzerLitery();  //szacowana szerokosc wyrazu
         bDalej.setText(" "); //sledzenie

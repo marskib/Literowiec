@@ -152,7 +152,7 @@ public class MainActivity extends Activity {
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
 
-        pokazModal();
+        //pokazModal();
 
 
     }  //koniec Metody()
@@ -356,7 +356,7 @@ public class MainActivity extends Activity {
        //currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
        //currWord     = "jękywiłzkóśp";
-       //currWord   = "mmmmmmmmmmmm";
+       currWord   = "mmmmmmmmmmmm";
        //currWord   = "mikrofalówka";
        //currWord   = "pies";
 
@@ -471,6 +471,9 @@ public class MainActivity extends Activity {
                 break;
             case DisplayMetrics.DENSITY_XXXHIGH:
                 Toast.makeText(this, "XXXHDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_560:
+                Toast.makeText(this, "560 ski ski", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 Toast.makeText(this, "nie znalazłem...", Toast.LENGTH_SHORT).show();
@@ -1011,6 +1014,7 @@ public class MainActivity extends Activity {
         L00.setLayoutParams(lPar);
 
         final int poprawka = (int) getResources().getDimension(R.dimen.poprawka);
+        Toast.makeText(this,"poprawka: "+pxToDp(poprawka),Toast.LENGTH_LONG).show();
 
         //L01:  //dalej trzeba uzywac Runnable - czekanie az obiekt L00 'usadowi' sie - inaczej wartosci nieustalobe, czyli ok. 0....
         L00.post(new Runnable() {

@@ -3,12 +3,13 @@
     android:id="@+id/view_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#26ce61"
+
   android:padding="-100dp"
   android:layout_margin="0dp"
     tools:context=".MainActivity"
 >
 
+    <!-- zielone tlo: android:background="#26ce61"-->
 
     <Button
         android:id="@+id/bDalej"
@@ -115,7 +116,8 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
-        android:src="@drawable/cytryna" />
+        android:src="@drawable/cytryna"
+      android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/tvoInfoObszar"

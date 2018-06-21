@@ -79,6 +79,7 @@ public class MainActivity extends Activity {
 
     private LinearLayout lObszar;
     private Button bDalej;          //button pod obrazkiem na przechodzenie po kolejne cwiczenie
+    private Button bDalejOld;          //jw - stara wersja pod Obszarem, do wyrzucenia ostatecznie...
 
     public static File   dirObrazkiNaSD;                 //katalog z obrazkami na SD (internal i external)
     public static ArrayList<File> myObrazkiSD;           //lista obrazkow w SD    //katalog z obrazkami na SD (internal i external)
@@ -106,6 +107,7 @@ public class MainActivity extends Activity {
         imageView = (ImageView) rootLayout.findViewById(R.id.imageView);
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
+        bDalejOld  = (Button) findViewById(R.id.bDalejOld);
         bAgain = (Button) findViewById(R.id.bAgain);
         tvCurrentWord = (TextView) findViewById(R.id.tvCurrentWord);
         bUpperLower =(Button) findViewById(R.id.bUpperLower);
@@ -395,7 +397,7 @@ public class MainActivity extends Activity {
     }
 
 
-    public void bDalejOnClick(View v) {
+    public void bDalejOldOnClick(View v) {
 
         //sledzenie:
         //bAgain.setText("*");
@@ -409,7 +411,7 @@ public class MainActivity extends Activity {
 
         tvCurrentWord.setVisibility(View.INVISIBLE);
 
-        bDalej.setVisibility(View.INVISIBLE);
+        //bDalej.setVisibility(View.INVISIBLE);
 
     } //koniec Metody()
 
@@ -483,6 +485,12 @@ public class MainActivity extends Activity {
 
 
     public void bDajWielkoscOnClick(View v) {
+
+
+        bDalej.getLayoutParams().height = yLg;
+        bDalej.requestLayout();
+
+
         int screenSize = getResources().getConfiguration().screenLayout &
             Configuration.SCREENLAYOUT_SIZE_MASK;
 
@@ -508,6 +516,8 @@ public class MainActivity extends Activity {
 
 
     private void dajWspObszaruInfo() {
+    //Daje wspolrzedne prostokatnego Obszaru, gdzie ukladany jest wyraz
+
         lObszar.post(new Runnable() { //czekanie az obszar sie narysuje
             @Override
             public void run() {
@@ -912,7 +922,7 @@ public class MainActivity extends Activity {
         sizeW = displaymetrics.widthPixels;
         sizeH = displaymetrics.heightPixels;
 
-        //pokazania wymiarow urządzenia i rozdzielczosci dpi
+        //sledzenie - pokazania wymiarow urządzenia i rozdzielczosci dpi
         tvInfo3.setText(Integer.toString(sizeW) + "x" + Integer.toString(sizeH)+" dpi="+Integer.toString(displaymetrics.densityDpi));
 
         //Obrazek - ustawiam w lewym górnym rogu:
@@ -929,6 +939,7 @@ public class MainActivity extends Activity {
         //lPar1.leftMargin = 20;
         //lPar1.rightMargin = 20;
         lPar1.height = sizeH/4;
+        lObszar.setLayoutParams(lPar1);
 
     } //koniec Metody()
 

@@ -1016,7 +1016,9 @@ public class MainActivity extends Activity {
         L00.setLayoutParams(lPar);
 
         final int poprawka = (int) getResources().getDimension(R.dimen.poprawka);
-        Toast.makeText(this,"poprawka: "+pxToDp(poprawka),Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"poprawka: "+pxToDp(poprawka),Toast.LENGTH_SHORT).show();
+        int lsize = (int) getResources().getDimension(R.dimen.litera_size);
+        Toast.makeText(this,"litera_size: "+pxToSp(lsize),Toast.LENGTH_LONG).show();
 
         //L01:  //dalej trzeba uzywac Runnable - czekanie az obiekt L00 'usadowi' sie - inaczej wartosci nieustalobe, czyli ok. 0....
         L00.post(new Runnable() {
@@ -1204,6 +1206,11 @@ public class MainActivity extends Activity {
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
+    public int pxToSp(int px) {
+        //Convert pixel to sp:
+        float scaledDensity = this.getResources().getDisplayMetrics().scaledDensity;
+        return Math.round(px /scaledDensity);
+    }
 
 
 }

@@ -13,7 +13,7 @@ public class ZmienneGlobalne extends Application {
 
     public boolean PELNA_WERSJA;
     public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalog na karcie SD)
-    public String WYBRANY_KATALOG;      //katalog (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
+    public String  WYBRANY_KATALOG;      //katalog (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
     public boolean ZMIENIONO_ZRODLO;     //jakakolwiek zmiana zrodla obrazkow - Assets/Katalog JAK ROWNIEZ zmiana katalogu
     public boolean DLA_KRZYSKA;          //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
     public boolean WSZYSTKIE_ROZNE;      //Wszystkie klawisze(napisy) maja byc rożne
@@ -31,6 +31,12 @@ public class ZmienneGlobalne extends Application {
     public boolean TRYB_PODP;           //to samo co TRYB_TTRENING, tylko nazwa pod obrazkiem duzo mniejszymi literami i nie czerwona
     public boolean DELAYED;             //czy pokazywać klawisze z wyrazami z opóźnieniem (efekciarstwo ;))
     public boolean ODMOWA_DOST;         //na etapie instalacji/1-go uruchomienia user odmowil dostepu do kart(y); dotyczy androida 6 i więcej
+
+
+    public boolean BPOMIN_ALL;          //czy bPomin dozwolony (allowed)
+    public boolean BAGAIN_ALL;          //czy bAgain dozwolony (allowed)
+    public boolean BUPLOW_ALL;          //czy bUpperLower dozwolony (allowed)
+
 
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
 
@@ -60,10 +66,14 @@ public class ZmienneGlobalne extends Application {
         TYLKO_GLOS    = false;
         CISZA         = false;
 
+        BPOMIN_ALL    = true;
+        BAGAIN_ALL    = true;
+        BUPLOW_ALL    = true;
+
         TRYB_TRENING = false;
         TRYB_PODP    = false;
         DELAYED      = true;
-        ODMOWA_DOST  = false;                //w wersji Androida <=5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
+        ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
         ZMIENIONO_ZRODLO = true;             //inicjacyjnie na true, zeby po uruchomieniu apki wykonala sie onResume() w calosci

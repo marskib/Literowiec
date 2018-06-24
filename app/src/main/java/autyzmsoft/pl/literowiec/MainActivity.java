@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -33,6 +34,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
+
 
 
 
@@ -73,13 +75,13 @@ public class MainActivity extends Activity {
 
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
-    public static Button bUpperLower; //wielkie/male litery
-    public Button bAgain;             //wymieszanie liter
+    private Button bUpperLower;  //wielkie/male litery
+    private Button bAgain;       //wymieszanie liter
 
 
     private LinearLayout lObszar;
-    private Button bDalej;          //button pod obrazkiem na przechodzenie po kolejne cwiczenie
-    private Button bDalejOld;          //jw - stara wersja pod Obszarem, do wyrzucenia ostatecznie...
+    private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
+    private Button bPomin;                              //na pominiecie/ucieczke z cwiczenia nie konczac go
 
     public static File   dirObrazkiNaSD;                 //katalog z obrazkami na SD (internal i external)
     public static ArrayList<File> myObrazkiSD;           //lista obrazkow w SD    //katalog z obrazkami na SD (internal i external)
@@ -107,7 +109,7 @@ public class MainActivity extends Activity {
         imageView = (ImageView) rootLayout.findViewById(R.id.imageView);
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
-        bDalejOld  = (Button) findViewById(R.id.bDalejOld);
+        bPomin  = (Button) findViewById(R.id.bPomin);
         bAgain = (Button) findViewById(R.id.bAgain);
         tvCurrentWord = (TextView) findViewById(R.id.tvCurrentWord);
         bUpperLower =(Button) findViewById(R.id.bUpperLower);
@@ -141,13 +143,16 @@ public class MainActivity extends Activity {
 
         resetujLabelsy();
 
-        //Trzeba czekac, bo prblemy (doswiadczalnie):
+        //Trzeba czekac, bo problemy (doswiadczalnie):
         lObszar.post(new Runnable() {
             @Override
             public void run() {
                 ustawLadnieEtykiety();
+                ustawWymiaryKlawiszy();
             }
         });
+
+
 
         tworzListyObrazkow();
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
@@ -397,8 +402,7 @@ public class MainActivity extends Activity {
     }
 
 
-    public void bDalejOldOnClick(View v) {
-
+    public void bDalejOnClick(View v) {
         //sledzenie:
         //bAgain.setText("*");
         bUpperLower.setText(sizeW+"x"+sizeH);
@@ -411,23 +415,28 @@ public class MainActivity extends Activity {
 
         tvCurrentWord.setVisibility(View.INVISIBLE);
 
-        //bDalej.setVisibility(View.INVISIBLE);
+        bDalej.setVisibility(View.INVISIBLE);
 
-    } //koniec Metody()
+        pokazKlawiszeDodatkowe();
+
+    } //koniecMetody()
+
 
 
     public void bAgainOnClick(View v) {
 
         //sledzenie:
-        bAgain.setText("*");
-        bUpperLower.setText("*");
+        //bAgain.setText("*");
+        //bUpperLower.setText("*");
 
+        tvCurrentWord.setVisibility(View.INVISIBLE);
         ustawLadnieEtykiety();
         resetujLabelsy();
         rozrzucWyraz();
 
-        tvCurrentWord.setVisibility(View.INVISIBLE);
+        bDalej.setVisibility(View.INVISIBLE); //gdyby byl widoczny
     }
+
 
     public void bPominClick(View v) {
         bDalej.callOnClick();
@@ -437,15 +446,33 @@ public class MainActivity extends Activity {
     public void bUpperLowerOnClick(View v) {
         //Zmiana male/duze litery (w obie strony)
 
-        for (MojTV lb : lbs) {
-            String str = (String) lb.getText();
+        if (tvCurrentWord.getVisibility()==View.INVISIBLE) {  //wyraz jeszcze nie ulozony
+            for (MojTV lb : lbs) {
+                String str = (String) lb.getText();
 
-            if (lb.getText().equals(str.toUpperCase(Locale.getDefault()))) {
-                str = lb.getOrigL(); //rozwiazuje problem Ola->OLA->Ola
-            } else {
-                str = str.toUpperCase(Locale.getDefault());
+                if (lb.getText().equals(str.toUpperCase(Locale.getDefault()))) {
+                    str = lb.getOrigL(); //rozwiazuje problem Ola->OLA->Ola
+                } else {
+                    str = str.toUpperCase(Locale.getDefault());
+                }
+                lb.setText(str);
             }
-            lb.setText(str);
+        //wyraz juz ulozony
+        } else {
+            String orig = currWord;
+            String rob  = "";
+            if (currWord.toUpperCase().equals(orig)) {   //mamy do czynienia z samymi duzymi literami
+                for (MojTV lb : lbs) { //lbs jest w tym punkcie programu posortowana jak trzeba :) -nie jest ........
+                    if (lb.isInArea())
+                        rob = rob + lb.getOrigL();
+
+                }
+                tvCurrentWord.setText(rob);
+            }
+            else { //podnosimy do 'gory' bez krempacji ;) :
+                currWord = currWord.toUpperCase(Locale.getDefault());
+                tvCurrentWord.setText(currWord);
+            }
         }
     } //koniec Metody()
 
@@ -700,8 +727,10 @@ public class MainActivity extends Activity {
 
     private void UporzadkujObszar() {
     /* ******************************************************************************************* */
+    /* Po Zwyciestwie:                                                                             */
     /* Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz, przywracamy klawisz bDalej */
-    /* Jesli trzeba - robimy korekcje miejsca wyswietlania (zeby wyeaz sie miescil w Obszarze)     */
+    /* Jesli trzeba - robimy korekcje miejsca wyswietlania (zeby wyraz sie miescil w Obszarze)     */
+    /* Gasimy niektore klawisze pod Obszarem.                                                      */
     /* ******************************************************************************************* */
 
         //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
@@ -735,9 +764,11 @@ public class MainActivity extends Activity {
         //Pokazanie wyrazu:
         tvCurrentWord.setVisibility(View.VISIBLE);
 
-        //bAgain.setText(Integer.toString(lPar.leftMargin));      //sledzenie
-        //bUpperLower.setText(Float.toString(tvCurrentWord.getWidth()));         //sledzenie
+        //bAgain.setText(Integer.toString(lPar.leftMargin));                    //sledzenie
+        //bUpperLower.setText(Float.toString(tvCurrentWord.getWidth()));        //sledzenie
 
+
+        ukryjKlawiszeDodatkowe();
         //Przywrocenie/pokazanie klawisza bDalej (z lekkim opoznieniem):
         Handler mHandl = new Handler();
         mHandl.postDelayed(new Runnable() {
@@ -1203,6 +1234,39 @@ public class MainActivity extends Activity {
         }
 
     }  //koniec Metody()
+
+    private void ustawWymiaryKlawiszy() {
+    //Wymiarowuje klawisze bDalej, bPomin, bAgain
+        //bDalej zajmuje przestrzen od gory do gornej krawedzi Obszaru:
+        bDalej.getLayoutParams().height = yLg;
+        bDalej.requestLayout();
+
+        //cala przestrzen od dolnej krawedzi Obszaru do konca ekranu:
+        bPomin.getLayoutParams().height = sizeH - yLd;
+        bPomin.requestLayout();
+
+        bUpperLower.getLayoutParams().height = sizeH - yLd;
+        bUpperLower.requestLayout();
+
+        bAgain.getLayoutParams().height = sizeH - yLd;
+        bAgain.requestLayout();
+        bAgain.setTextSize(TypedValue.COMPLEX_UNIT_SP, (float) 0.18*pxToSp((int)getResources().getDimension(R.dimen.litera_size)) );
+
+    } //koniec metody()
+
+    private void ukryjKlawiszeDodatkowe() {
+    //Po Zwyciestwie ukrywa klawisze pod Obszarem, zeby dziecko nie moglo zrobic balaganu przed pojawieniem sie bDalej.
+    //Nie ukrywa bUpperLower, zeby mozna bylo powiekszac/pomniejszac zwycieski currWord.
+      bPomin.setVisibility(View.INVISIBLE);
+      bAgain.setVisibility(View.INVISIBLE);
+    }
+
+    private void pokazKlawiszeDodatkowe() {
+    //Pokazanie (ewentualne) klawiszy pod Obszarem"
+        if (ZmienneGlobalne.getInstance().BPOMIN_ALL) bPomin.setVisibility(View.VISIBLE);
+        if (ZmienneGlobalne.getInstance().BUPLOW_ALL) bUpperLower.setVisibility(View.VISIBLE);
+        if (ZmienneGlobalne.getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE);
+    }
 
     public int dpToPx(int dp) {
     //Convert dp to pixel:

@@ -33,6 +33,18 @@
         android:visibility="invisible"
     />
 
+    <Button
+      android:id="@+id/bAgain1"
+      android:onClick="bAgainOnClick"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentEnd="true"
+
+      android:layout_alignTop="@id/l_Obszar"
+
+      android:layout_marginRight="2dp"
+      android:text="   \@   " />
+
 
     <Button
         android:id="@+id/bAgain"

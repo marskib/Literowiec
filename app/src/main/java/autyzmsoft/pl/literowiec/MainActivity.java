@@ -58,7 +58,8 @@ public class MainActivity extends Activity {
           L08, L09, L10, L11;
 
 
-    public static MojTV[] lbs;  //tablica zawierajaca (oryginalne) litery wyrazu; onomastyka: lbs = 'labels'
+    public  static MojTV[] lbs;     //tablica zawierajaca (oryginalne) litery wyrazu; onomastyka: lbs = 'labels'
+    private static MojTV[] lbsRob;  //tablica robocza, do dzialań (m.in. latwego wykrycia prawidlowego porzadku ulozenia etykiet w Obszarze); podzbior tab. lbs
 
 
     TextView tvInfo, tvInfo1, tvInfo2, tvInfo3, tvInfoObszar;
@@ -444,7 +445,7 @@ public class MainActivity extends Activity {
 
 
     public void bUpperLowerOnClick(View v) {
-        //Zmiana male/duze litery (w obie strony)
+    //Zmiana male/duze litery (w obie strony)
 
         if (tvCurrentWord.getVisibility()==View.INVISIBLE) {  //wyraz jeszcze nie ulozony
             for (MojTV lb : lbs) {
@@ -457,21 +458,21 @@ public class MainActivity extends Activity {
                 }
                 lb.setText(str);
             }
-        //wyraz juz ulozony
+        //wyraz juz ulozony, jest w wLObszar:
         } else {
-            String orig = currWord;
+            String coWidac = tvCurrentWord.getText().toString();
             String rob  = "";
-            if (currWord.toUpperCase().equals(orig)) {   //mamy do czynienia z samymi duzymi literami
-                for (MojTV lb : lbs) { //lbs jest w tym punkcie programu posortowana jak trzeba :) -nie jest ........
+            if (coWidac.toUpperCase(Locale.getDefault()).equals(coWidac)) {
+                //mamy do czynienia z samymi duzymi literami - pomniejszamy:
+                for (MojTV lb : lbsRob) {                //lbsRob jest w tym punkcie programu posortowana jak trzeba :)
                     if (lb.isInArea())
-                        rob = rob + lb.getOrigL();
-
+                        rob = rob + lb.getOrigL();       //uwaga - nie mozna pomniejszac przez toLower() -> patrz: Mikolaj
                 }
                 tvCurrentWord.setText(rob);
             }
             else { //podnosimy do 'gory' bez krempacji ;) :
-                currWord = currWord.toUpperCase(Locale.getDefault());
-                tvCurrentWord.setText(currWord);
+                rob = currWord.toUpperCase(Locale.getDefault());
+                tvCurrentWord.setText(rob);
             }
         }
     } //koniec Metody()
@@ -513,10 +514,8 @@ public class MainActivity extends Activity {
 
     public void bDajWielkoscOnClick(View v) {
 
-
         bDalej.getLayoutParams().height = yLg;
         bDalej.requestLayout();
-
 
         int screenSize = getResources().getConfiguration().screenLayout &
             Configuration.SCREENLAYOUT_SIZE_MASK;
@@ -787,8 +786,6 @@ public class MainActivity extends Activity {
     // Wszystkie litery znajduja sie w Obszarze */
     /* Sprawdzenie, czy poprawnie ulozone.      */
     /* **************************************** */
-
-        MojTV[] lbsRob; //tablica robocza, do dzialań
 
         //najpierw przepisanie do tab. roboczej - bedzie krotsza...; potem manipulacje na roboczej:
         lbsRob = new MojTV[currWord.length()];

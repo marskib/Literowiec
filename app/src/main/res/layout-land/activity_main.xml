@@ -135,7 +135,7 @@
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
         android:src="@drawable/cytryna"
-      android:visibility="visible"/>
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/tvoInfoObszar"

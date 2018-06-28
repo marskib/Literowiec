@@ -92,7 +92,7 @@ public class MainActivity extends Activity {
     public static String listaObrazkowAssets[] = null;   //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
 
     public int    currImage = -1;     //indeks biezacego obrazka
-    public String currWord  = "*";    //bieżacy wyraz
+    public String currWord  = "*";    //bieżacy wyraz; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
 
     public static int inAreaLicznik = 0;     //licznik liter znajdujacych sie aktualnie w Obszarze
 
@@ -368,6 +368,7 @@ public class MainActivity extends Activity {
        //currWord   = "mikrofalówka";
        //currWord   = "pies";
        //currWord   = "mmmm";
+       currWord   = "Mikołaj";
 
        char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
 
@@ -757,11 +758,11 @@ public class MainActivity extends Activity {
         lPar.topMargin  = dajWspYetykiet()-yLg + dpToPx(3) + 6; //uwzgledniam border width
 
         tvCurrentWord.setLayoutParams(lPar);
-        tvCurrentWord.setText(currWord);
+
+        pokazWyraz();  //w Obszarze pokazany zostaje ulozony wyraz
+
         //Gasimy wszystkie etykiety:
         for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
-        //Pokazanie wyrazu:
-        tvCurrentWord.setVisibility(View.VISIBLE);
 
         //bAgain.setText(Integer.toString(lPar.leftMargin));                    //sledzenie
         //bUpperLower.setText(Float.toString(tvCurrentWord.getWidth()));        //sledzenie
@@ -778,6 +779,18 @@ public class MainActivity extends Activity {
 
     } //koniec Metody()
 
+    private void pokazWyraz() {
+    //Pokazanie ulozonego wyrazu w Obszarze; Podstawa - param. 'wyraz',
+    //ale nie nalezy uzywac go bezposrednio - bo wielkie/male litery i dlatego
+    //wyraz skladam z tego, co widac na ekranie, a nie uzywam z currWord
+
+      StringBuilder sb = new StringBuilder();
+      for (MojTV lb : lbsRob) {
+        sb.append(lb.getText());
+      }
+      tvCurrentWord.setText(sb);
+      tvCurrentWord.setVisibility(View.VISIBLE);
+    } //koniec Metody()
 
 
     private boolean poprawnieUlozono() {
@@ -813,13 +826,12 @@ public class MainActivity extends Activity {
         }
 
         //Na pdst. tablicy lbsRob skladam wyraz jaki widac w Obszarze:
-        String wyrazWObszarze = new String();
+        StringBuilder sb = new StringBuilder();
         for (MojTV el : lbsRob) {
-            wyrazWObszarze += el.getOrigL();
+            sb.append(el.getOrigL()); //+= el.getOrigL();
         }
-
-        return wyrazWObszarze.equals(currWord);
-
+        String wyrazWObszarze = sb.toString();
+        return wyrazWObszarze.equals(currWord); //porownywane są oryginaly, więc aktualna wielkosc liter nie ma znaczenia
     } //koniec Metody();
 
 

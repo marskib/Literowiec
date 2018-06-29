@@ -167,7 +167,6 @@ public class MainActivity extends Activity {
 
 
 
-
     public void setCurrentImage() {
 
         String nazwaObrazka; //zawiera rozrzerzenie (.jpg , .bmp , ...)
@@ -370,7 +369,13 @@ public class MainActivity extends Activity {
        //currWord   = "mmmm";
        currWord   = "Mikołaj";
 
-       char[] wyraz = currWord.toCharArray(); //bo latwiej operowac na Char'ach
+       char[] wyraz;       //bo latwiej operowac na Char'ach
+       //Pobieramy wyraz do rozrzucenia;
+       //Jesli wyraz juz ulozony, to bierzemy z Obszru (bo moga byc wielkie litery):
+       if (tvCurrentWord.getVisibility()==View.VISIBLE)
+           wyraz = tvCurrentWord.getText().toString().toCharArray();
+       else
+         wyraz = currWord.toCharArray();
 
        Random rand = new Random();
 
@@ -431,10 +436,10 @@ public class MainActivity extends Activity {
         //bAgain.setText("*");
         //bUpperLower.setText("*");
 
-        tvCurrentWord.setVisibility(View.INVISIBLE);
         ustawLadnieEtykiety();
         resetujLabelsy();
         rozrzucWyraz();
+        tvCurrentWord.setVisibility(View.INVISIBLE);
 
         bDalej.setVisibility(View.INVISIBLE); //gdyby byl widoczny
     }

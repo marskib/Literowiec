@@ -373,13 +373,14 @@ public class MainActivity extends Activity {
        //Pobieramy wyraz do rozrzucenia;
        //Jesli wyraz juz ulozony, to bierzemy z Obszru (bo moga byc wielkie litery):
        if (tvCurrentWord.getVisibility()==View.VISIBLE)
-           wyraz = tvCurrentWord.getText().toString().toCharArray();
+           wyraz = tvCurrentWord.getText().toString().toCharArray(); //(**)
        else
          wyraz = currWord.toCharArray();
 
        Random rand = new Random();
 
        //Kazda litera wyrazu ląduje w losowej komorce tablicy lbs :
+       char oryginal[] = currWord.toCharArray(); //bo w 'wyraz' moze nie zawierac dokladnej kopii currWord (mogl byc wziety z tvCurrWord (**)
        for (int i = 0; i < wyraz.length; i++) {
 
            String z = Character.toString(wyraz[i]); //pobranie litery z wyrazu
@@ -391,8 +392,8 @@ public class MainActivity extends Activity {
            while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niewidoczne) etykiety
 
            //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
-           lbs[k].setOrigL(z);
-           lbs[k].setText(z);
+           lbs[k].setOrigL(Character.toString(oryginal[i]));  //tu musi(!) wejsc oryginalna litera
+           lbs[k].setText(z);                                 //tutaj wchodzi to, co widac na ekranie
            lbs[k].setVisibility(View.VISIBLE);
 
        } //for

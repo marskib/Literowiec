@@ -90,7 +90,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/bDajWielkosc"
-      android:onClick="bDajWielkoscOnClick"
+      android:onClick="bDajWielkoscEkranuOnClick"
       android:layout_alignParentBottom="true"
       android:layout_toEndOf="@id/bDajGestosc"
       android:text="Ekran-kwalifikacja"
@@ -112,7 +112,7 @@
 
         <!--Na wyswietlenie zwycieskiego wyrazu:-->
         <TextView
-            android:id="@+id/tvCurrentWord"
+            android:id="@+id/tvShownWord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="0dp"
@@ -135,7 +135,7 @@
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
         android:src="@drawable/cytryna"
-        android:visibility="invisible"/>
+        android:visibility="visible"/>
 
     <TextView
         android:id="@+id/tvoInfoObszar"

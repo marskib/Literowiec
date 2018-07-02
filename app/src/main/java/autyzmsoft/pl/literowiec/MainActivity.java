@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 
     TextView tvInfo, tvInfo1, tvInfo2, tvInfo3, tvInfoObszar;
 
-    TextView tvCurrentWord; //na umieszczenie wyrazu po Zwyciestwie
+    TextView tvShownWord; //na umieszczenie wyrazu po Zwyciestwie
 
     private int sizeH, sizeW;    //wymiary Urzadzenia
 
@@ -76,8 +76,9 @@ public class MainActivity extends Activity {
 
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
-    private Button bUpperLower;  //wielkie/male litery
-    private Button bAgain;       //wymieszanie liter
+    public  boolean toUp = false; //czy jestesmy w trybie duzych/malych liter
+    private Button bUpperLower;   //wielkie/male litery
+    private Button bAgain;        //wymieszanie liter
 
 
     private LinearLayout lObszar;
@@ -91,8 +92,9 @@ public class MainActivity extends Activity {
     public static String katalog = null;                 //Katalogu w Assets, w ktorym trzymane beda obrazki
     public static String listaObrazkowAssets[] = null;   //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
 
-    public int    currImage = -1;     //indeks biezacego obrazka
-    public String currWord  = "*";    //bieżacy wyraz; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
+    public int     currImage = -1;      //indeks biezacego obrazka
+    public String  currWord  = "*";     //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
+    public String  shownWord = "*";     //currWord widziane/pokazywane na ekranie (różne od currWord, bo mogą być wielkie litery)
 
     public static int inAreaLicznik = 0;     //licznik liter znajdujacych sie aktualnie w Obszarze
 
@@ -112,7 +114,7 @@ public class MainActivity extends Activity {
         bDalej  = (Button) findViewById(R.id.bDalej);
         bPomin  = (Button) findViewById(R.id.bPomin);
         bAgain = (Button) findViewById(R.id.bAgain);
-        tvCurrentWord = (TextView) findViewById(R.id.tvCurrentWord);
+        tvShownWord = (TextView) findViewById(R.id.tvShownWord);
         bUpperLower =(Button) findViewById(R.id.bUpperLower);
 
         //kontrolki do sledzenia:
@@ -344,7 +346,8 @@ public class MainActivity extends Activity {
         nazwaPliku = usunLastDigitIfAny(nazwaPliku);
         nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
-        currWord = nazwaPliku;
+        currWord  = nazwaPliku;
+        shownWord = currWord;
 
       } //koniec Metody()
 
@@ -353,7 +356,7 @@ public class MainActivity extends Activity {
    private void rozrzucWyraz() {
    /* Rozrzucenie currWord po tablicy lbs (= po Ekranie) */
 
-       int k;  //na losowa pozycje
+       int k;  //na losową pozycję
 
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
@@ -367,23 +370,18 @@ public class MainActivity extends Activity {
        //currWord   = "mikrofalówka";
        //currWord   = "pies";
        //currWord   = "mmmm";
-       currWord   = "Mikołaj";
+       //currWord   = "Mikołaj";
 
-       char[] wyraz;       //bo latwiej operowac na Char'ach
-       //Pobieramy wyraz do rozrzucenia;
-       //Jesli wyraz juz ulozony, to bierzemy z Obszru (bo moga byc wielkie litery):
-       if (tvCurrentWord.getVisibility()==View.VISIBLE)
-           wyraz = tvCurrentWord.getText().toString().toCharArray(); //(**)
-       else
-         wyraz = currWord.toCharArray();
+       //Pobieramy wyraz do rozrzucenia:
+       char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
 
        Random rand = new Random();
 
        //Kazda litera wyrazu ląduje w losowej komorce tablicy lbs :
-       char oryginal[] = currWord.toCharArray(); //bo w 'wyraz' moze nie zawierac dokladnej kopii currWord (mogl byc wziety z tvCurrWord (**)
+       String z;
        for (int i = 0; i < wyraz.length; i++) {
 
-           String z = Character.toString(wyraz[i]); //pobranie litery z wyrazu
+           z = Character.toString(wyraz[i]); //pobranie litery z wyrazu
 
            //Losowanie pozycji w tablicy lbs:
            do {
@@ -392,11 +390,14 @@ public class MainActivity extends Activity {
            while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niewidoczne) etykiety
 
            //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
-           lbs[k].setOrigL(Character.toString(oryginal[i]));  //tu musi(!) wejsc oryginalna litera
-           lbs[k].setText(z);                                 //tutaj wchodzi to, co widac na ekranie
+           lbs[k].setOrigL(z);
+           lbs[k].setText(z);
            lbs[k].setVisibility(View.VISIBLE);
 
        } //for
+
+       //Ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy:
+       if (toUp) podniesLabels();
 
    } //koniecMetody();
 
@@ -421,7 +422,7 @@ public class MainActivity extends Activity {
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currWord
 
-        tvCurrentWord.setVisibility(View.INVISIBLE);
+        tvShownWord.setVisibility(View.INVISIBLE);
 
         bDalej.setVisibility(View.INVISIBLE);
 
@@ -433,14 +434,10 @@ public class MainActivity extends Activity {
 
     public void bAgainOnClick(View v) {
 
-        //sledzenie:
-        //bAgain.setText("*");
-        //bUpperLower.setText("*");
-
         ustawLadnieEtykiety();
         resetujLabelsy();
         rozrzucWyraz();
-        tvCurrentWord.setVisibility(View.INVISIBLE);
+        tvShownWord.setVisibility(View.INVISIBLE);
 
         bDalej.setVisibility(View.INVISIBLE); //gdyby byl widoczny
     }
@@ -454,34 +451,77 @@ public class MainActivity extends Activity {
     public void bUpperLowerOnClick(View v) {
     //Zmiana male/duze litery (w obie strony)
 
-        if (tvCurrentWord.getVisibility()==View.INVISIBLE) {  //wyraz jeszcze nie ulozony
-            for (MojTV lb : lbs) {
-                String str = (String) lb.getText();
+        toUp = !toUp;
 
-                if (lb.getText().equals(str.toUpperCase(Locale.getDefault()))) {
-                    str = lb.getOrigL(); //rozwiazuje problem Ola->OLA->Ola
-                } else {
-                    str = str.toUpperCase(Locale.getDefault());
-                }
-                lb.setText(str);
-            }
-        //wyraz juz ulozony, jest w wLObszar:
-        } else {
-            String coWidac = tvCurrentWord.getText().toString();
-            String rob  = "";
-            if (coWidac.toUpperCase(Locale.getDefault()).equals(coWidac)) {
-                //mamy do czynienia z samymi duzymi literami - pomniejszamy:
-                for (MojTV lb : lbsRob) {                //lbsRob jest w tym punkcie programu posortowana jak trzeba :)
-                    if (lb.isInArea())
-                        rob = rob + lb.getOrigL();       //uwaga - nie mozna pomniejszac przez toLower() -> patrz: Mikolaj
-                }
-                tvCurrentWord.setText(rob);
-            }
-            else { //podnosimy do 'gory' bez krempacji ;) :
-                rob = currWord.toUpperCase(Locale.getDefault());
-                tvCurrentWord.setText(rob);
+        //1.Wyraz juz ulozony:
+        if (tvShownWord.getVisibility()== View.VISIBLE) {
+            if (toUp) podniesWyraz();
+            else restoreOriginalWyraz();
+        }
+        //2.Wyraz jeszcze nie ulozony:
+        else {
+            if (toUp) podniesLabels();
+            else restoreOriginalLabels();
+        }
+
+    } //koniec Metody()
+
+    private void podniesLabels() {
+    //Etykiety podnoszone są do Wielkich liter
+
+        String coWidac;
+        for (MojTV lb : lbs) {
+            if (lb.getVisibility()== View.VISIBLE) {
+                coWidac = lb.getText().toString();
+                coWidac = coWidac.toUpperCase(Locale.getDefault());
+                lb.setText(coWidac);
             }
         }
+    } //koniec Metody()
+
+    private void restoreOriginalLabels() {
+    //Etykiety przywracane są do oryginalnych (małych) liter
+    //Uwzględnia problem MIKOŁAJ->Mikołaj
+
+        String coPokazac;
+        for (MojTV lb : lbs) {
+            if (lb.getVisibility()==View.VISIBLE) {
+                coPokazac = lb.getOrigL();
+                lb.setText(coPokazac);
+            }
+        }
+    } //koniec Metody()
+
+    private void podniesWyraz() {
+    //Poprawny wyraz z Obszaru podnoszony do Wielkich liter
+    //Ewentualne odsuniecie, jezeli wyraz po powiekszeniu wychodzi za prawa krawedz Obszaru
+
+        String coWidac = tvShownWord.getText().toString();
+        coWidac = coWidac.toUpperCase(Locale.getDefault());
+        tvShownWord.setText(coWidac);
+
+        //Ewentualne odsuniecie:
+        //Trzeba czekac, bo problemy (doswiadczalnie):
+        tvShownWord.post(new Runnable() {
+            @Override
+            public void run() {
+                int wystaje = (int) (tvShownWord.getX()+tvShownWord.getWidth()+2*tvShownWord.getPaddingStart()  -xLp);
+                if (wystaje>-10) {
+                    LinearLayout.LayoutParams lPar;
+                    lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
+                    lPar.leftMargin -= Math.abs(30*wystaje);
+                    tvShownWord.setLayoutParams(lPar);
+                }
+            }
+        });
+    }  //koniec Metody()
+
+    private void restoreOriginalWyraz() {
+    //Wyraz z Obszaru zmniejszany jest du małych liter.
+    //Uwzględnia problem MIKOŁAJ->Mikołaj
+
+        String coPokazac = currWord;
+        tvShownWord.setText(coPokazac);
     } //koniec Metody()
 
 
@@ -519,7 +559,7 @@ public class MainActivity extends Activity {
     } //koniec Metody()
 
 
-    public void bDajWielkoscOnClick(View v) {
+    public void bDajWielkoscEkranuOnClick(View v) {
 
         bDalej.getLayoutParams().height = yLg;
         bDalej.requestLayout();
@@ -559,7 +599,7 @@ public class MainActivity extends Activity {
                 int x = location[0];
                 int y = location[1];
 
-                //Przekazanie do zmiennych klasy parametrow geograficznych Obszaru:
+                //Przekazanie do zmiennych Klasy parametrow geograficznych Obszaru:
                 xLl = x;
                 yLg = y;
                 xLp = xLl + lObszar.getWidth();
@@ -717,6 +757,7 @@ public class MainActivity extends Activity {
         return  wsp;
     }
 
+
     private int dajSredniaSzerLitery() {
     //daje srednia szerokosc etykiety w Obszarze (=szr.lit. w currWord)
         int sum=0;
@@ -741,19 +782,18 @@ public class MainActivity extends Activity {
 
         //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
         LinearLayout.LayoutParams lPar;
-        lPar = (LinearLayout.LayoutParams) tvCurrentWord.getLayoutParams();
+        lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
         int leftMost = dajLeftmostX();
         //jak za bardzo na lewo, to korygujemy:
 
 
         //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt blisko prawej krawedzi Obszaru -
         //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja:
-        //(TRZEBA PO LITERACH, BO ISTNIEJA NA EKRABNIE, A CURRwORD JESZCZE NIE MA)
+        //(TRZEBA PO LITERACH-Etykietach lbs, BO ISTNIEJA NA EKRANIE, A CURRWORD JESZCZE NIE MA w obszarze)
         int n = currWord.length();
         int szer = n*dajSredniaSzerLitery();  //szacowana szerokosc wyrazu
-        bDalej.setText(" "); //sledzenie
         if ( (leftMost + szer) > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
-            leftMost = xLp - szer;
+            leftMost = xLp - szer;            //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescił
             bDalej.setText("Odsunalem o "+szer); //sledzenie
         }
         if (leftMost<10) leftMost=20;
@@ -763,16 +803,12 @@ public class MainActivity extends Activity {
         lPar.leftMargin = leftMost;
         lPar.topMargin  = dajWspYetykiet()-yLg + dpToPx(3) + 6; //uwzgledniam border width
 
-        tvCurrentWord.setLayoutParams(lPar);
+        tvShownWord.setLayoutParams(lPar);
 
         pokazWyraz();  //w Obszarze pokazany zostaje ulozony wyraz
 
         //Gasimy wszystkie etykiety:
         for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
-
-        //bAgain.setText(Integer.toString(lPar.leftMargin));                    //sledzenie
-        //bUpperLower.setText(Float.toString(tvCurrentWord.getWidth()));        //sledzenie
-
 
         ukryjKlawiszeDodatkowe();
         //Przywrocenie/pokazanie klawisza bDalej (z lekkim opoznieniem):
@@ -786,16 +822,15 @@ public class MainActivity extends Activity {
     } //koniec Metody()
 
     private void pokazWyraz() {
-    //Pokazanie ulozonego wyrazu w Obszarze; Podstawa - param. 'wyraz',
-    //ale nie nalezy uzywac go bezposrednio - bo wielkie/male litery i dlatego
-    //wyraz skladam z tego, co widac na ekranie, a nie uzywam z currWord
+    //Pokazanie ulozonego wyrazu w Obszarze;
+    //Wyraz skladam z tego, co widac na ekranie, a nie uzywam currWord (bo duze/male litery)
 
       StringBuilder sb = new StringBuilder();
       for (MojTV lb : lbsRob) {
         sb.append(lb.getText());
       }
-      tvCurrentWord.setText(sb);
-      tvCurrentWord.setVisibility(View.VISIBLE);
+      tvShownWord.setText(sb);
+      tvShownWord.setVisibility(View.VISIBLE);
     } //koniec Metody()
 
 
@@ -831,13 +866,13 @@ public class MainActivity extends Activity {
             }
         }
 
-        //Na pdst. tablicy lbsRob skladam wyraz jaki widac w Obszarze:
+        //Na pdst. tablicy lbsRob skladam wyraz jaki "widac" w Obszarze:
         StringBuilder sb = new StringBuilder();
         for (MojTV el : lbsRob) {
-            sb.append(el.getOrigL()); //+= el.getOrigL();
+            sb.append(el.getOrigL());
         }
         String wyrazWObszarze = sb.toString();
-        return wyrazWObszarze.equals(currWord); //porownywane są oryginaly, więc aktualna wielkosc liter nie ma znaczenia
+        return wyrazWObszarze.equals(currWord); //porownywane są ORYGINAŁY, więc aktualna wielkosc liter nie ma znaczenia
     } //koniec Metody();
 
 
@@ -1046,7 +1081,7 @@ public class MainActivity extends Activity {
 //            float wsp = 1.07f;
 //            if (sizeW>1900) wsp = 1.2f;
 //            for (MojTV lb : lbs) lb.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size);
-//            tvCurrentWord.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size); //wyraz wyswietlany nie powinien roznic sie od liter
+//            tvShownWord.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size); //wyraz wyswietlany nie powinien roznic sie od liter
 //        }
 
 
@@ -1061,7 +1096,7 @@ public class MainActivity extends Activity {
         //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
         int marginesTop = 1*odstepWpionie - (int) L00.getHeight()/2;  //*1 - bo 1-szy wiersz
 
-        final int poprPion   = 25;
+        final int poprPion = 25;
         lPar.topMargin = marginesTop - poprPion;
         int poprPoziom = (int) ((rootLayout.getRight()-imageView.getRight())/12);
         //troche w prawo, jesli dobre urzadzenie:

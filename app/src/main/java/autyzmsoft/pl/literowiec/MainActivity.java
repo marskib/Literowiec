@@ -1,6 +1,7 @@
 package autyzmsoft.pl.literowiec;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -371,6 +372,7 @@ public class MainActivity extends Activity {
        //currWord   = "pies";
        //currWord   = "mmmm";
        //currWord   = "Mikołaj";
+      //currWord   = "lalka";
 
        //Pobieramy wyraz do rozrzucenia:
        char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
@@ -502,19 +504,59 @@ public class MainActivity extends Activity {
 
         //Ewentualne odsuniecie:
         //Trzeba czekac, bo problemy (doswiadczalnie):
-        tvShownWord.post(new Runnable() {
+     /*   tvShownWord.post(new Runnable() {
             @Override
             public void run() {
                 int wystaje = (int) (tvShownWord.getX()+tvShownWord.getWidth()+2*tvShownWord.getPaddingStart()  -xLp);
                 if (wystaje>-10) {
                     LinearLayout.LayoutParams lPar;
-                    lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
-                    lPar.leftMargin -= Math.abs(30*wystaje);
-                    tvShownWord.setLayoutParams(lPar);
+                    //lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
+                    //lPar.leftMargin -= Math.abs(30*wystaje);
+                    //tvShownWord.setLayoutParams(lPar);
                 }
             }
-        });
+        });*/
+
+        //Jezeli po powiekszeni liter wyraz wystawalby za Obszar - cofniecie:
+
+
+        //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
+        LinearLayout.LayoutParams lPar;
+        lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
+        int leftMost = dajLeftmostX();
+        //jak za bardzo na lewo, to korygujemy:
+
+
+        int n = currWord.length();
+        int szer = (int) (n*dajSredniaSzerLitery()*1.5);  //szacowana szerokosc wyrazu
+        if ( (leftMost + szer) > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
+            leftMost = xLp - szer;            //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescił
+            if (leftMost<10) leftMost=20;
+            lPar.leftMargin = leftMost;
+            tvShownWord.setLayoutParams(lPar);
+        }
+
+
+
+
+
+
+
     }  //koniec Metody()
+
+
+    public static int getSzer(Context context, String text, int textSize, int deviceWidth) {
+        TextView textView = new TextView(context);
+        textView.setText(text);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
+
+        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(deviceWidth, View.MeasureSpec.AT_MOST);
+        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        textView.measure(widthMeasureSpec, heightMeasureSpec);
+        //return textView.getMeasuredHeight();
+
+        return textView.getMeasuredWidth();
+    }
 
     private void restoreOriginalWyraz() {
     //Wyraz z Obszaru zmniejszany jest du małych liter.

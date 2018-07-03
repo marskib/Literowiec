@@ -517,30 +517,21 @@ public class MainActivity extends Activity {
             }
         });*/
 
-        //Jezeli po powiekszeni liter wyraz wystawalby za Obszar - cofniecie:
-
-
-        //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
+        //Jezeli po powiekszeniu liter wyraz wystawalby za Obszar - cofniecie wyrazu w lewo podobnie jak przy malych literach w uporzadkujObszar)::
+        //(uwaga: korekcja jest w if-ie, wiec nie zawsze bedzie wykonywana)
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
-        int leftMost = dajLeftmostX();
+        int leftMost= tvShownWord.getLeft();
         //jak za bardzo na lewo, to korygujemy:
-
-
         int n = currWord.length();
-        int szer = (int) (n*dajSredniaSzerLitery()*1.5);  //szacowana szerokosc wyrazu
-        if ( (leftMost + szer) > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
-            leftMost = xLp - szer;            //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescił
-            if (leftMost<10) leftMost=20;
+        //szacowana szerokosc wyrazu; //uwaga - ta funkcja dziala de facto na malych literach, wiec potem korekcja
+        int szer = (int) (n*dajSredniaSzerLitery()*1.2);     //1.2 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
+        if ( (leftMost + szer) > xLp ) {                     //wyraz wyszedłby za prawą krawędz Obszaru
+            leftMost = xLp - szer;                           //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescić
+            if (leftMost<10) leftMost=10;
             lPar.leftMargin = leftMost;
             tvShownWord.setLayoutParams(lPar);
         }
-
-
-
-
-
-
 
     }  //koniec Metody()
 

@@ -364,7 +364,7 @@ public class MainActivity extends Activity {
        //currWord = "************";
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
-       //currWord   = "pomarańczowy";
+       currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
@@ -372,7 +372,9 @@ public class MainActivity extends Activity {
        //currWord   = "pies";
        //currWord   = "mmmm";
        //currWord   = "Mikołaj";
-      //currWord   = "lalka";
+       //currWord   = "lalka";
+       //currWord   = "jabłko";
+       //currWord   = "słoneczniki";
 
        //Pobieramy wyraz do rozrzucenia:
        char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
@@ -525,10 +527,15 @@ public class MainActivity extends Activity {
         //jak za bardzo na lewo, to korygujemy:
         int n = currWord.length();
         //szacowana szerokosc wyrazu; //uwaga - ta funkcja dziala de facto na malych literach, wiec potem korekcja
-        int szer = (int) (n*dajSredniaSzerLitery()*1.2);     //1.2 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
+        int szer = (int) (n*dajSredniaSzerLitery()*1.25);     //1.2 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
         if ( (leftMost + szer) > xLp ) {                     //wyraz wyszedłby za prawą krawędz Obszaru
             leftMost = xLp - szer;                           //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescić
-            if (leftMost<10) leftMost=10;
+            if (leftMost<10)
+              leftMost=2;
+
+            if (n=12)
+                tvShownWord.setTextSize(lite);
+
             lPar.leftMargin = leftMost;
             tvShownWord.setLayoutParams(lPar);
         }

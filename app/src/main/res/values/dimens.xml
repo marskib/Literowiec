@@ -19,5 +19,7 @@
     <!--padding etykiety; wykorzystywany w kodzie do obliczenia dokladnej pozycji litery: -->
     <dimen name="padding_ski">10dp</dimen>
 
+    <!-- rozsuniecie liter (api dependent >= 21 -->
+    <dimen name="lspacing_ski">0.1</dimen>
 
 </resources>

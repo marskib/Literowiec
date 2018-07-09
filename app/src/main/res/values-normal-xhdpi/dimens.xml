@@ -2,5 +2,6 @@
 <resources>
   <dimen name="poprawka">95dp</dimen>
   <!--<dimen name="litera_size">60sp</dimen>-->
+  <dimen name="litera_size">50sp</dimen>
 
 </resources>

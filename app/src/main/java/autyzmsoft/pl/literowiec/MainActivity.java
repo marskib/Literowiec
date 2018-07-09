@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
@@ -364,7 +365,7 @@ public class MainActivity extends Activity {
        //currWord = "************";
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
-       currWord   = "pomarańczowy";
+       //currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
@@ -375,6 +376,8 @@ public class MainActivity extends Activity {
        //currWord   = "lalka";
        //currWord   = "jabłko";
        //currWord   = "słoneczniki";
+       //currWord   = "podkoszulek";
+
 
        //Pobieramy wyraz do rozrzucenia:
        char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
@@ -519,27 +522,24 @@ public class MainActivity extends Activity {
             }
         });*/
 
-        //Jezeli po powiekszeniu liter wyraz wystawalby za Obszar - cofniecie wyrazu w lewo podobnie jak przy malych literach w uporzadkujObszar)::
+        //Jezeli po powiekszeniu liter wyraz wystawalby za Obszar - cofniecie wyrazu w lewo podobnie jak przy malych literach w uporzadkujObszar):
         //(uwaga: korekcja jest w if-ie, wiec nie zawsze bedzie wykonywana)
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
         int leftMost= tvShownWord.getLeft();
         //jak za bardzo na lewo, to korygujemy:
         int n = currWord.length();
+        if (n>10) //zmniejszam fontsize lub sciesniam jezeli b.dlugi wyraz, bo wychodzi za Obszar no mater what...
+            ewentualniePomniejszLubSciesnij();
         //szacowana szerokosc wyrazu; //uwaga - ta funkcja dziala de facto na malych literach, wiec potem korekcja
-        int szer = (int) (n*dajSredniaSzerLitery()*1.25);     //1.2 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
+        int szer = (int) (n*dajSredniaSzerLitery()*1.25);    //1.25 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
         if ( (leftMost + szer) > xLp ) {                     //wyraz wyszedłby za prawą krawędz Obszaru
             leftMost = xLp - szer;                           //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescić
             if (leftMost<10)
               leftMost=2;
-
-            if (n=12)
-                tvShownWord.setTextSize(lite);
-
             lPar.leftMargin = leftMost;
             tvShownWord.setLayoutParams(lPar);
         }
-
     }  //koniec Metody()
 
 
@@ -557,10 +557,11 @@ public class MainActivity extends Activity {
     }
 
     private void restoreOriginalWyraz() {
-    //Wyraz z Obszaru zmniejszany jest du małych liter.
+    //Wyraz z Obszaru zmniejszany jest do małych liter.
     //Uwzględnia problem MIKOŁAJ->Mikołaj
 
         String coPokazac = currWord;
+        restoreParams(tvShownWord);
         tvShownWord.setText(coPokazac);
     } //koniec Metody()
 
@@ -820,6 +821,9 @@ public class MainActivity extends Activity {
     /* Gasimy niektore klawisze pod Obszarem.                                                      */
     /* ******************************************************************************************* */
 
+        //Przywracamy wielkosc fontow i letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
+        restoreParams(tvShownWord);
+
         //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
@@ -845,7 +849,8 @@ public class MainActivity extends Activity {
 
         tvShownWord.setLayoutParams(lPar);
 
-        pokazWyraz();  //w Obszarze pokazany zostaje ulozony wyraz
+        if (toUp) ewentualniePomniejszLubSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
+        pokazWyraz();                                 //w Obszarze pokazany zostaje ulozony wyraz
 
         //Gasimy wszystkie etykiety:
         for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
@@ -861,9 +866,21 @@ public class MainActivity extends Activity {
 
     } //koniec Metody()
 
+    private void restoreParams(TextView mTV) {
+    //Przywracamy wielkosc fontow i letterSpacing
+
+        int lsize = (int) getResources().getDimension(R.dimen.litera_size);
+        mTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, lsize);
+        if (Build.VERSION.SDK_INT >= 21) {
+            //float lspacing = getResources().getDimension(R.dimen.lspacing_ski); nie dziala, ustawiam na żywca....
+            //tvShownWord.setLetterSpacing(lspacing);
+            mTV.setLetterSpacing((float) 0.1);
+        }
+    }
+
     private void pokazWyraz() {
     //Pokazanie ulozonego wyrazu w Obszarze;
-    //Wyraz skladam z tego, co widac na ekranie, a nie uzywam currWord (bo duze/male litery)
+    //Wyraz skladam z tego, co widac na ekranie, nie uzywając currWord (bo duze/male litery)
 
       StringBuilder sb = new StringBuilder();
       for (MojTV lb : lbsRob) {
@@ -871,6 +888,36 @@ public class MainActivity extends Activity {
       }
       tvShownWord.setText(sb);
       tvShownWord.setVisibility(View.VISIBLE);
+    } //koniec Metody()
+
+    private void ewentualniePomniejszLubSciesnij() {
+    //Jesli wyraz dluzszy niz 10, to albo zmniejszam litery, albo sciesniam (jesli szeroki)
+    //Sciesniania API dependent, wiec badam.
+    //Zakladam, ze wywolywana tylko, gdy duze litery; przy malych- wszystko sie miesci
+
+        if (currWord.length()<11) return;
+
+        int versionINT = Build.VERSION.SDK_INT;
+
+//        String manufacturer = Build.MANUFACTURER;
+//        String model = Build.MODEL;
+//        String versionREL = Build.VERSION.RELEASE;
+//        String versionRelease = Build.VERSION.RELEASE;
+//
+//        Log.e("MyActivity", "manufacturer " + manufacturer
+//                + " \n model " + model
+//                + " \n version " + versionINT
+//                + " \n version " + versionREL
+//                + " \n versionRelease " + versionRelease
+//        );
+
+        if (versionINT >= 21) tvShownWord.setLetterSpacing(0);
+        else {
+            int lsize = (int) getResources().getDimension(R.dimen.litera_size);
+            lsize = 1*(lsize/2);
+            lsize = pxToSp(lsize);
+            tvShownWord.setTextSize(lsize);
+        }
     } //koniec Metody()
 
 
@@ -890,7 +937,7 @@ public class MainActivity extends Activity {
                 i++;
             }
         }
-        //tab roboczą sortujemy rosnaco babelkowo wg. wspolrzednej X.
+        //Tablicę roboczą sortujemy rosnaco babelkowo wg. wspolrzednej X.
         //Wynikiem jest tablica rob. lbsRob, w ktorej kolejne elementy odpowiadają etykietom w Obszarze, ulozonym od lewej do prawej:
         MojTV elRob = new MojTV(this);    //element roboczy
         boolean bylSort = true;

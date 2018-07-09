@@ -121,10 +121,11 @@
             android:textAlignment="center"
             android:textSize="@dimen/litera_size"
             android:textStyle="bold"
-            android:letterSpacing="0.1"
+            android:letterSpacing="@dimen/lspacing_ski"
             android:visibility="invisible"
             android:maxLines="1"/>
     </LinearLayout>
+            <!--android:letterSpacing="0.1"-->
 
     <!--Miesce na obrazek: -->
     <ImageView

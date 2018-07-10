@@ -365,7 +365,7 @@ public class MainActivity extends Activity {
        //currWord = "************";
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
-       //currWord   = "pomarańczowy";
+       currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
@@ -529,14 +529,14 @@ public class MainActivity extends Activity {
         int leftMost= tvShownWord.getLeft();
         //jak za bardzo na lewo, to korygujemy:
         int n = currWord.length();
-        if (n>10) //zmniejszam fontsize lub sciesniam jezeli b.dlugi wyraz, bo wychodzi za Obszar no mater what...
-            ewentualniePomniejszLubSciesnij();
+        if (n>10) //sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what...
+            ewentualnieSciesnij();
         //szacowana szerokosc wyrazu; //uwaga - ta funkcja dziala de facto na malych literach, wiec potem korekcja
         int szer = (int) (n*dajSredniaSzerLitery()*1.25);    //1.25 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
         if ( (leftMost + szer) > xLp ) {                     //wyraz wyszedłby za prawą krawędz Obszaru
             leftMost = xLp - szer;                           //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescić
             if (leftMost<10)
-              leftMost=2;
+              leftMost=5;
             lPar.leftMargin = leftMost;
             tvShownWord.setLayoutParams(lPar);
         }
@@ -849,7 +849,7 @@ public class MainActivity extends Activity {
 
         tvShownWord.setLayoutParams(lPar);
 
-        if (toUp) ewentualniePomniejszLubSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
+        if (toUp) ewentualnieSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
         pokazWyraz();                                 //w Obszarze pokazany zostaje ulozony wyraz
 
         //Gasimy wszystkie etykiety:
@@ -890,9 +890,10 @@ public class MainActivity extends Activity {
       tvShownWord.setVisibility(View.VISIBLE);
     } //koniec Metody()
 
-    private void ewentualniePomniejszLubSciesnij() {
+    private void ewentualnieSciesnij() {
     //Jesli wyraz dluzszy niz 10, to albo zmniejszam litery, albo sciesniam (jesli szeroki)
-    //Sciesniania API dependent, wiec badam.
+    //Sciesnianie jest API dependent, wiec badam.
+    //Jezeli API<21 nie robie nic, bo taki wyraz nie jest sciesniony i na pewno(?) sie miesci....
     //Zakladam, ze wywolywana tylko, gdy duze litery; przy malych- wszystko sie miesci
 
         if (currWord.length()<11) return;
@@ -912,12 +913,7 @@ public class MainActivity extends Activity {
 //        );
 
         if (versionINT >= 21) tvShownWord.setLetterSpacing(0);
-        else {
-            int lsize = (int) getResources().getDimension(R.dimen.litera_size);
-            lsize = 1*(lsize/2);
-            lsize = pxToSp(lsize);
-            tvShownWord.setTextSize(lsize);
-        }
+//
     } //koniec Metody()
 
 

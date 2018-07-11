@@ -8,6 +8,7 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -365,7 +366,7 @@ public class MainActivity extends Activity {
        //currWord = "************";
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
-       currWord   = "pomarańczowy";
+       //currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
@@ -535,8 +536,7 @@ public class MainActivity extends Activity {
         int szer = (int) (n*dajSredniaSzerLitery()*1.25);    //1.25 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
         if ( (leftMost + szer) > xLp ) {                     //wyraz wyszedłby za prawą krawędz Obszaru
             leftMost = xLp - szer;                           //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescić
-            if (leftMost<10)
-              leftMost=5;
+            if (leftMost<10) leftMost=10;
             lPar.leftMargin = leftMost;
             tvShownWord.setLayoutParams(lPar);
         }
@@ -688,13 +688,18 @@ public class MainActivity extends Activity {
                     //Pokazanie szerokosci kontrolki:
                     tvInfo.setText(Integer.toString(view.getWidth()));
 
+                    ((MojTV) view).setTextColor(Color.RED); //zmiana koloru przeciaganej litery - kosmetyka
+
                     //action_down wykonuje sie (chyba) ZAWSZE, wiec zakladam:
                     ((MojTV) view).setInArea(false);
-                    policzInAreasy(); //sledzenie
+                    //policzInAreasy(); //sledzenie
                     //a potem sie to ww. zmodyfikuje na action up....
 
                     break;
                 case MotionEvent.ACTION_UP:
+
+                    ((MojTV) view).setTextColor(Color.BLACK); //przywroceni koloru przeciaganej litery - kosmetyka
+
                     //sledzenie:
                     int Xstop = X;
                     tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
@@ -840,7 +845,7 @@ public class MainActivity extends Activity {
             leftMost = xLp - szer;            //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescił
             bDalej.setText("Odsunalem o "+szer); //sledzenie
         }
-        if (leftMost<10) leftMost=20;
+        if (leftMost<10) leftMost=10;
 
         tvInfoObszar.setText(Integer.toString(xLp)+", leftmost="+Integer.toString(leftMost)); //sledzenie
 

@@ -557,7 +557,7 @@ public class MainActivity extends Activity {
     }
 
     private void restoreOriginalWyraz() {
-    //Wyraz z Obszaru zmniejszany jest do małych liter.
+    //Wyraz z Obszaru zmniejszany jest do małych (raczej: oryginalnych) liter.
     //Uwzględnia problem MIKOŁAJ->Mikołaj
 
         String coPokazac = currWord;
@@ -781,7 +781,7 @@ public class MainActivity extends Activity {
     } //koniec Metody()
 
     private int dajLeftmostX() {
-    //Daje wspolrzedną X najbardziej na lewo polozonej etykiety z Obszaru; pomocnicza
+    //Daje wspolrzedną X najbardziej na lewo polozonej przez usera etykiety z Obszaru; pomocnicza
 
         int min = Integer.MAX_VALUE;
         for (MojTV lb : lbs) {
@@ -843,7 +843,7 @@ public class MainActivity extends Activity {
         int szer = n*dajSredniaSzerLitery();  //szacowana szerokosc wyrazu
         if ( (leftMost + szer) > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
             leftMost = xLp - szer;            //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescił
-            bDalej.setText("Odsunalem o "+szer); //sledzenie
+            //bDalej.setText("Odsunalem o "+szer); //sledzenie
         }
         if (leftMost<10) leftMost=10;
 
@@ -1198,7 +1198,7 @@ public class MainActivity extends Activity {
         final int poprawka = (int) getResources().getDimension(R.dimen.poprawka);
         Toast.makeText(this,"poprawka: "+pxToDp(poprawka),Toast.LENGTH_SHORT).show();
         int lsize = (int) getResources().getDimension(R.dimen.litera_size);
-        Toast.makeText(this,"litera_size: "+pxToSp(lsize),Toast.LENGTH_LONG).show();
+        Toast.makeText(this,"litera_size: "+pxToSp(lsize),Toast.LENGTH_SHORT).show();
 
         //L01:  //dalej trzeba uzywac Runnable - czekanie az obiekt L00 'usadowi' sie - inaczej wartosci nieustalobe, czyli ok. 0....
         L00.post(new Runnable() {

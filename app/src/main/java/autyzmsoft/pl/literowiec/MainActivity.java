@@ -378,6 +378,7 @@ public class MainActivity extends Activity {
        //currWord   = "jabłko";
        //currWord   = "słoneczniki";
        //currWord   = "podkoszulek";
+       currWord   = "ogórek";
 
 
        //Pobieramy wyraz do rozrzucenia:
@@ -476,6 +477,7 @@ public class MainActivity extends Activity {
 
     private void podniesLabels() {
     //Etykiety podnoszone są do Wielkich liter
+    //Oryginałów l.origL - nie ruszam!!!
 
         String coWidac;
         for (MojTV lb : lbs) {
@@ -527,11 +529,20 @@ public class MainActivity extends Activity {
         //(uwaga: korekcja jest w if-ie, wiec nie zawsze bedzie wykonywana)
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
-        int leftMost= tvShownWord.getLeft();
         //jak za bardzo na lewo, to korygujemy:
         int n = currWord.length();
         if (n>10) //sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what...
             ewentualnieSciesnij();
+        int leftMost= tvShownWord.getLeft();
+
+
+        //Ewentualne przesuniecie w lewo, jezeli wyraz nie zmiesciłby sie w Obszarze:
+        int skorygowanaPozycja = getSkorygowanaPozycja(leftMost);
+
+        lPar.leftMargin = skorygowanaPozycja;
+        tvShownWord.setLayoutParams(lPar);
+
+/*
         //szacowana szerokosc wyrazu; //uwaga - ta funkcja dziala de facto na malych literach, wiec potem korekcja
         int szer = (int) (n*dajSredniaSzerLitery()*1.25);    //1.25 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
         if ( (leftMost + szer) > xLp ) {                     //wyraz wyszedłby za prawą krawędz Obszaru
@@ -540,6 +551,7 @@ public class MainActivity extends Activity {
             lPar.leftMargin = leftMost;
             tvShownWord.setLayoutParams(lPar);
         }
+*/
     }  //koniec Metody()
 
 
@@ -805,11 +817,19 @@ public class MainActivity extends Activity {
 
 
     private int dajSredniaSzerLitery() {
-    //daje srednia szerokosc etykiety w Obszarze (=szr.lit. w currWord)
+    //daje srednia szerokosc etykiety w Obszarze
+    //getWidth() bierze to co widac (nie lb.origL), wiec jest OK (wielkie litery wyjda szersze)
+
+        if (toUp) {
+            rozrzucWyraz();
+        }
+
+
         int sum=0;
         for (MojTV lb : lbs) {
-            if (lb.isInArea()) {
-                sum += lb.getWidth();
+            if (lb.getVisibility()== View.VISIBLE) {
+                int sL = lb.getWidth();
+                sum += sL;
                 //sum -= lb.getPaddingRight(); //na razie nie wiem, dlaczego odejmowac tylko z jednej strony...
             }
         }
@@ -826,35 +846,26 @@ public class MainActivity extends Activity {
     /* Gasimy niektore klawisze pod Obszarem.                                                      */
     /* ******************************************************************************************* */
 
-        //Przywracamy wielkosc fontow i letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
+        //Przywracamy wielkosc letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
         restoreParams(tvShownWord);
 
         //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
         int leftMost = dajLeftmostX();
-        //jak za bardzo na lewo, to korygujemy:
 
+        //Ewentualne przesuniecie w lewo, jezeli wyraz nie zmiesciłby sie w Obszarze:
+        int skorygowanaPozycja = getSkorygowanaPozycja(leftMost);
 
-        //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt blisko prawej krawedzi Obszaru -
-        //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja:
-        //(TRZEBA PO LITERACH-Etykietach lbs, BO ISTNIEJA NA EKRANIE, A CURRWORD JESZCZE NIE MA w obszarze)
-        int n = currWord.length();
-        int szer = n*dajSredniaSzerLitery();  //szacowana szerokosc wyrazu
-        if ( (leftMost + szer) > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
-            leftMost = xLp - szer;            //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescił
-            //bDalej.setText("Odsunalem o "+szer); //sledzenie
-        }
-        if (leftMost<10) leftMost=10;
+        tvInfoObszar.setText(Integer.toString(xLp)+", skorygowanaPozycja="+Integer.toString(leftMost)); //sledzenie
 
-        tvInfoObszar.setText(Integer.toString(xLp)+", leftmost="+Integer.toString(leftMost)); //sledzenie
-
-        lPar.leftMargin = leftMost;
+        lPar.leftMargin = skorygowanaPozycja;
         lPar.topMargin  = dajWspYetykiet()-yLg + dpToPx(3) + 6; //uwzgledniam border width
 
         tvShownWord.setLayoutParams(lPar);
 
         if (toUp) ewentualnieSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
+
         pokazWyraz();                                 //w Obszarze pokazany zostaje ulozony wyraz
 
         //Gasimy wszystkie etykiety:
@@ -871,15 +882,28 @@ public class MainActivity extends Activity {
 
     } //koniec Metody()
 
-    private void restoreParams(TextView mTV) {
-    //Przywracamy wielkosc fontow i letterSpacing
+    private int getSkorygowanaPozycja(int pierwotnaPozycja) {
+    //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt blisko prawej krawedzi Obszaru -
+    //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja:
+    //(TRZEBA przejechac PO LITERACH-Etykietach lbs, BO ISTNIEJA NA EKRANIE, a gotowego wyrazu JESZCZE NIE MA w obszarze)
+    //Parametr - lewa wspolrzedna miejsca, gdzie dziecko polozylo 1-sza litere wyrazu
+        int nowaPozycja = pierwotnaPozycja;
+        int n = currWord.length();
+        int szer = n*dajSredniaSzerLitery();     //szacowana szerokosc wyrazu
+        if ( (nowaPozycja + szer) > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
+            nowaPozycja = xLp - szer;            //gdzie wyraz powinien sie rozpoczac, zeby sie zmiescił
+        }
+        if (nowaPozycja < 10) nowaPozycja = 10;  //zeby nie bylo za bardzo na lewo (kosmetyka)
+        return nowaPozycja;
+    }
 
-        int lsize = (int) getResources().getDimension(R.dimen.litera_size);
-        mTV.setTextSize(TypedValue.COMPLEX_UNIT_PX, lsize);
+    private void restoreParams(TextView mTV) {
+    //Przywracamy wielkosc letterSpacing
+
         if (Build.VERSION.SDK_INT >= 21) {
             //float lspacing = getResources().getDimension(R.dimen.lspacing_ski); nie dziala, ustawiam na żywca....
             //tvShownWord.setLetterSpacing(lspacing);
-            mTV.setLetterSpacing((float) 0.1);
+            mTV.setLetterSpacing((float) 0.1);   //UWAGA!!! - na "żywca"... patrz wyżej
         }
     }
 
@@ -896,7 +920,7 @@ public class MainActivity extends Activity {
     } //koniec Metody()
 
     private void ewentualnieSciesnij() {
-    //Jesli wyraz dluzszy niz 10, to albo zmniejszam litery, albo sciesniam (jesli szeroki)
+    //Jesli wyraz dluzszy niz 10, to sciesniam (jesli szeroki)
     //Sciesnianie jest API dependent, wiec badam.
     //Jezeli API<21 nie robie nic, bo taki wyraz nie jest sciesniony i na pewno(?) sie miesci....
     //Zakladam, ze wywolywana tylko, gdy duze litery; przy malych- wszystko sie miesci

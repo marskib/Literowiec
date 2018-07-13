@@ -289,6 +289,30 @@
         android:textStyle="bold"
         android:text="L" />
 
+    <!--Probniki na rozmiary liter Malych i Wielkich : -->
+
+    <TextView
+      android:id="@+id/probnikM"
+
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/litera_size"
+      android:padding="@dimen/padding_ski"
+      android:layout_marginLeft="600dp"
+      android:textStyle="bold"
+      android:text="a" />
+
+    <TextView
+      android:id="@+id/probnikW"
+
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textSize="@dimen/litera_size"
+      android:padding="@dimen/padding_ski"
+      android:layout_marginLeft="600dp"
+      android:textStyle="bold"
+      android:text="A" />
+
 
 
 <!-- Kontrolki 'kontrolne' -->

@@ -12,8 +12,8 @@ public class MojTV extends android.support.v7.widget.AppCompatTextView {
 
     public MojTV(Context context) { super(context); }
 
-    public MojTV(Context context, AttributeSet attrs) {super(context, attrs);
-    } //potrzebny w xml'u
+    //Potrzebny w xml'u:
+    public MojTV(Context context, AttributeSet attrs) {super(context, attrs);}
 
     public boolean isInArea() {
         return inArea;

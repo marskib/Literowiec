@@ -83,6 +83,8 @@ public class MainActivity extends Activity {
     private Button bUpperLower;   //wielkie/male litery
     private Button bAgain;        //wymieszanie liter
 
+    private int szerLitM;         //szerokosc litery Malej i Wielkiej ustalone na podstawie probników TextView
+    private int szerLitW;
 
     private LinearLayout lObszar;
     private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
@@ -158,12 +160,33 @@ public class MainActivity extends Activity {
             }
         });
 
+        //Ustalenie session-wide szerokosci liter:
+        final TextView probnikM = (TextView) findViewById(R.id.probnikM);
+        final TextView probnikW = (TextView) findViewById(R.id.probnikW);
+
+        probnikM.post(new Runnable() {
+          @Override
+          public void run() {
+            szerLitM = probnikM.getWidth();
+            probnikM.setVisibility(View.GONE);
+          }
+        });
+
+        probnikW.post(new Runnable() {
+          @Override
+          public void run() {
+            szerLitW = probnikW.getWidth();
+            probnikW.setVisibility(View.GONE);
+          }
+        });
+        //koniec ustalania szerokosci liter
 
 
         tworzListyObrazkow();
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
+
 
         //pokazModal();
 
@@ -357,7 +380,7 @@ public class MainActivity extends Activity {
 
 
    private void rozrzucWyraz() {
-   /* Rozrzucenie currWord po tablicy lbs (= po Ekranie) */
+   /* Rozrzucenie currWord po tablicy lbs (= po Ekranie)              */
 
        int k;  //na losową pozycję
 
@@ -378,7 +401,7 @@ public class MainActivity extends Activity {
        //currWord   = "jabłko";
        //currWord   = "słoneczniki";
        //currWord   = "podkoszulek";
-       currWord   = "ogórek";
+       //currWord   = "ogórek";
 
 
        //Pobieramy wyraz do rozrzucenia:
@@ -414,6 +437,7 @@ public class MainActivity extends Activity {
     //Resetowanie tablicy i tym samym zwiazanycyh z nia kontrolek ekranowych:
         for (MojTV lb : lbs) {
             lb.setText("*");
+            lb.setOrigL("*");
             lb.setInArea(false);
             lb.setVisibility(View.INVISIBLE);
         }
@@ -446,8 +470,8 @@ public class MainActivity extends Activity {
         ustawLadnieEtykiety();
         resetujLabelsy();
         rozrzucWyraz();
-        tvShownWord.setVisibility(View.INVISIBLE);
 
+        tvShownWord.setVisibility(View.INVISIBLE);
         bDalej.setVisibility(View.INVISIBLE); //gdyby byl widoczny
     }
 
@@ -481,7 +505,7 @@ public class MainActivity extends Activity {
 
         String coWidac;
         for (MojTV lb : lbs) {
-            if (lb.getVisibility()== View.VISIBLE) {
+            if (!lb.getOrigL().equals("*")) { //(lb.getVisibility()== View.VISIBLE) {
                 coWidac = lb.getText().toString();
                 coWidac = coWidac.toUpperCase(Locale.getDefault());
                 lb.setText(coWidac);
@@ -495,7 +519,7 @@ public class MainActivity extends Activity {
 
         String coPokazac;
         for (MojTV lb : lbs) {
-            if (lb.getVisibility()==View.VISIBLE) {
+            if (!lb.getOrigL().equals("*")) { //(lb.getVisibility()==View.VISIBLE) {
                 coPokazac = lb.getOrigL();
                 lb.setText(coPokazac);
             }
@@ -510,48 +534,20 @@ public class MainActivity extends Activity {
         coWidac = coWidac.toUpperCase(Locale.getDefault());
         tvShownWord.setText(coWidac);
 
-        //Ewentualne odsuniecie:
-        //Trzeba czekac, bo problemy (doswiadczalnie):
-     /*   tvShownWord.post(new Runnable() {
-            @Override
-            public void run() {
-                int wystaje = (int) (tvShownWord.getX()+tvShownWord.getWidth()+2*tvShownWord.getPaddingStart()  -xLp);
-                if (wystaje>-10) {
-                    LinearLayout.LayoutParams lPar;
-                    //lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
-                    //lPar.leftMargin -= Math.abs(30*wystaje);
-                    //tvShownWord.setLayoutParams(lPar);
-                }
-            }
-        });*/
-
         //Jezeli po powiekszeniu liter wyraz wystawalby za Obszar - cofniecie wyrazu w lewo podobnie jak przy malych literach w uporzadkujObszar):
-        //(uwaga: korekcja jest w if-ie, wiec nie zawsze bedzie wykonywana)
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
-        //jak za bardzo na lewo, to korygujemy:
-        int n = currWord.length();
-        if (n>10) //sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what...
-            ewentualnieSciesnij();
         int leftMost= tvShownWord.getLeft();
-
-
         //Ewentualne przesuniecie w lewo, jezeli wyraz nie zmiesciłby sie w Obszarze:
         int skorygowanaPozycja = getSkorygowanaPozycja(leftMost);
-
         lPar.leftMargin = skorygowanaPozycja;
+
+        //Sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what... :
+        int n = currWord.length();
+        if (n>10) ewentualnieSciesnij();
+
         tvShownWord.setLayoutParams(lPar);
 
-/*
-        //szacowana szerokosc wyrazu; //uwaga - ta funkcja dziala de facto na malych literach, wiec potem korekcja
-        int szer = (int) (n*dajSredniaSzerLitery()*1.25);    //1.25 - doswiadczalny wsp. o jaki duza litera jest wieksza od malej
-        if ( (leftMost + szer) > xLp ) {                     //wyraz wyszedłby za prawą krawędz Obszaru
-            leftMost = xLp - szer;                           //gdzie wuraz powinien sie rozpoczac, zeby sie zmiescić
-            if (leftMost<10) leftMost=10;
-            lPar.leftMargin = leftMost;
-            tvShownWord.setLayoutParams(lPar);
-        }
-*/
     }  //koniec Metody()
 
 
@@ -817,23 +813,29 @@ public class MainActivity extends Activity {
 
 
     private int dajSredniaSzerLitery() {
-    //daje srednia szerokosc etykiety w Obszarze
-    //getWidth() bierze to co widac (nie lb.origL), wiec jest OK (wielkie litery wyjda szersze)
-
-        if (toUp) {
-            rozrzucWyraz();
-        }
-
-
+    //Daje srednia szerokosc etykiety w Obszarze
+    //uwaga - getWidth() bierze to co widac (nie lb.origL), wiec jest OK (wielkie litery wyjda szersze)
+/*
         int sum=0;
         for (MojTV lb : lbs) {
-            if (lb.getVisibility()== View.VISIBLE) {
+            if (!lb.getOrigL().equals("*")) {//(lb.getVisibility()== View.VISIBLE) {
                 int sL = lb.getWidth();
                 sum += sL;
                 //sum -= lb.getPaddingRight(); //na razie nie wiem, dlaczego odejmowac tylko z jednej strony...
             }
         }
-        return (int)  sum / currWord.length();
+        int srednia =Math.round(sum/currWord.length());
+        return srednia;
+*/
+      int srednia = 0;
+
+      if (toUp)
+        srednia = szerLitW;
+      else
+        srednia = szerLitM;
+
+      return srednia;
+
     }
 
 
@@ -857,7 +859,7 @@ public class MainActivity extends Activity {
         //Ewentualne przesuniecie w lewo, jezeli wyraz nie zmiesciłby sie w Obszarze:
         int skorygowanaPozycja = getSkorygowanaPozycja(leftMost);
 
-        tvInfoObszar.setText(Integer.toString(xLp)+", skorygowanaPozycja="+Integer.toString(leftMost)); //sledzenie
+        //tvInfoObszar.setText(Integer.toString(xLp)+", skorygowanaPozycja="+Integer.toString(leftMost)); //sledzenie
 
         lPar.leftMargin = skorygowanaPozycja;
         lPar.topMargin  = dajWspYetykiet()-yLg + dpToPx(3) + 6; //uwzgledniam border width
@@ -890,7 +892,11 @@ public class MainActivity extends Activity {
         int nowaPozycja = pierwotnaPozycja;
         int n = currWord.length();
         int szer = n*dajSredniaSzerLitery();     //szacowana szerokosc wyrazu
-        if ( (nowaPozycja + szer) > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
+
+//if (toUp) szer= (int) Math.round(1.5*szer);
+
+        int gdzieKoniec = pierwotnaPozycja+szer; //gdzie wypadłby koniec wyrazu
+        if ( gdzieKoniec > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
             nowaPozycja = xLp - szer;            //gdzie wyraz powinien sie rozpoczac, zeby sie zmiescił
         }
         if (nowaPozycja < 10) nowaPozycja = 10;  //zeby nie bylo za bardzo na lewo (kosmetyka)

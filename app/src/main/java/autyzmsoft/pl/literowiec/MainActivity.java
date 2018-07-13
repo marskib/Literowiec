@@ -402,6 +402,8 @@ public class MainActivity extends Activity {
        //currWord   = "słoneczniki";
        //currWord   = "podkoszulek";
        //currWord   = "ogórek";
+       //currWord   = "makaron";
+       //currWord   = "zegar";
 
 
        //Pobieramy wyraz do rozrzucenia:

@@ -289,7 +289,7 @@
         android:textStyle="bold"
         android:text="L" />
 
-    <!--Probniki na rozmiary liter Malych i Wielkich : -->
+    <!--Probniki na rozmiary liter Malych i Wielkich (litery dibieram arbitralnie, lepiej zeby nie wypadaly jedna na drugiej-odsuwam w leftMargin...) : -->
 
     <TextView
       android:id="@+id/probnikM"
@@ -300,7 +300,7 @@
       android:padding="@dimen/padding_ski"
       android:layout_marginLeft="600dp"
       android:textStyle="bold"
-      android:text="a" />
+      android:text="k" />
 
     <TextView
       android:id="@+id/probnikW"
@@ -309,9 +309,9 @@
       android:layout_height="wrap_content"
       android:textSize="@dimen/litera_size"
       android:padding="@dimen/padding_ski"
-      android:layout_marginLeft="600dp"
+      android:layout_marginLeft="800dp"
       android:textStyle="bold"
-      android:text="A" />
+      android:text="#" />
 
 
 

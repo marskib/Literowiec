@@ -259,7 +259,6 @@ public class MainActivity extends Activity {
             odegrajZkartySD(sciezka_do_pliku_dzwiekowego, opozniacz);
             */
         }
-        return;
     }  //koniec Metody()
 
     public void odegrajZAssets(final String sciezka_do_pliku_parametr, int delay_milisek) {
@@ -404,6 +403,11 @@ public class MainActivity extends Activity {
        //currWord   = "ogórek";
        //currWord   = "makaron";
        //currWord   = "zegar";
+       //currWord   = "nóż";
+       //currWord   = "kot";
+       //currWord   = "huśtawka";
+
+
 
 
        //Pobieramy wyraz do rozrzucenia:
@@ -829,7 +833,7 @@ public class MainActivity extends Activity {
         int srednia =Math.round(sum/currWord.length());
         return srednia;
 */
-      int srednia = 0;
+      int srednia;
 
       if (toUp)
         srednia = szerLitW;
@@ -888,19 +892,18 @@ public class MainActivity extends Activity {
 
     private int getSkorygowanaPozycja(int pierwotnaPozycja) {
     //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt blisko prawej krawedzi Obszaru -
-    //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja:
-    //(TRZEBA przejechac PO LITERACH-Etykietach lbs, BO ISTNIEJA NA EKRANIE, a gotowego wyrazu JESZCZE NIE MA w obszarze)
+    //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja.
     //Parametr - lewa wspolrzedna miejsca, gdzie dziecko polozylo 1-sza litere wyrazu
         int nowaPozycja = pierwotnaPozycja;
         int n = currWord.length();
+        if (n <= 3) n = n+1;                     //przy b. krotkich wyrazach trzeba 'powiekszyc' szerokosc, bo bywa ze 'szer' jest za malo problemy przy wielkich literach...
         int szer = n*dajSredniaSzerLitery();     //szacowana szerokosc wyrazu
-
-//if (toUp) szer= (int) Math.round(1.5*szer);
 
         int gdzieKoniec = pierwotnaPozycja+szer; //gdzie wypadłby koniec wyrazu
         if ( gdzieKoniec > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
             nowaPozycja = xLp - szer;            //gdzie wyraz powinien sie rozpoczac, zeby sie zmiescił
         }
+
         if (nowaPozycja < 10) nowaPozycja = 10;  //zeby nie bylo za bardzo na lewo (kosmetyka)
         return nowaPozycja;
     }

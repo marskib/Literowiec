@@ -311,7 +311,7 @@
       android:padding="@dimen/padding_ski"
       android:layout_marginLeft="800dp"
       android:textStyle="bold"
-      android:text="#" />
+      android:text="W" />
 
 
 

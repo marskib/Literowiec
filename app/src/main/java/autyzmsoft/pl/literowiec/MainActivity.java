@@ -18,6 +18,7 @@ import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -103,6 +104,8 @@ public class MainActivity extends Activity {
 
     public static int inAreaLicznik = 0;     //licznik liter znajdujacych sie aktualnie w Obszarze
 
+    Button bDajGestosc; //sledzenie
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -128,6 +131,7 @@ public class MainActivity extends Activity {
         tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
         tvInfo3 = (TextView) findViewById(R.id.tvInfo3);
         tvInfoObszar = (TextView) findViewById(R.id.tvoInfoObszar);
+        bDajGestosc = (Button) findViewById(R.id.bDajGestosc);
 
         przypiszLabelsyAndListenery();
 
@@ -406,6 +410,7 @@ public class MainActivity extends Activity {
        //currWord   = "nóż";
        //currWord   = "kot";
        //currWord   = "huśtawka";
+       currWord   = "buty";
 
 
 
@@ -540,21 +545,42 @@ public class MainActivity extends Activity {
         coWidac = coWidac.toUpperCase(Locale.getDefault());
         tvShownWord.setText(coWidac);
 
+
         //Jezeli po powiekszeniu liter wyraz wystawalby za Obszar - cofniecie wyrazu w lewo podobnie jak przy malych literach w uporzadkujObszar):
-        LinearLayout.LayoutParams lPar;
-        lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
-        int leftMost= tvShownWord.getLeft();
-        //Ewentualne przesuniecie w lewo, jezeli wyraz nie zmiesciłby sie w Obszarze:
-        int skorygowanaPozycja = getSkorygowanaPozycja(leftMost);
-        lPar.leftMargin = skorygowanaPozycja;
+//        LinearLayout.LayoutParams lPar;
+//        lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
+//        int leftMost= tvShownWord.getLeft();
+//        //Ewentualne przesuniecie w lewo, jezeli wyraz nie zmiesciłby sie w Obszarze:
+//        int skorygowanaPozycja = getSkorygowanaPozycja(leftMost);
+//        lPar.leftMargin = skorygowanaPozycja;
+
+        korygujJesliWystaje();
 
         //Sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what... :
         int n = currWord.length();
         if (n>10) ewentualnieSciesnij();
 
-        tvShownWord.setLayoutParams(lPar);
 
+
+
+        //tvShownWord.setLayoutParams(lPar);
     }  //koniec Metody()
+
+    private void korygujJesliWystaje() {
+        tvShownWord.post(new Runnable() {
+            @Override
+            public void run() {
+                int rightT = (int) tvShownWord.getRight();
+                int rightL = (int) lObszar.getRight();
+
+                bDajGestosc.setText("TV : "+Integer.toString(rightT)+" Ol :"+Integer.toString(rightL));
+
+                if (rightT >= rightL) {
+                    addGravityToParent();
+                }
+            }
+        });
+    }
 
 
     public static int getSzer(Context context, String text, int textSize, int deviceWidth) {
@@ -580,7 +606,7 @@ public class MainActivity extends Activity {
     } //koniec Metody()
 
 
-    public void bDajGestoscOnClick(View v) {
+    public void bDajFOnClick(View v) {
         int screenSize = getResources().getConfiguration().screenLayout &
             Configuration.SCREENLAYOUT_SIZE_MASK;
 
@@ -856,25 +882,19 @@ public class MainActivity extends Activity {
 
         //Przywracamy wielkosc letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
         restoreParams(tvShownWord);
+        //Usuniecie Grawitacji z Lobszar, bo mogla byc ustawiona w pokazWyraz() ):
+        usunGrawitacje();
 
         //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
         int leftMost = dajLeftmostX();
-
-        //Ewentualne przesuniecie w lewo, jezeli wyraz nie zmiesciłby sie w Obszarze:
-        int skorygowanaPozycja = getSkorygowanaPozycja(leftMost);
-
-        //tvInfoObszar.setText(Integer.toString(xLp)+", skorygowanaPozycja="+Integer.toString(leftMost)); //sledzenie
-
-        lPar.leftMargin = skorygowanaPozycja;
-        lPar.topMargin  = dajWspYetykiet()-yLg + dpToPx(3) + 6; //uwzgledniam border width
-
+        lPar.leftMargin = leftMost;
         tvShownWord.setLayoutParams(lPar);
 
         if (toUp) ewentualnieSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
 
-        pokazWyraz();                                 //w Obszarze pokazany zostaje ulozony wyraz
+        pokazWyraz();                     //w Obszarze pokazany zostaje ulozony wyraz (umieszczam w tvSHownWord)
 
         //Gasimy wszystkie etykiety:
         for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
@@ -889,6 +909,13 @@ public class MainActivity extends Activity {
             } },2000); //zeby dziecko mialo czas na 'podziwianie' ;)
 
     } //koniec Metody()
+
+    private void usunGrawitacje() {
+    //Usuwa grawitacje z lObszar
+        RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
+        lObszar.setGravity(Gravity.NO_GRAVITY);
+        lObszar.setLayoutParams(lPar);
+    }
 
     private int getSkorygowanaPozycja(int pierwotnaPozycja) {
     //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt blisko prawej krawedzi Obszaru -
@@ -928,7 +955,29 @@ public class MainActivity extends Activity {
       }
       tvShownWord.setText(sb);
       tvShownWord.setVisibility(View.VISIBLE);
+
+      korygujJesliWystaje();
+
     } //koniec Metody()
+
+
+    private void addGravityToParent() {
+    //Dodanie grawitacji do prawego boku do LObszar;
+    //Dzieki temu, ze mamy gwarancje, jezeli wyraz wystaje za lObszar, to zostanie "cofnięty"
+    //i pokazany w całości w lObszar.
+
+        RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
+
+        //"usuniecie" marginesu z TextView'a (bo mogl byc programowo ustawiony i w takim wypadku grawitacja by nie zadzialala):
+        LinearLayout.LayoutParams lTV = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
+        lTV.leftMargin = 0;
+        tvShownWord.setLayoutParams(lTV);
+
+        //Teraz ustawienie grawitacji u parenta:
+        lObszar.setGravity(Gravity.END);
+        lObszar.setLayoutParams(lPar);
+    } //koniec Metody()
+
 
     private void ewentualnieSciesnij() {
     //Jesli wyraz dluzszy niz 10, to sciesniam (jesli szeroki)

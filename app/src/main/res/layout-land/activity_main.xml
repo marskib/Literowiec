@@ -123,9 +123,9 @@
             android:textStyle="bold"
             android:letterSpacing="@dimen/lspacing_ski"
             android:visibility="invisible"
-            android:background="@drawable/border_probnik"
             android:maxLines="1"/>
     </LinearLayout>
+            <!--android:background="@drawable/border_probnik"-->
             <!--android:letterSpacing="0.1"-->
 
     <!--Miesce na obrazek: -->

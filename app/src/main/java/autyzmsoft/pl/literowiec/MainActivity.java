@@ -392,7 +392,7 @@ public class MainActivity extends Activity {
        //currWord = "************";
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
-       //currWord   = "pomarańczowy";
+       currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
@@ -410,7 +410,7 @@ public class MainActivity extends Activity {
        //currWord   = "nóż";
        //currWord   = "kot";
        //currWord   = "huśtawka";
-       currWord   = "buty";
+       //currWord   = "buty";
 
 
 
@@ -771,7 +771,7 @@ public class MainActivity extends Activity {
                                 mHandl.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        UporzadkujObszar();
+                                        uporzadkujObszar();
                                          } },600);
                             } else {
                                 //Toast.makeText(MainActivity.this, "Żle.....", Toast.LENGTH_SHORT).show();
@@ -872,7 +872,7 @@ public class MainActivity extends Activity {
 
 
 
-    private void UporzadkujObszar() {
+    private void uporzadkujObszar() {
     /* ******************************************************************************************* */
     /* Po Zwyciestwie:                                                                             */
     /* Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz, przywracamy klawisz bDalej */
@@ -882,7 +882,7 @@ public class MainActivity extends Activity {
 
         //Przywracamy wielkosc letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
         restoreParams(tvShownWord);
-        //Usuniecie Grawitacji z Lobszar, bo mogla byc ustawiona w pokazWyraz() ):
+        //Usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w pokazWyraz() ):
         usunGrawitacje();
 
         //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
@@ -954,6 +954,7 @@ public class MainActivity extends Activity {
         sb.append(lb.getText());
       }
       tvShownWord.setText(sb);
+      tvShownWord.setTextColor(lbsRob[0].getTextColors()); //kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka
       tvShownWord.setVisibility(View.VISIBLE);
 
       korygujJesliWystaje();
@@ -985,7 +986,7 @@ public class MainActivity extends Activity {
     //Jezeli API<21 nie robie nic, bo taki wyraz nie jest sciesniony i na pewno(?) sie miesci....
     //Zakladam, ze wywolywana tylko, gdy duze litery; przy malych- wszystko sie miesci
 
-        if (currWord.length()<11) return;
+        if (currWord.length()<14) return; //11
 
         int versionINT = Build.VERSION.SDK_INT;
 

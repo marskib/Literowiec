@@ -2,4 +2,9 @@
 <resources>
     <dimen name="poprawka">195dp</dimen>
     <dimen name="litera_size">140sp</dimen>
+
+    <!-- wielkosc znaku @ w klawiszu(ach?) bDalej1 i bDalej(?) -->
+    <dimen name="malpa_size">25dp</dimen>
+
+
 </resources>

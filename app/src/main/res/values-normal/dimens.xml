@@ -16,5 +16,8 @@
     <!--odstep 1-szej litery 1=go rzedu od obrazka od obrazka: -->
     <dimen name="od_obrazka">25dp</dimen>
 
+    <!-- wielkosc znaku @ w klawiszu(ach?) bDalej1 i bDalej(?) -->
+    <dimen name="malpa_size">25dp</dimen>
+
 
 </resources>

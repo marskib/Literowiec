@@ -39,9 +39,6 @@ import java.util.Locale;
 import java.util.Random;
 
 
-
-
-
 //Prowadzenie litery po ekranie Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
 //YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
 
@@ -81,7 +78,8 @@ public class MainActivity extends Activity {
 
     public  boolean toUp = false; //czy jestesmy w trybie duzych/malych liter
     private Button bUpperLower;   //wielkie/male litery
-    private Button bAgain;        //wymieszanie liter
+    private Button bAgain;        //wymieszanie liter; klawisz pod Obszarem
+    private Button bAgain1;       //wymieszanie liter; klawisz podbDalej
 
     private LinearLayout lObszar;
     private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
@@ -114,7 +112,8 @@ public class MainActivity extends Activity {
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
         bPomin  = (Button) findViewById(R.id.bPomin);
-        bAgain = (Button) findViewById(R.id.bAgain);
+        bAgain  = (Button) findViewById(R.id.bAgain);
+        bAgain1 = (Button) findViewById(R.id.bAgain1);
         tvShownWord = (TextView) findViewById(R.id.tvShownWord);
         bUpperLower =(Button) findViewById(R.id.bUpperLower);
 
@@ -382,6 +381,7 @@ public class MainActivity extends Activity {
        //currWord   = "kot";
        //currWord   = "huśtawka";
        //currWord   = "buty";
+       //currWord   = "W";
 
 
 
@@ -442,6 +442,7 @@ public class MainActivity extends Activity {
         tvShownWord.setVisibility(View.INVISIBLE);
 
         bDalej.setVisibility(View.INVISIBLE);
+        bAgain1.setVisibility(View.INVISIBLE);
 
         pokazKlawiszeDodatkowe();
 
@@ -458,6 +459,11 @@ public class MainActivity extends Activity {
 
         tvShownWord.setVisibility(View.INVISIBLE);
         bDalej.setVisibility(View.INVISIBLE); //gdyby byl widoczny
+
+        if (v==bAgain1) {
+            bAgain1.setVisibility(View.INVISIBLE);
+            pokazKlawiszeDodatkowe();
+        }
     }
 
 
@@ -831,12 +837,13 @@ public class MainActivity extends Activity {
 
         ukryjKlawiszeDodatkowe();
 
-        //Przywrocenie/pokazanie klawisza bDalej (z lekkim opoznieniem):
+        //Przywrocenie/pokazanie klawisza bDalej i bAgain1 (z lekkim opoznieniem):
         Handler mHandl = new Handler();
         mHandl.postDelayed(new Runnable() {
             @Override
             public void run() {
                 bDalej.setVisibility(View.VISIBLE);
+                bAgain1.setVisibility(View.VISIBLE);
             } },2000); //zeby dziecko mialo czas na 'podziwianie' ;)
 
     } //koniec Metody()
@@ -1379,9 +1386,11 @@ public class MainActivity extends Activity {
 
     private void ustawWymiaryKlawiszy() {
     //Wymiarowuje klawisze bDalej, bPomin, bAgain
-        //bDalej zajmuje przestrzen od gory do gornej krawedzi Obszaru:
-        bDalej.getLayoutParams().height = yLg;
+        //bDalej zajmuje przestrzen od gory do gornej krawedzi Obszaru, ale zostawia miejsce na bAgain1:
+        bDalej.getLayoutParams().height = (int) (yLg - Math.round(1.1*bAgain1.getHeight()));
         bDalej.requestLayout();
+
+        bAgain1.getLayoutParams().width = bDalej.getWidth();
 
         //cala przestrzen od dolnej krawedzi Obszaru do konca ekranu:
         bPomin.getLayoutParams().height = sizeH - yLd;

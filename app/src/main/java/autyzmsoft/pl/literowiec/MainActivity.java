@@ -1,7 +1,6 @@
 package autyzmsoft.pl.literowiec;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -84,9 +83,6 @@ public class MainActivity extends Activity {
     private Button bUpperLower;   //wielkie/male litery
     private Button bAgain;        //wymieszanie liter
 
-    private int szerLitM;         //szerokosc litery Malej i Wielkiej ustalone na podstawie probników TextView
-    private int szerLitW;
-
     private LinearLayout lObszar;
     private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
     private Button bPomin;                              //na pominiecie/ucieczke z cwiczenia nie konczac go
@@ -100,9 +96,6 @@ public class MainActivity extends Activity {
 
     public int     currImage = -1;      //indeks biezacego obrazka
     public String  currWord  = "*";     //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
-    public String  shownWord = "*";     //currWord widziane/pokazywane na ekranie (różne od currWord, bo mogą być wielkie litery)
-
-    public static int inAreaLicznik = 0;     //licznik liter znajdujacych sie aktualnie w Obszarze
 
     Button bDajGestosc; //sledzenie
 
@@ -164,39 +157,15 @@ public class MainActivity extends Activity {
             }
         });
 
-        //Ustalenie session-wide szerokosci liter:
-        final TextView probnikM = (TextView) findViewById(R.id.probnikM);
-        final TextView probnikW = (TextView) findViewById(R.id.probnikW);
-
-        probnikM.post(new Runnable() {
-          @Override
-          public void run() {
-            szerLitM = probnikM.getWidth();
-            probnikM.setVisibility(View.GONE);
-          }
-        });
-
-        probnikW.post(new Runnable() {
-          @Override
-          public void run() {
-            szerLitW = probnikW.getWidth();
-            probnikW.setVisibility(View.GONE);
-          }
-        });
-        //koniec ustalania szerokosci liter
-
 
         tworzListyObrazkow();
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
 
-
         //pokazModal();
 
-
-    }  //koniec Metody()
-
+    }  //koniec onCreate()
 
 
     public void setCurrentImage() {
@@ -376,7 +345,7 @@ public class MainActivity extends Activity {
         nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
         currWord  = nazwaPliku;
-        shownWord = currWord;
+        //shownWord = currWord;
 
       } //koniec Metody()
 
@@ -385,6 +354,8 @@ public class MainActivity extends Activity {
    private void rozrzucWyraz() {
    /* Rozrzucenie currWord po tablicy lbs (= po Ekranie)              */
 
+       bDajGestosc.setText("TV :   Ol: "); //sledzenie
+
        int k;  //na losową pozycję
 
        //currWord = "ABCDEFGHIJKL";
@@ -392,7 +363,7 @@ public class MainActivity extends Activity {
        //currWord = "************";
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
-       currWord   = "pomarańczowy";
+       //currWord   = "pomarańczowy";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
@@ -435,6 +406,7 @@ public class MainActivity extends Activity {
            //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
            lbs[k].setOrigL(z);
            lbs[k].setText(z);
+           lbs[k].setTextColor(Color.BLACK);  //kosmetyka
            lbs[k].setVisibility(View.VISIBLE);
 
        } //for
@@ -455,6 +427,7 @@ public class MainActivity extends Activity {
     }
 
 
+    @SuppressWarnings("unused")
     public void bDalejOnClick(View v) {
         //sledzenie:
         //bAgain.setText("*");
@@ -476,6 +449,7 @@ public class MainActivity extends Activity {
 
 
 
+    @SuppressWarnings("unused")
     public void bAgainOnClick(View v) {
 
         ustawLadnieEtykiety();
@@ -526,7 +500,7 @@ public class MainActivity extends Activity {
 
     private void restoreOriginalLabels() {
     //Etykiety przywracane są do oryginalnych (małych) liter
-    //Uwzględnia problem MIKOŁAJ->Mikołaj
+    //Uwzględnia to problem MIKOŁAJ->Mikołaj
 
         String coPokazac;
         for (MojTV lb : lbs) {
@@ -545,99 +519,56 @@ public class MainActivity extends Activity {
         coWidac = coWidac.toUpperCase(Locale.getDefault());
         tvShownWord.setText(coWidac);
 
-
-        //Jezeli po powiekszeniu liter wyraz wystawalby za Obszar - cofniecie wyrazu w lewo podobnie jak przy malych literach w uporzadkujObszar):
-//        LinearLayout.LayoutParams lPar;
-//        lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
-//        int leftMost= tvShownWord.getLeft();
-//        //Ewentualne przesuniecie w lewo, jezeli wyraz nie zmiesciłby sie w Obszarze:
-//        int skorygowanaPozycja = getSkorygowanaPozycja(leftMost);
-//        lPar.leftMargin = skorygowanaPozycja;
-
+        ewentualnieSciesnij(); //Sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what...
         korygujJesliWystaje();
 
-        //Sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what... :
-        int n = currWord.length();
-        if (n>10) ewentualnieSciesnij();
-
-
-
-
-        //tvShownWord.setLayoutParams(lPar);
     }  //koniec Metody()
 
+
     private void korygujJesliWystaje() {
+    //Robimy w post bo trzeba zaczekac, az tvShownWord pojawi sie na ekranie.
+
         tvShownWord.post(new Runnable() {
             @Override
             public void run() {
-                int rightT = (int) tvShownWord.getRight();
-                int rightL = (int) lObszar.getRight();
+                int rightT = tvShownWord.getRight();
+                int rightL = lObszar.getRight();
 
-                bDajGestosc.setText("TV : "+Integer.toString(rightT)+" Ol :"+Integer.toString(rightL));
+                bDajGestosc.setText("TV : "+Integer.toString(rightT)+" Ol :"+Integer.toString(rightL)); //sledzenie
 
                 if (rightT >= rightL) {
                     addGravityToParent();
                 }
             }
         });
-    }
 
+    } //koniec Metody()
 
-    public static int getSzer(Context context, String text, int textSize, int deviceWidth) {
-        TextView textView = new TextView(context);
-        textView.setText(text);
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
-
-        int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(deviceWidth, View.MeasureSpec.AT_MOST);
-        int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        textView.measure(widthMeasureSpec, heightMeasureSpec);
-        //return textView.getMeasuredHeight();
-
-        return textView.getMeasuredWidth();
-    }
 
     private void restoreOriginalWyraz() {
     //Wyraz z Obszaru zmniejszany jest do małych (raczej: oryginalnych) liter.
-    //Uwzględnia problem MIKOŁAJ->Mikołaj
+    //Uwzględnia to problem MIKOŁAJ->Mikołaj
+    //Wywolywane w kontekscie zmiany z Wielkich->małe, wiec staram sie, zeby wyraz z malymi literami
+    //rozpoczynal sie tam, gdzie zaczynal sie wyraz z "macierzysty""
 
         String coPokazac = currWord;
-        restoreParams(tvShownWord);
+
+        final int pocz = tvShownWord.getLeft();
+
+        restoreLetterSpacing(tvShownWord);
         tvShownWord.setText(coPokazac);
+
+        //wyraz zacznie sie tam, gdzie zaczynal sie wyraz z Wielimi literami:
+        tvShownWord.post(new Runnable() {
+            @Override
+            public void run() {
+                tvShownWord.setLeft(pocz);
+            }
+        });
+
     } //koniec Metody()
 
 
-    public void bDajFOnClick(View v) {
-        int screenSize = getResources().getConfiguration().screenLayout &
-            Configuration.SCREENLAYOUT_SIZE_MASK;
-
-        int density= getResources().getDisplayMetrics().densityDpi;
-        switch(density)
-        {
-            case DisplayMetrics.DENSITY_LOW:
-                Toast.makeText(this, "LDPI", Toast.LENGTH_SHORT).show();
-                break;
-            case DisplayMetrics.DENSITY_MEDIUM:
-                Toast.makeText(this, "MDPI", Toast.LENGTH_SHORT).show();
-                break;
-            case DisplayMetrics.DENSITY_HIGH:
-                Toast.makeText(this, "HDPI", Toast.LENGTH_SHORT).show();
-                break;
-            case DisplayMetrics.DENSITY_XHIGH:
-                Toast.makeText(this, "XHDPI", Toast.LENGTH_SHORT).show();
-                break;
-            case DisplayMetrics.DENSITY_XXHIGH:
-                Toast.makeText(this, "XXHDPI", Toast.LENGTH_SHORT).show();
-                break;
-            case DisplayMetrics.DENSITY_XXXHIGH:
-                Toast.makeText(this, "XXXHDPI", Toast.LENGTH_SHORT).show();
-                break;
-            case DisplayMetrics.DENSITY_560:
-                Toast.makeText(this, "560 ski ski", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                Toast.makeText(this, "nie znalazłem...", Toast.LENGTH_SHORT).show();
-        }
-    } //koniec Metody()
 
 
     public void bDajWielkoscEkranuOnClick(View v) {
@@ -667,6 +598,7 @@ public class MainActivity extends Activity {
         }
         Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
     } //koniec Metody()
+
 
 
     private void dajWspObszaruInfo() {
@@ -704,6 +636,41 @@ public class MainActivity extends Activity {
         tvInfo3.setVisibility(rob);
         tvInfoObszar.setVisibility(View.VISIBLE);
     } //koniec Metody();
+
+
+    public void bDajGestoscOnClick(View view) {
+        int screenSize = getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK;
+
+        int density= getResources().getDisplayMetrics().densityDpi;
+        switch(density)
+        {
+            case DisplayMetrics.DENSITY_LOW:
+                Toast.makeText(this, "LDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_MEDIUM:
+                Toast.makeText(this, "MDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_HIGH:
+                Toast.makeText(this, "HDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_XHIGH:
+                Toast.makeText(this, "XHDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_XXHIGH:
+                Toast.makeText(this, "XXHDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_XXXHIGH:
+                Toast.makeText(this, "XXXHDPI", Toast.LENGTH_SHORT).show();
+                break;
+            case DisplayMetrics.DENSITY_560:
+                Toast.makeText(this, "560 ski ski", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(this, "nie znalazłem...", Toast.LENGTH_SHORT).show();
+        }
+    } //koniec Metody()
+
 
 
     private final class ChoiceTouchListener implements OnTouchListener {
@@ -826,49 +793,12 @@ public class MainActivity extends Activity {
         int min = Integer.MAX_VALUE;
         for (MojTV lb : lbs) {
             if (lb.isInArea())
-              if (lb.getLeft() < min) min = (int) lb.getLeft();
+              if (lb.getLeft() < min) min = lb.getLeft();
         }
         return min;
     }
 
-    private int dajWspYetykiet() {
-    //Daje wspolrzedną Y dowolnej (=wszystkich, bo trimowanych) etykiet z Obszaru; pomocnicza
-        int wsp = 0;
-        for (MojTV lb : lbs) {
-            if (lb.isInArea()) {
-                wsp = (int) lb.getY();
-                break; //bo reszta tak samo (trim) -> "panzerfaust rwie na pierwszej przeszkodzie" ;)
-            }
-        }
-        return  wsp;
-    }
 
-
-    private int dajSredniaSzerLitery() {
-    //Daje srednia szerokosc etykiety w Obszarze
-    //uwaga - getWidth() bierze to co widac (nie lb.origL), wiec jest OK (wielkie litery wyjda szersze)
-/*
-        int sum=0;
-        for (MojTV lb : lbs) {
-            if (!lb.getOrigL().equals("*")) {//(lb.getVisibility()== View.VISIBLE) {
-                int sL = lb.getWidth();
-                sum += sL;
-                //sum -= lb.getPaddingRight(); //na razie nie wiem, dlaczego odejmowac tylko z jednej strony...
-            }
-        }
-        int srednia =Math.round(sum/currWord.length());
-        return srednia;
-*/
-      int srednia;
-
-      if (toUp)
-        srednia = szerLitW;
-      else
-        srednia = szerLitM;
-
-      return srednia;
-
-    }
 
 
 
@@ -881,11 +811,11 @@ public class MainActivity extends Activity {
     /* ******************************************************************************************* */
 
         //Przywracamy wielkosc letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
-        restoreParams(tvShownWord);
+        restoreLetterSpacing(tvShownWord);
         //Usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w pokazWyraz() ):
         usunGrawitacje();
 
-        //Wyswietlenie wyrazu rozpoczynajac od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
+        //Wyswietlenie wyrazu rozpoczynam od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
         int leftMost = dajLeftmostX();
@@ -894,12 +824,13 @@ public class MainActivity extends Activity {
 
         if (toUp) ewentualnieSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
 
-        pokazWyraz();                     //w Obszarze pokazany zostaje ulozony wyraz (umieszczam w tvSHownWord)
+        pokazWyraz();                     //w Obszarze pokazany zostaje ulozony wyraz (umieszczaam w tvSHownWord; + ewentualna korekcja polozenia)
 
         //Gasimy wszystkie etykiety:
         for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
 
         ukryjKlawiszeDodatkowe();
+
         //Przywrocenie/pokazanie klawisza bDalej (z lekkim opoznieniem):
         Handler mHandl = new Handler();
         mHandl.postDelayed(new Runnable() {
@@ -910,6 +841,7 @@ public class MainActivity extends Activity {
 
     } //koniec Metody()
 
+
     private void usunGrawitacje() {
     //Usuwa grawitacje z lObszar
         RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
@@ -917,25 +849,9 @@ public class MainActivity extends Activity {
         lObszar.setLayoutParams(lPar);
     }
 
-    private int getSkorygowanaPozycja(int pierwotnaPozycja) {
-    //Rozwiazanie roblemu, jesli wyraz ukladamy zbyt blisko prawej krawedzi Obszaru -
-    //Badamy, gdzie skończyłby się wyraz, gdyby nie korygowac niczego, a nastepnie ewentualna korekcja.
-    //Parametr - lewa wspolrzedna miejsca, gdzie dziecko polozylo 1-sza litere wyrazu
-        int nowaPozycja = pierwotnaPozycja;
-        int n = currWord.length();
-        if (n <= 3) n = n+1;                     //przy b. krotkich wyrazach trzeba 'powiekszyc' szerokosc, bo bywa ze 'szer' jest za malo problemy przy wielkich literach...
-        int szer = n*dajSredniaSzerLitery();     //szacowana szerokosc wyrazu
 
-        int gdzieKoniec = pierwotnaPozycja+szer; //gdzie wypadłby koniec wyrazu
-        if ( gdzieKoniec > xLp ) {      //wyraz wyszedłby za prawą krawędz Obszaru
-            nowaPozycja = xLp - szer;            //gdzie wyraz powinien sie rozpoczac, zeby sie zmiescił
-        }
 
-        if (nowaPozycja < 10) nowaPozycja = 10;  //zeby nie bylo za bardzo na lewo (kosmetyka)
-        return nowaPozycja;
-    }
-
-    private void restoreParams(TextView mTV) {
+    private void restoreLetterSpacing(TextView mTV) {
     //Przywracamy wielkosc letterSpacing
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -957,13 +873,14 @@ public class MainActivity extends Activity {
       tvShownWord.setTextColor(lbsRob[0].getTextColors()); //kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka
       tvShownWord.setVisibility(View.VISIBLE);
 
+      //!!! BARDZO WAZNE: !!!
       korygujJesliWystaje();
 
     } //koniec Metody()
 
 
     private void addGravityToParent() {
-    //Dodanie grawitacji do prawego boku do LObszar;
+    //Dodanie grawitacji sciagajacej do prawego boku do LObszar;
     //Dzieki temu, ze mamy gwarancje, jezeli wyraz wystaje za lObszar, to zostanie "cofnięty"
     //i pokazany w całości w lObszar.
 
@@ -981,12 +898,12 @@ public class MainActivity extends Activity {
 
 
     private void ewentualnieSciesnij() {
-    //Jesli wyraz dluzszy niz 10, to sciesniam (jesli szeroki)
+    //Jesli wyraz dluzszy niz 11, to sciesniam (jesli szeroki)
     //Sciesnianie jest API dependent, wiec badam.
     //Jezeli API<21 nie robie nic, bo taki wyraz nie jest sciesniony i na pewno(?) sie miesci....
     //Zakladam, ze wywolywana tylko, gdy duze litery; przy malych- wszystko sie miesci
 
-        if (currWord.length()<14) return; //11
+        if (currWord.length()<12) return;
 
         int versionINT = Build.VERSION.SDK_INT;
 
@@ -1014,7 +931,7 @@ public class MainActivity extends Activity {
     /* Sprawdzenie, czy poprawnie ulozone.      */
     /* **************************************** */
 
-        //najpierw przepisanie do tab. roboczej - bedzie krotsza...; potem manipulacje na roboczej:
+        //Najpierw przepisanie do tab. roboczej - bedzie krotsza...; potem manipulacje na roboczej:
         lbsRob = new MojTV[currWord.length()];
         int i = 0;
         for (MojTV lb : lbs) {
@@ -1258,7 +1175,7 @@ public class MainActivity extends Activity {
 //        }
 
 
-        final int odstepWpionie = (int) yLg/4; //od gory ekranu do Obszaru sa 3 wiersze etykiet, wiec 4 przerwy
+        final int odstepWpionie = yLg /4; //od gory ekranu do Obszaru sa 3 wiersze etykiet, wiec 4 przerwy
 
         int od_obrazka = (int) getResources().getDimension(R.dimen.od_obrazka); //odstep 1-szej litery 1-go rzedu od obrazka
 
@@ -1267,11 +1184,11 @@ public class MainActivity extends Activity {
         lPar = (RelativeLayout.LayoutParams) L00.getLayoutParams();
 
         //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-        int marginesTop = 1*odstepWpionie - (int) L00.getHeight()/2;  //*1 - bo 1-szy wiersz
+        int marginesTop = 1*odstepWpionie - L00.getHeight() /2;  //*1 - bo 1-szy wiersz
 
         final int poprPion = 25;
         lPar.topMargin = marginesTop - poprPion;
-        int poprPoziom = (int) ((rootLayout.getRight()-imageView.getRight())/12);
+        int poprPoziom = (rootLayout.getRight()-imageView.getRight())/12;
         //troche w prawo, jesli dobre urzadzenie:
 
         if (sizeW>1100) poprPoziom = (int) (1.24*poprPoziom);
@@ -1292,7 +1209,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L01.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L00.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                int marginesTop = 1*odstepWpionie  - (int) L00.getHeight()/2 - poprPion;
+                int marginesTop = 1*odstepWpionie  - L00.getHeight() /2 - poprPion;
                 lParX.topMargin = marginesTop;
                 L01.setLayoutParams(lParX); //n
             }
@@ -1305,7 +1222,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L02.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                int marginesTop = 1*odstepWpionie  - (int) L00.getHeight()/2 - poprPion;
+                int marginesTop = 1*odstepWpionie  - L00.getHeight() /2 - poprPion;
                 lParX.topMargin = marginesTop;
                 L02.setLayoutParams(lParX); //n
             }
@@ -1318,7 +1235,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
-                int marginesTop = 1*odstepWpionie - (int) L00.getHeight()/2 - poprPion;
+                int marginesTop = 1*odstepWpionie - L00.getHeight() /2 - poprPion;
                 lParX.topMargin = marginesTop;
                 L03.setLayoutParams(lParX); //n
             }
@@ -1327,9 +1244,10 @@ public class MainActivity extends Activity {
 
         //L04: (2-gi rząd):
         lPar = (RelativeLayout.LayoutParams) L04.getLayoutParams();
-        lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + ((int) (od_obrazka/4));
+        lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width +
+                od_obrazka/4;
         //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
-        marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2; //2- bo 2-gi wiersz
+        marginesTop = 2*odstepWpionie - L00.getHeight() /2; //2- bo 2-gi wiersz
         lPar.topMargin = marginesTop;
         lPar.leftMargin = imageView.getRight() + poprPoziom/4;
         L04.setLayoutParams(lPar);
@@ -1341,7 +1259,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L05.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L04.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
-                int marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2;
+                int marginesTop = 2*odstepWpionie - L00.getHeight() /2;
                 lParX.topMargin = marginesTop;
                 L05.setLayoutParams(lParX);
             }
@@ -1354,7 +1272,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
-                int marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2;
+                int marginesTop = 2*odstepWpionie - L00.getHeight() /2;
                 lParX.topMargin = marginesTop;
                 L06.setLayoutParams(lParX); //n
             }
@@ -1367,7 +1285,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L07.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L06.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
-                int marginesTop = 2*odstepWpionie - (int) L00.getHeight()/2;
+                int marginesTop = 2*odstepWpionie - L00.getHeight() /2;
                 lParX.topMargin = marginesTop;
                 L07.setLayoutParams(lParX); //n
             }
@@ -1376,9 +1294,10 @@ public class MainActivity extends Activity {
 
         //L08: (3-ci rząd):
         lPar = (RelativeLayout.LayoutParams) L08.getLayoutParams();
-        lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width + ((int) (od_obrazka/2));
+        lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width +
+                od_obrazka/2;
         //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-        marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2; //3- bo 3-szy wiersz
+        marginesTop = 3*odstepWpionie - L00.getHeight() /2; //3- bo 3-szy wiersz
         lPar.topMargin = marginesTop + poprPion;
         lPar.leftMargin = imageView.getRight()-L00.getPaddingLeft() + poprPoziom;
         L08.setLayoutParams(lPar);
@@ -1390,7 +1309,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L09.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L08.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2 + poprPion;
+                int marginesTop = 3*odstepWpionie - L00.getHeight() /2 + poprPion;
                 lParX.topMargin = marginesTop;
                 L09.setLayoutParams(lParX); //n
             }
@@ -1403,7 +1322,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L10.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2 + poprPion;
+                int marginesTop = 3*odstepWpionie - L00.getHeight() /2 + poprPion;
                 lParX.topMargin = marginesTop;
                 L10.setLayoutParams(lParX); //n
             }
@@ -1416,7 +1335,7 @@ public class MainActivity extends Activity {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
                 lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
-                int marginesTop = 3*odstepWpionie - (int) L00.getHeight()/2 + poprPion;
+                int marginesTop = 3*odstepWpionie - L00.getHeight() /2 + poprPion;
                 lParX.topMargin = marginesTop;
                 L11.setLayoutParams(lParX); //n
             }

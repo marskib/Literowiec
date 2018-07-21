@@ -93,7 +93,7 @@
       android:onClick="bDajWielkoscEkranuOnClick"
       android:layout_alignParentBottom="true"
       android:layout_toEndOf="@id/bDajGestosc"
-      android:text="Ekran-kwalifikacja"
+      android:text="Ekran"
       />
 
 
@@ -115,7 +115,7 @@
             android:id="@+id/tvShownWord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="0dp"
+            android:paddingRight="5dp"
             android:layout_margin="0dp"
             android:text="aaaaaaaa"
             android:textAlignment="center"
@@ -123,9 +123,9 @@
             android:textStyle="bold"
             android:letterSpacing="@dimen/lspacing_ski"
             android:visibility="invisible"
+            android:background="@drawable/border_probnik"
             android:maxLines="1"/>
     </LinearLayout>
-            <!--android:background="@drawable/border_probnik"-->
             <!--android:letterSpacing="0.1"-->
 
     <!--Miesce na obrazek: -->
@@ -290,7 +290,9 @@
         android:textStyle="bold"
         android:text="L" />
 
+
     <!--Probniki na rozmiary liter Malych i Wielkich (litery dibieram arbitralnie, lepiej zeby nie wypadaly jedna na drugiej-odsuwam w leftMargin...) : -->
+<!--  2018-07-21 - usuwam, bo wprowadzilem ustawiana programowo grawitacje
 
     <TextView
       android:id="@+id/probnikM"
@@ -314,6 +316,7 @@
       android:textStyle="bold"
       android:text="W" />
 
+-->
 
 
 <!-- Kontrolki 'kontrolne' -->

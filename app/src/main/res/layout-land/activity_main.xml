@@ -33,6 +33,7 @@
         android:visibility="invisible"
     />
 
+    <!-- klawisz 'Again' pod bDalej: -->
     <Button
       android:id="@+id/bAgain1"
       android:onClick="bAgainOnClick"
@@ -50,6 +51,7 @@
       android:visibility="invisible"/>
 
 
+    <!-- klawisz 'Again' pod l_Obszar: -->
     <Button
         android:id="@+id/bAgain"
         android:onClick="bAgainOnClick"
@@ -58,7 +60,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="2dp"
-        android:text="   \@   " />
+        android:text=" @ "
+      android:textStyle="bold"
+      />
 
     <Button
         android:id="@+id/bUpperLower"

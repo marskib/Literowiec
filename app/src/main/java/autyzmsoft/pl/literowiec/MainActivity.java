@@ -96,6 +96,7 @@ public class MainActivity extends Activity {
     public String  currWord  = "*";     //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
 
     Button bDajGestosc; //sledzenie
+    public static int density;          //gestosc ekranu - przydatne system-wide
 
 
     @Override
@@ -366,7 +367,8 @@ public class MainActivity extends Activity {
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
-       //currWord   = "mikrofalówka";
+       //currWord   = "tikjńfźlóśżk";
+       //currWord     = "mikrofalówka";
        //currWord   = "pies";
        //currWord   = "mmmm";
        //currWord   = "Mikołaj";
@@ -427,7 +429,6 @@ public class MainActivity extends Activity {
     }
 
 
-    @SuppressWarnings("unused")
     public void bDalejOnClick(View v) {
         //sledzenie:
         //bAgain.setText("*");
@@ -579,8 +580,8 @@ public class MainActivity extends Activity {
 
     public void bDajWielkoscEkranuOnClick(View v) {
 
-        bDalej.getLayoutParams().height = yLg;
-        bDalej.requestLayout();
+//        bDalej.getLayoutParams().height = yLg;
+//        bDalej.requestLayout();
 
         int screenSize = getResources().getConfiguration().screenLayout &
             Configuration.SCREENLAYOUT_SIZE_MASK;
@@ -1114,10 +1115,11 @@ public class MainActivity extends Activity {
         //Obszar-Prostokat na ukladanie wyrazu:
         RelativeLayout.LayoutParams lPar1 = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
         lPar1.topMargin = (int) (sizeH/1.6);
-        //lPar1.leftMargin = 20;
-        //lPar1.rightMargin = 20;
         lPar1.height = sizeH/4;
         lObszar.setLayoutParams(lPar1);
+
+        //gestosc ektranu:
+        density = getResources().getDisplayMetrics().densityDpi;
 
     } //koniec Metody()
 
@@ -1366,10 +1368,15 @@ public class MainActivity extends Activity {
                     if (lb==lbs[4] || lb==lbs[5] || lb==lbs[6] || lb==lbs[7]) {
                         lParX.topMargin += k;
                     }
-                    //Zmieniamy w 1-szym wierszu :
-                    if (lb==lbs[0] || lb==lbs[1] || lb==lbs[2] || lb==lbs[3]) { //w 1-szym wierszu pozwalam tylko w dol
-                        k = -Math.abs(k);
-                        lParX.topMargin += k;
+                    //Zmieniamy w 1-szym wierszu; w 1-szym wierszu pozwalam tylko w dol :
+                    if (lb==lbs[0] || lb==lbs[1] || lb==lbs[2] || lb==lbs[3]) {
+                        //w 1-szym wierszu zmieniamy tylko przy duzych gestosciach, inaczej główki liter wystają poza górną krawędź ekranu:
+                        if (density > DisplayMetrics.DENSITY_MEDIUM) {
+                            k = -Math.abs(k);
+                            if (density>DisplayMetrics.DENSITY_HIGH)
+                                k = 2*k;
+                            lParX.topMargin += k;
+                        }
                     }
                     //Zmieniamy w 3-cim wierszu :
                     if (lb==lbs[8] || lb==lbs[9] || lb==lbs[10] || lb==lbs[11]) { //w 3-cim wierszu pozwalam tylko w gore
@@ -1401,7 +1408,6 @@ public class MainActivity extends Activity {
 
         bAgain.getLayoutParams().height = sizeH - yLd;
         bAgain.requestLayout();
-        bAgain.setTextSize(TypedValue.COMPLEX_UNIT_SP, (float) 0.18*pxToSp((int)getResources().getDimension(R.dimen.litera_size)) );
 
     } //koniec metody()
 

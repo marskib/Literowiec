@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- wielkosc znaku @ w klawiszu(ach?) bDalej1 i bDalej(?) -->
+  <dimen name="malpa_size">45sp</dimen>
+
+</resources>

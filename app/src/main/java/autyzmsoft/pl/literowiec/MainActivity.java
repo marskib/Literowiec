@@ -364,11 +364,12 @@ public class MainActivity extends Activity {
        //currWord   = "abcdefghijkl";
        //currWord   = "wwwwwwwwwwww";
        //currWord   = "pomarańczowy";
+       //currWord   = "niedźwiedzie";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "tikjńfźlóśżk";
-       //currWord     = "mikrofalówka";
+       //currWord   = "mikrofalówka";
        //currWord   = "pies";
        //currWord   = "mmmm";
        //currWord   = "Mikołaj";
@@ -553,7 +554,7 @@ public class MainActivity extends Activity {
 
 
     private void restoreOriginalWyraz() {
-    //Wyraz z Obszaru zmniejszany jest do małych (raczej: oryginalnych) liter.
+    //Wyraz z Obszaru zmniejszany jest do małych (scislej: oryginalnych) liter.
     //Uwzględnia to problem MIKOŁAJ->Mikołaj
     //Wywolywane w kontekscie zmiany z Wielkich->małe, wiec staram sie, zeby wyraz z malymi literami
     //rozpoczynal sie tam, gdzie zaczynal sie wyraz z "macierzysty""
@@ -565,13 +566,17 @@ public class MainActivity extends Activity {
         restoreLetterSpacing(tvShownWord);
         tvShownWord.setText(coPokazac);
 
-        //wyraz zacznie sie tam, gdzie zaczynal sie wyraz z Wielimi literami:
-        tvShownWord.post(new Runnable() {
-            @Override
-            public void run() {
-                tvShownWord.setLeft(pocz);
-            }
-        });
+        //Jezeli wyraz nie jest zbyt dlugi, to wyraz zacznie sie tam, gdzie zaczynal sie wyraz z Wielimi literami
+        //(przy b.dlugich wyrazach nie mozna sobie na to pozwolic - patrz 'niedziedzie' przy zmianie Wielki->male nie miesci sie w Obszarze(!):
+        //(wieloliterowy wyraz malymi literami moze byc dluzszy niz ten sam wyraz Wielkimi, bo wielki ma usuniety letterSpacin(!))
+        if (currWord.length()<12) {
+            tvShownWord.post(new Runnable() {
+                @Override
+                public void run() {
+                    tvShownWord.setLeft(pocz);
+                }
+            });
+        }
 
     } //koniec Metody()
 

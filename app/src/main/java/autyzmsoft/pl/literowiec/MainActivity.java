@@ -354,14 +354,33 @@ public class MainActivity extends Activity {
       } //koniec Metody()
 
   private void dajPodpowiedz() {
-  //Umieszcza podpowiedz pod obrazkiem (jesli ustawion0 w ustawieniach)
+  //Umieszcza podpowiedz pod obrazkiem (jesli ustawiono w ustawieniach)
 
     tvNazwa.setText(currWord);
-    if (getInstance().TRYB_PODP)
-      tvNazwa.setVisibility(View.VISIBLE);
-    else
-      tvNazwa.setVisibility(View.INVISIBLE);
-  }
+
+    if (getInstance().TRYB_PODP) {
+
+        tvNazwa.setVisibility(View.VISIBLE);
+
+        //wyśrodkowanie, ustalenie wielkosci:
+        tvNazwa.post(new Runnable() {
+            @Override
+            public void run() {
+                int lsize = (int) getResources().getDimension(R.dimen.litera_size);
+                tvNazwa.setTextSize(lsize/3);
+
+                //tvNazwa.setBackgroundColor(0x131312);
+                //tvNazwa.setTextColor(0xBEBEBA);
+                tvNazwa.setTextColor(0xBEFEBA);
+
+                tvNazwa.getLayoutParams().width = imageView.getWidth();
+            }
+        });
+    }
+    else {
+        tvNazwa.setVisibility(View.INVISIBLE);
+    }
+  }  //koniec Metedy()
 
 
   private void rozrzucWyraz() {
@@ -375,11 +394,11 @@ public class MainActivity extends Activity {
        //currWord = "cytryna";
        //currWord = "************";
        //currWord   = "abcdefghijkl";
-       //currWord   = "wwwwwwwwwwww";
        //currWord   = "pomarańczowy";
        //currWord   = "niedźwiedzie";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
+       //currWord   = "wwwwwwwwwwww";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "tikjńfźlóśżk";
        //currWord   = "mikrofalówka";

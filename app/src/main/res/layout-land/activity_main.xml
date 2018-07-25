@@ -136,7 +136,6 @@
             android:background="@drawable/border_probnik"
             android:maxLines="1"/>
     </LinearLayout>
-            <!--android:letterSpacing="0.1"-->
 
     <!--Miesce na obrazek: -->
     <ImageView

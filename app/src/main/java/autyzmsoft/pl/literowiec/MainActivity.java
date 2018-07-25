@@ -46,6 +46,8 @@ import java.util.Random;
 
 public class MainActivity extends Activity {
 
+    public static final int DELAY_EXERC = 1000; //opoznienie w pokazywaniu rozrzuconych liter i podpisu pod Obrazkiem
+
     Intent intModalDialog;  //Na okienko dialogu 'modalnego' orzy starcie aplikacji
     static MediaPlayer mp = null;
 
@@ -353,33 +355,27 @@ public class MainActivity extends Activity {
 
       } //koniec Metody()
 
+
   private void dajPodpowiedz() {
   //Umieszcza podpowiedz pod obrazkiem (jesli ustawiono w ustawieniach)
 
-    tvNazwa.setText(currWord);
+    tvNazwa.setVisibility(View.INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
 
-    if (getInstance().TRYB_PODP) {
+    if (!getInstance().TRYB_PODP) return;
 
-        tvNazwa.setVisibility(View.VISIBLE);
+    //Wyśrodkowanie, ustalenie wielkosci liter, pokazanie z lekkim opoznieniem:
+    Handler mHandl = new Handler();
+    mHandl.postDelayed(new Runnable() {
+        @Override
+        public void run() {
+            tvNazwa.setText(currWord);
+            int lsize = (int) getResources().getDimension(R.dimen.litera_size);
+            tvNazwa.setTextSize(lsize/3);
+            tvNazwa.getLayoutParams().width = imageView.getWidth();
+            tvNazwa.setVisibility(View.VISIBLE);
+        }
+    },DELAY_EXERC);
 
-        //wyśrodkowanie, ustalenie wielkosci:
-        tvNazwa.post(new Runnable() {
-            @Override
-            public void run() {
-                int lsize = (int) getResources().getDimension(R.dimen.litera_size);
-                tvNazwa.setTextSize(lsize/3);
-
-                //tvNazwa.setBackgroundColor(0x131312);
-                //tvNazwa.setTextColor(0xBEBEBA);
-                tvNazwa.setTextColor(0xBEFEBA);
-
-                tvNazwa.getLayoutParams().width = imageView.getWidth();
-            }
-        });
-    }
-    else {
-        tvNazwa.setVisibility(View.INVISIBLE);
-    }
   }  //koniec Metedy()
 
 
@@ -387,8 +383,6 @@ public class MainActivity extends Activity {
    /* Rozrzucenie currWord po tablicy lbs (= po Ekranie)              */
 
        bDajGestosc.setText("TV :   Ol: "); //sledzenie
-
-       int k;  //na losową pozycję
 
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
@@ -419,37 +413,44 @@ public class MainActivity extends Activity {
        //currWord   = "W";
 
 
-
-
        //Pobieramy wyraz do rozrzucenia:
-       char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
+       final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
 
-       Random rand = new Random();
+       final Random rand = new Random();
 
-       //Kazda litera wyrazu ląduje w losowej komorce tablicy lbs :
-       String z;
-       for (int i = 0; i < wyraz.length; i++) {
+       //Pokazujemy z lekkim opoznieniem (efekciarstwo...):
+       Handler mHandl = new Handler();
+       mHandl.postDelayed(new Runnable() {
+           @Override
+           public void run() {
+               //Kazda litera wyrazu ląduje w losowej komorce tablicy lbs :
+               for (int i = 0; i < wyraz.length; i++) {
+                   String z = Character.toString(wyraz[i]); //pobranie litery z wyrazu
 
-           z = Character.toString(wyraz[i]); //pobranie litery z wyrazu
+                   //Losowanie pozycji w tablicy lbs:
+                   int k;  //na losową pozycję
+                   do {
+                      k = rand.nextInt(lbs.length);
+                   }
+                   while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niewidoczne) etykiety
 
-           //Losowanie pozycji w tablicy lbs:
-           do {
-               k = rand.nextInt(lbs.length);
-           }
-           while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niewidoczne) etykiety
+                   //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
+                   lbs[k].setOrigL(z);
+                   lbs[k].setText(z);
+                   lbs[k].setTextColor(Color.BLACK);  //kosmetyka
+                   lbs[k].setVisibility(View.VISIBLE);
+                   /******/
 
-           //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
-           lbs[k].setOrigL(z);
-           lbs[k].setText(z);
-           lbs[k].setTextColor(Color.BLACK);  //kosmetyka
-           lbs[k].setVisibility(View.VISIBLE);
-
-       } //for
+               } //for
+               if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE); //bo ewentualne klikniecie schowalo ten klawisz
+           }  //run()
+       }, DELAY_EXERC);
 
        //Ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy:
        if (toUp) podniesLabels();
 
    } //koniecMetody();
+
 
     private void resetujLabelsy() {
     //Resetowanie tablicy i tym samym zwiazanycyh z nia kontrolek ekranowych:
@@ -484,8 +485,11 @@ public class MainActivity extends Activity {
 
 
 
-    @SuppressWarnings("unused")
     public void bAgainOnClick(View v) {
+    //bAgain -  kl. pod Obszarem
+    //bAgain1 - kl. pod bDalej
+
+        bAgain.setVisibility(View.INVISIBLE); //zeby nie klikal jak wsciekly... :(
 
         ustawLadnieEtykiety();
         resetujLabelsy();
@@ -496,9 +500,15 @@ public class MainActivity extends Activity {
 
         if (v==bAgain1) {
             bAgain1.setVisibility(View.INVISIBLE);
-            pokazKlawiszeDodatkowe();
+            Handler mHandl = new Handler();
+            mHandl.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    pokazKlawiszeDodatkowe(); //pokazanie z opoznieniem, zeby nie klikal za wczesnie, bo 'zawiecha'
+                }
+            },DELAY_EXERC);
         }
-    }
+    }  //koniec Metody()
 
 
     public void bPominClick(View v) {
@@ -536,6 +546,7 @@ public class MainActivity extends Activity {
                 lb.setText(coWidac);
             }
         }
+        tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(Locale.getDefault())); //podniesienie nazwy pod Obrazkiem
     } //koniec Metody()
 
     private void restoreOriginalLabels() {
@@ -549,6 +560,7 @@ public class MainActivity extends Activity {
                 lb.setText(coPokazac);
             }
         }
+        tvNazwa.setText(currWord);  //nazwa pod Obrazkiem wraca do oryginalnych liter
     } //koniec Metody()
 
     private void podniesWyraz() {
@@ -558,6 +570,8 @@ public class MainActivity extends Activity {
         String coWidac = tvShownWord.getText().toString();
         coWidac = coWidac.toUpperCase(Locale.getDefault());
         tvShownWord.setText(coWidac);
+
+        tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(Locale.getDefault())); //podniesienie nazwy pod Obrazkiem
 
         ewentualnieSciesnij(); //Sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what...
         korygujJesliWystaje();
@@ -607,7 +621,7 @@ public class MainActivity extends Activity {
                 }
             });
         }
-
+        tvNazwa.setText(currWord); //nazwa pod Obrazkiem wraca do malyh liter
     } //koniec Metody()
 
 

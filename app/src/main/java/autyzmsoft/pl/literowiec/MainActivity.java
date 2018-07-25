@@ -1,5 +1,7 @@
 package autyzmsoft.pl.literowiec;
 
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.getInstance;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -49,8 +51,9 @@ public class MainActivity extends Activity {
 
     private ViewGroup rootLayout;
 
-    //Obrazek:
-    private ImageView imageView;
+    //Obrazek i nazwa pod obrazkiem:
+    private  ImageView imageView;
+    TextView tvNazwa;
 
     //Placeholders'y na etykiety:
     MojTV L00, L01, L02, L03,
@@ -62,7 +65,7 @@ public class MainActivity extends Activity {
     private static MojTV[] lbsRob;  //tablica robocza, do dzialań (m.in. latwego wykrycia prawidlowego porzadku ulozenia etykiet w Obszarze); podzbior tab. lbs
 
 
-    TextView tvInfo, tvInfo1, tvInfo2, tvInfo3, tvInfoObszar;
+    TextView tvInfo, tvInfo1, tvInfo2, tvInfo3;
 
     TextView tvShownWord; //na umieszczenie wyrazu po Zwyciestwie
 
@@ -109,7 +112,8 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);
-        imageView = (ImageView) rootLayout.findViewById(R.id.imageView);
+        imageView  = (ImageView) rootLayout.findViewById(R.id.imageView);
+        tvNazwa    = (TextView) findViewById(R.id.tvNazwa);
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
         bPomin  = (Button) findViewById(R.id.bPomin);
@@ -123,7 +127,6 @@ public class MainActivity extends Activity {
         tvInfo1 = (TextView) findViewById(R.id.tvInfo1);
         tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
         tvInfo3 = (TextView) findViewById(R.id.tvInfo3);
-        tvInfoObszar = (TextView) findViewById(R.id.tvoInfoObszar);
         bDajGestosc = (Button) findViewById(R.id.bDajGestosc);
 
         przypiszLabelsyAndListenery();
@@ -134,10 +137,9 @@ public class MainActivity extends Activity {
 
         //ustalam polozenie obrazkow - przy pelnej wersji - duuzo więcej... ;):
         katalog = "obrazki_demo_ver";
-        if (ZmienneGlobalne.getInstance().PELNA_WERSJA) {
+        if (getInstance().PELNA_WERSJA) {
             katalog = "obrazki_pelna_ver";
         }
-
 
 
         dostosujDoUrzadzen();
@@ -163,7 +165,7 @@ public class MainActivity extends Activity {
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
 
-        //pokazModal();
+        pokazModal();
 
     }  //koniec onCreate()
 
@@ -173,7 +175,7 @@ public class MainActivity extends Activity {
         String nazwaObrazka; //zawiera rozrzerzenie (.jpg , .bmp , ...)
 
         try {
-            if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG) { //pobranie z Directory
+            if (getInstance().ZRODLEM_JEST_KATALOG) { //pobranie z Directory
                 nazwaObrazka = "aaaa";//myObrazkiSD[currImage];
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
@@ -203,7 +205,7 @@ public class MainActivity extends Activity {
         /*************************************************/
         //najpierw sprawdzam, czy trzeba:
         //Jezeli w ustawieniech jest, zeby nie grac - to wychodzimy:
-        if (ZmienneGlobalne.getInstance().BEZ_DZWIEKU == true) {
+        if (getInstance().BEZ_DZWIEKU == true) {
             return;
         }
         //zeby nie gral zaraz po po starcie apki:
@@ -213,7 +215,7 @@ public class MainActivity extends Activity {
         }
         //Granie wlasciwe:
 
-        if (!ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG) {
+        if (!getInstance().ZRODLEM_JEST_KATALOG) {
             //odeggranie z Assets (tam TYLKO ogg):
             String nazwaObrazka = listaObrazkowAssets[currImage];
             String rdzenNazwy = usunLastDigitIfAny(getRemovedExtensionName(nazwaObrazka));
@@ -239,7 +241,7 @@ public class MainActivity extends Activity {
         // Odegranie dzwieku umieszczonego w Assets (w katalogu 'nagrania'):
         /* ***************************************************************** */
 
-        if (ZmienneGlobalne.getInstance().nieGrajJestemW105) return; //na czas developmentu....
+        if (getInstance().nieGrajJestemW105) return; //na czas developmentu....
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -274,7 +276,7 @@ public class MainActivity extends Activity {
         /* Odegranie pliku dzwiekowego z karty SD */
         /* ************************************** */
 
-        if (ZmienneGlobalne.getInstance().nieGrajJestemW105) return; //na czas developmentu....
+        if (getInstance().nieGrajJestemW105) return; //na czas developmentu....
 
         //Na pdst. parametru metody szukam odpowiedniego pliku do odegrania:
         //(typuję, jak moglby sie nazywac plik i sprawdzam, czy istbieje. jezeli istnieje - OK, wychodze ze sprawdzania majac wytypowaną nazwe pliku)
@@ -335,6 +337,7 @@ public class MainActivity extends Activity {
 
       private void dajNextObrazek() {
      //Daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
+     //Wyswietla nazwe pod obrazkiem
 
         currImage = dajLosowyNumerObrazka();
 
@@ -345,13 +348,23 @@ public class MainActivity extends Activity {
         nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
         currWord  = nazwaPliku;
-        //shownWord = currWord;
+
+        dajPodpowiedz();
 
       } //koniec Metody()
 
+  private void dajPodpowiedz() {
+  //Umieszcza podpowiedz pod obrazkiem (jesli ustawion0 w ustawieniach)
+
+    tvNazwa.setText(currWord);
+    if (getInstance().TRYB_PODP)
+      tvNazwa.setVisibility(View.VISIBLE);
+    else
+      tvNazwa.setVisibility(View.INVISIBLE);
+  }
 
 
-   private void rozrzucWyraz() {
+  private void rozrzucWyraz() {
    /* Rozrzucenie currWord po tablicy lbs (= po Ekranie)              */
 
        bDajGestosc.setText("TV :   Ol: "); //sledzenie
@@ -557,18 +570,16 @@ public class MainActivity extends Activity {
     //Wyraz z Obszaru zmniejszany jest do małych (scislej: oryginalnych) liter.
     //Uwzględnia to problem MIKOŁAJ->Mikołaj
     //Wywolywane w kontekscie zmiany z Wielkich->małe, wiec staram sie, zeby wyraz z malymi literami
-    //rozpoczynal sie tam, gdzie zaczynal sie wyraz z "macierzysty""
+    //rozpoczynal sie tam, gdzie zaczynal sie wyraz z "macierzysty" (jezeli wyraz<12 znakow)
 
         String coPokazac = currWord;
-
-        final int pocz = tvShownWord.getLeft();
-
         restoreLetterSpacing(tvShownWord);
         tvShownWord.setText(coPokazac);
 
         //Jezeli wyraz nie jest zbyt dlugi, to wyraz zacznie sie tam, gdzie zaczynal sie wyraz z Wielimi literami
-        //(przy b.dlugich wyrazach nie mozna sobie na to pozwolic - patrz 'niedziedzie' przy zmianie Wielki->male nie miesci sie w Obszarze(!):
-        //(wieloliterowy wyraz malymi literami moze byc dluzszy niz ten sam wyraz Wielkimi, bo wielki ma usuniety letterSpacin(!))
+        //(przy b.dlugich wyrazach nie mozna sobie na to pozwolic - patrz 'niedziedzie' przy zmianie Wielki->male nie miesci sie w Obszarze(!)
+        //(wieloliterowy wyraz malymi literami moze byc dluzszy niz ten sam wyraz Wielkimi, bo wielki ma usuniety letterSpacin(!)):
+        final int pocz = tvShownWord.getLeft();
         if (currWord.length()<12) {
             tvShownWord.post(new Runnable() {
                 @Override
@@ -579,7 +590,6 @@ public class MainActivity extends Activity {
         }
 
     } //koniec Metody()
-
 
 
 
@@ -629,7 +639,6 @@ public class MainActivity extends Activity {
                 yLg = y;
                 xLp = xLl + lObszar.getWidth();
                 yLd = yLg + lObszar.getHeight();
-                //tvInfoObszar.setText(Integer.toString(xLp)+","+Integer.toString(yLg)); //sledzenie
                 //Przekazanie do zmiennek klasy współrzędnej y linii 'Trymowania':
                 yLtrim = yLg+ ((int) ((yLd-yLg)/2.0));
             }
@@ -646,7 +655,6 @@ public class MainActivity extends Activity {
         tvInfo1.setVisibility(rob);
         tvInfo2.setVisibility(rob);
         tvInfo3.setVisibility(rob);
-        tvInfoObszar.setVisibility(View.VISIBLE);
     } //koniec Metody();
 
 
@@ -999,8 +1007,8 @@ public class MainActivity extends Activity {
         /* *************************************   */
         super.onResume();
         //Pokazujemy zupelnie nowe cwiczenie z paramatrami ustawionymi na Zmiennych Glob. (np. poprzez splashScreena Ustawienia):
-        final boolean wszystkieRozne = ZmienneGlobalne.getInstance().WSZYSTKIE_ROZNE;
-        final boolean roznicujObrazki = ZmienneGlobalne.getInstance().ROZNICUJ_OBRAZKI;
+        final boolean wszystkieRozne = getInstance().WSZYSTKIE_ROZNE;
+        final boolean roznicujObrazki = getInstance().ROZNICUJ_OBRAZKI;
         tworzListyObrazkow(); //konieczne, bo moglo zmienic sie zrodlo obrazkow
 
 //        dajNextObrazek();
@@ -1011,12 +1019,12 @@ public class MainActivity extends Activity {
     private void tworzListyObrazkow() {
         //Tworzenie listy obrazków z Katalogu lub Assets:
 
-        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG == true) {
-            dirObrazkiNaSD = new File(ZmienneGlobalne.getInstance().WYBRANY_KATALOG);
+        if (getInstance().ZRODLEM_JEST_KATALOG == true) {
+            dirObrazkiNaSD = new File(getInstance().WYBRANY_KATALOG);
             myObrazkiSD = findObrazki(dirObrazkiNaSD);
         }
 
-        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG == false) {
+        if (getInstance().ZRODLEM_JEST_KATALOG == false) {
             //Pobranie listy obrazkow z Assets:
             AssetManager mgr = getAssets();
             try {
@@ -1052,7 +1060,7 @@ public class MainActivity extends Activity {
     private int dajLosowyNumerObrazka() {
         int rob;
         int rozmiar_tab;
-        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG)
+        if (getInstance().ZRODLEM_JEST_KATALOG)
             rozmiar_tab = myObrazkiSD.size();
         else
             rozmiar_tab = listaObrazkowAssets.length;
@@ -1163,6 +1171,9 @@ public class MainActivity extends Activity {
 
 
     private boolean pokazModal() {
+
+        if (!getInstance().POKAZ_MODAL) return true;
+
         //Pokazanie modalnego okienka.
         //Okienko realizowane jest jako Activity  o nazwie DialogModalny
         intModalDialog = new Intent(getApplicationContext(), DialogModalny.class);
@@ -1425,9 +1436,9 @@ public class MainActivity extends Activity {
 
     private void pokazKlawiszeDodatkowe() {
     //Pokazanie (ewentualne) klawiszy pod Obszarem"
-        if (ZmienneGlobalne.getInstance().BPOMIN_ALL) bPomin.setVisibility(View.VISIBLE);
-        if (ZmienneGlobalne.getInstance().BUPLOW_ALL) bUpperLower.setVisibility(View.VISIBLE);
-        if (ZmienneGlobalne.getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE);
+        if (getInstance().BPOMIN_ALL) bPomin.setVisibility(View.VISIBLE);
+        if (getInstance().BUPLOW_ALL) bUpperLower.setVisibility(View.VISIBLE);
+        if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE);
     }
 
     public int dpToPx(int dp) {

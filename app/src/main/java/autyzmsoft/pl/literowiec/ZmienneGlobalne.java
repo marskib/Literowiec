@@ -28,7 +28,7 @@ public class ZmienneGlobalne extends Application {
     public boolean CISZA;               //kompletna Cisza, bez nagrod i bez 'ding,'brrr' po kliknieciu klawisza
 
     public boolean TRYB_TRENING;        //czy pracujemy w trybie treningowym (pokazujac cwiczenie od razu wyswietlamy nazwe pod obrazkiem)
-    public boolean TRYB_PODP;           //to samo co TRYB_TTRENING, tylko nazwa pod obrazkiem duzo mniejszymi literami i nie czerwona
+    public boolean TRYB_PODP;           //czy ma byc nazwa pod obrazkiem
     public boolean DELAYED;             //czy pokazywać klawisze z wyrazami z opóźnieniem (efekciarstwo ;))
     public boolean ODMOWA_DOST;         //na etapie instalacji/1-go uruchomienia user odmowil dostepu do kart(y); dotyczy androida 6 i więcej
 
@@ -36,6 +36,8 @@ public class ZmienneGlobalne extends Application {
     public boolean BPOMIN_ALL;          //czy bPomin dozwolony (allowed)
     public boolean BAGAIN_ALL;          //czy bAgain dozwolony (allowed)
     public boolean BUPLOW_ALL;          //czy bUpperLower dozwolony (allowed)
+
+    public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu)
 
 
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
@@ -65,15 +67,16 @@ public class ZmienneGlobalne extends Application {
         TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
         CISZA         = false;
+        TRYB_PODP     = true;
 
         BPOMIN_ALL    = true;
         BAGAIN_ALL    = true;
         BUPLOW_ALL    = true;
 
-        TRYB_TRENING = false;
-        TRYB_PODP    = false;
         DELAYED      = true;
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
+
+        POKAZ_MODAL  = false;
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
         ZMIENIONO_ZRODLO = true;             //inicjacyjnie na true, zeby po uruchomieniu apki wykonala sie onResume() w calosci

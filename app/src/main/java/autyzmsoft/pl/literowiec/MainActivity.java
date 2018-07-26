@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -49,6 +48,9 @@ import java.util.Random;
 public class MainActivity extends Activity {
 
     public static final int DELAY_EXERC = 1000; //opoznienie w pokazywaniu rozrzuconych liter i podpisu pod Obrazkiem
+
+    public static final long DELAY_ORDER = 600; //opoznienie uporządkowania Obszaru po Zwyciestwie
+
 
     Intent intModalDialog;  //Na okienko dialogu 'modalnego' orzy starcie aplikacji
     static MediaPlayer mp = null;
@@ -191,13 +193,17 @@ public class MainActivity extends Activity {
                 InputStream stream = getAssets().open(katalog + "/" + nazwaObrazka);
                 Drawable drawable = Drawable.createFromStream(stream, null);
                 imageView.setImageDrawable(drawable);
-
-                //Animacja; 2018-07-26:
-                Animation a = AnimationUtils.loadAnimation(this,dddd);
-                imageView.startAnimation(a);
-                //Animacja - kopniec
-
             }
+            //Animacja- 2018-07-26:
+            //Animation a = AnimationUtils.loadAnimation(this, R.anim.obrot);
+            //imageView.startAnimation(a);
+            //Animation a = AnimationUtils.loadAnimation(this, R.anim.pojawienie);
+            //imageView.startAnimation(a);
+
+            Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
+            imageView.startAnimation(a);
+
+            //Animacja - koniec
         } catch (Exception e) {
             Log.e("4321", e.getMessage());
             Toast.makeText(this, "Problem z wyswietleniem obrazka...", Toast.LENGTH_SHORT).show();
@@ -365,7 +371,7 @@ public class MainActivity extends Activity {
 
 
   private void dajPodpowiedz() {
-  //Umieszcza podpowiedz pod obrazkiem (jesli ustawiono w ustawieniach)
+  //Umieszcza podpowiedzi (=nazwy) pod obrazkiem (jesli ustawiono w ustawieniach)
 
     tvNazwa.setVisibility(View.INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
 
@@ -379,7 +385,10 @@ public class MainActivity extends Activity {
             tvNazwa.setText(currWord);
             int lsize = (int) getResources().getDimension(R.dimen.litera_size);
             tvNazwa.setTextSize(lsize/3);
-            tvNazwa.getLayoutParams().width = imageView.getWidth();
+            int szer = imageView.getWidth();
+            tvNazwa.getLayoutParams().width = szer;
+            if (currWord.length()>10 && toUp)
+                tvNazwa.getLayoutParams().width = szer + szer/2 + szer/4;   //zeby zmiescila sie np. DZIEWCZYNKA
             tvNazwa.setVisibility(View.VISIBLE);
         }
     },DELAY_EXERC);
@@ -800,7 +809,7 @@ public class MainActivity extends Activity {
                                     @Override
                                     public void run() {
                                         uporzadkujObszar();
-                                         } },600);
+                                         } }, DELAY_ORDER);
                             } else {
                                 //Toast.makeText(MainActivity.this, "Żle.....", Toast.LENGTH_SHORT).show();
                                 odegrajZAssets("nagrania/komentarze/zle.mp3",50);
@@ -900,6 +909,17 @@ public class MainActivity extends Activity {
                 bDalej.setVisibility(View.VISIBLE);
                 bAgain1.setVisibility(View.VISIBLE);
             } },2000); //zeby dziecko mialo czas na 'podziwianie' ;)
+
+        //Animacja w 'nagrode':
+        Handler mHandl1 = new Handler();
+        mHandl1.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.obrot);
+                imageView.startAnimation(a);
+            }
+        },DELAY_ORDER+DELAY_ORDER/2);
+
 
     } //koniec Metody()
 

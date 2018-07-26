@@ -26,6 +26,8 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -174,7 +176,7 @@ public class MainActivity extends Activity {
 
     public void setCurrentImage() {
 
-        String nazwaObrazka; //zawiera rozrzerzenie (.jpg , .bmp , ...)
+        String nazwaObrazka; //zawiera rozszerzenie (.jpg , .bmp , ...)
 
         try {
             if (getInstance().ZRODLEM_JEST_KATALOG) { //pobranie z Directory
@@ -189,6 +191,12 @@ public class MainActivity extends Activity {
                 InputStream stream = getAssets().open(katalog + "/" + nazwaObrazka);
                 Drawable drawable = Drawable.createFromStream(stream, null);
                 imageView.setImageDrawable(drawable);
+
+                //Animacja; 2018-07-26:
+                Animation a = AnimationUtils.loadAnimation(this,dddd);
+                imageView.startAnimation(a);
+                //Animacja - kopniec
+
             }
         } catch (Exception e) {
             Log.e("4321", e.getMessage());

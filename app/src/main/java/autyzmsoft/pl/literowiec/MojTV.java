@@ -1,6 +1,8 @@
 package autyzmsoft.pl.literowiec;
 
-
+/**
+ * Klasa do etykiet-liter do ukladania
+ */
 
 import android.content.Context;
 import android.util.AttributeSet;

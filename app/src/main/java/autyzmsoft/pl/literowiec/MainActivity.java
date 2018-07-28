@@ -353,7 +353,6 @@ public class MainActivity extends Activity {
 
       private void dajNextObrazek() {
      //Daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
-     //Wyswietla nazwe pod obrazkiem
 
         currImage = dajLosowyNumerObrazka();
 
@@ -364,8 +363,6 @@ public class MainActivity extends Activity {
         nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
         currWord  = nazwaPliku;
-
-        dajPodpowiedz();
 
       } //koniec Metody()
 
@@ -383,12 +380,6 @@ public class MainActivity extends Activity {
         @Override
         public void run() {
             tvNazwa.setText(currWord);
-            int lsize = (int) getResources().getDimension(R.dimen.litera_size);
-            tvNazwa.setTextSize(lsize/3);
-            int szer = imageView.getWidth();
-            tvNazwa.getLayoutParams().width = szer;
-            if (currWord.length()>10 && toUp)
-                tvNazwa.getLayoutParams().width = szer + szer/2 + szer/4;   //zeby zmiescila sie np. DZIEWCZYNKA
             tvNazwa.setVisibility(View.VISIBLE);
         }
     },DELAY_EXERC);
@@ -398,6 +389,7 @@ public class MainActivity extends Activity {
 
   private void rozrzucWyraz() {
    /* Rozrzucenie currWord po tablicy lbs (= po Ekranie)              */
+   //Wyswietla tez nazwe pod obrazkiem
 
        bDajGestosc.setText("TV :   Ol: "); //sledzenie
 
@@ -430,6 +422,8 @@ public class MainActivity extends Activity {
        //currWord   = "W";
 
 
+       dajPodpowiedz(); //(ewentualna) nazwa pod obtrazkiem (robie tutaj, bo lepszy efekt wizualny niż później)
+
        //Pobieramy wyraz do rozrzucenia:
        final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
 
@@ -458,13 +452,12 @@ public class MainActivity extends Activity {
                    lbs[k].setVisibility(View.VISIBLE);
                    /******/
 
-               } //for
+               }
+               if (toUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
+                   podniesLabels();
                if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE); //bo ewentualne klikniecie schowalo ten klawisz
            }  //run()
        }, DELAY_EXERC);
-
-       //Ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy:
-       if (toUp) podniesLabels();
 
    } //koniecMetody();
 
@@ -991,7 +984,6 @@ public class MainActivity extends Activity {
 
 //        String manufacturer = Build.MANUFACTURER;
 //        String model = Build.MODEL;
-//        String versionREL = Build.VERSION.RELEASE;
 //        String versionRelease = Build.VERSION.RELEASE;
 //
 //        Log.e("MyActivity", "manufacturer " + manufacturer
@@ -1185,6 +1177,9 @@ public class MainActivity extends Activity {
         lPar.topMargin = 5;
         lPar.leftMargin = 10;
         imageView.setLayoutParams(lPar);
+
+        //nazwa pod obrazkiem - szerokosc jak Obrazek:
+        tvNazwa.getLayoutParams().width = lPar.width;
 
         //Obszar-Prostokat na ukladanie wyrazu:
         RelativeLayout.LayoutParams lPar1 = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
@@ -1515,7 +1510,7 @@ public class MainActivity extends Activity {
         return Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
     }
 
-    public int pxToSp(int px) {
+    public  int pxToSp(int px) {
         //Convert pixel to sp:
         float scaledDensity = this.getResources().getDisplayMetrics().scaledDensity;
         return Math.round(px /scaledDensity);

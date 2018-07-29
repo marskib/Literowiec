@@ -177,6 +177,7 @@ public class MainActivity extends Activity {
 
 
     public void setCurrentImage() {
+    /* Werysowanie Obrazka; Odegranie dźwieku; Animacja */
 
         String nazwaObrazka; //zawiera rozszerzenie (.jpg , .bmp , ...)
 
@@ -194,11 +195,8 @@ public class MainActivity extends Activity {
                 Drawable drawable = Drawable.createFromStream(stream, null);
                 imageView.setImageDrawable(drawable);
             }
-            //Animacja- 2018-07-26:
-            //Animation a = AnimationUtils.loadAnimation(this, R.anim.obrot);
-            //imageView.startAnimation(a);
-            //Animation a = AnimationUtils.loadAnimation(this, R.anim.pojawienie);
-            //imageView.startAnimation(a);
+
+            dajPodpowiedz(); //(ewentualna) nazwa pod obtrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej.
 
             Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
             imageView.startAnimation(a);
@@ -421,17 +419,17 @@ public class MainActivity extends Activity {
        //currWord   = "buty";
        //currWord   = "W";
 
+      //Pobieramy wyraz do rozrzucenia:
+      final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
 
-       dajPodpowiedz(); //(ewentualna) nazwa pod obtrazkiem (robie tutaj, bo lepszy efekt wizualny niż później)
+      final Random rand = new Random();
 
-       //Pobieramy wyraz do rozrzucenia:
-       final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
+      final Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.skalowanie);
+      a.setDuration(500);
 
-       final Random rand = new Random();
-
-       //Pokazujemy z lekkim opoznieniem (efekciarstwo...):
-       Handler mHandl = new Handler();
-       mHandl.postDelayed(new Runnable() {
+      //Pokazujemy z lekkim opoznieniem (efekciarstwo...):
+      Handler mHandl = new Handler();
+      mHandl.postDelayed(new Runnable() {
            @Override
            public void run() {
                //Kazda litera wyrazu ląduje w losowej komorce tablicy lbs :
@@ -451,13 +449,15 @@ public class MainActivity extends Activity {
                    lbs[k].setTextColor(Color.BLACK);  //kosmetyka
                    lbs[k].setVisibility(View.VISIBLE);
                    /******/
+                   //podpiecie animacji:
+                   lbs[k].startAnimation(a);
 
                }
                if (toUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
                    podniesLabels();
                if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE); //bo ewentualne klikniecie schowalo ten klawisz
            }  //run()
-       }, DELAY_EXERC);
+      }, DELAY_EXERC);
 
    } //koniecMetody();
 
@@ -909,6 +909,7 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.obrot);
+                //Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.puls);
                 imageView.startAnimation(a);
             }
         },DELAY_ORDER+DELAY_ORDER/2);

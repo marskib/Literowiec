@@ -61,8 +61,8 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="2dp"
         android:text=" @ "
-      android:textStyle="bold"
-      />
+        android:textStyle="bold"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/bUpperLower"
@@ -73,7 +73,7 @@
         android:layout_alignParentBottom="true"
         android:layout_toStartOf="@+id/bAgain"
         android:text="UpLoCase"
-        android:layout_above="@+id/tvInfo2"/>
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/bPomin"
@@ -83,7 +83,7 @@
         android:text=" X "
         android:layout_toStartOf="@+id/bUpperLower"
         android:layout_alignParentBottom="true"
-    />
+        android:visibility="invisible"/>
 
     <Button
       android:id="@+id/bDajGestosc"

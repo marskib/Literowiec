@@ -1,5 +1,8 @@
 package autyzmsoft.pl.literowiec;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.getInstance;
 
 import android.app.Activity;
@@ -372,7 +375,7 @@ public class MainActivity extends Activity {
   private void dajPodpowiedz() {
   //Umieszcza nazwę pod obrazkiem (jesli ustawiono w ustawieniach)
 
-    tvNazwa.setVisibility(View.INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
+    tvNazwa.setVisibility(INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
 
     if (!getInstance().TRYB_PODP) return;
 
@@ -380,7 +383,7 @@ public class MainActivity extends Activity {
       if (toUp) {
           tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(Locale.getDefault()));
       }
-      tvNazwa.setVisibility(View.VISIBLE);
+      tvNazwa.setVisibility(VISIBLE);
 
   }  //koniec Metedy()
 
@@ -441,13 +444,13 @@ public class MainActivity extends Activity {
                    do {
                       k = rand.nextInt(lbs.length);
                    }
-                   while (lbs[k].getVisibility() == View.VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niewidoczne) etykiety
+                   while (lbs[k].getVisibility() == VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niewidoczne) etykiety
 
                    //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
                    lbs[k].setOrigL(z);
                    lbs[k].setText(z);
                    lbs[k].setTextColor(Color.BLACK);  //kosmetyka
-                   lbs[k].setVisibility(View.VISIBLE);
+                   lbs[k].setVisibility(VISIBLE);
                    /******/
                    //podpiecie animacji:
                    lbs[k].startAnimation(a);
@@ -455,7 +458,8 @@ public class MainActivity extends Activity {
                }
                if (toUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
                    podniesLabels();
-               if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE); //bo ewentualne klikniecie schowalo ten klawisz
+               //if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE); //bo ewentualne klikniecie schowalo ten klawisz
+               odblokujKlawiszeDodatkowe();
            }  //run()
       }, DELAY_EXERC);
 
@@ -468,7 +472,7 @@ public class MainActivity extends Activity {
             lb.setText("*");
             lb.setOrigL("*");
             lb.setInArea(false);
-            lb.setVisibility(View.INVISIBLE);
+            lb.setVisibility(INVISIBLE);
         }
     }
 
@@ -478,18 +482,18 @@ public class MainActivity extends Activity {
         //bAgain.setText("*");
         bUpperLower.setText(sizeW+"x"+sizeH);
 
+        blokujKlawiszeDodatkowe();
+
         resetujLabelsy();
         ustawLadnieEtykiety();
         dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz currWord = nazwa obrazka bez nalecialosci)
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currWord
 
-        tvShownWord.setVisibility(View.INVISIBLE);
+        tvShownWord.setVisibility(INVISIBLE);
 
-        bDalej.setVisibility(View.INVISIBLE);
-        bAgain1.setVisibility(View.INVISIBLE);
-
-        pokazKlawiszeDodatkowe();
+        bDalej.setVisibility(INVISIBLE);
+        bAgain1.setVisibility(INVISIBLE);
 
     } //koniecMetody()
 
@@ -501,28 +505,28 @@ public class MainActivity extends Activity {
 
         //bAgain.setVisibility(View.INVISIBLE); //zeby nie klikal jak wsciekly... :(
 
-        znieczulKlawiszeDodatkowe();
+        blokujKlawiszeDodatkowe();
 
         ustawLadnieEtykiety();
         resetujLabelsy();
         rozrzucWyraz();
 
-        tvShownWord.setVisibility(View.INVISIBLE);
-        bDalej.setVisibility(View.INVISIBLE); //gdyby byl widoczny
+        tvShownWord.setVisibility(INVISIBLE);
+        bDalej.setVisibility(INVISIBLE); //gdyby byl widoczny
 
         if (v==bAgain1) {
-            bAgain1.setVisibility(View.INVISIBLE);
+            bAgain1.setVisibility(INVISIBLE);
             Handler mHandl = new Handler();
             mHandl.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    pokazKlawiszeDodatkowe(); //pokazanie z opoznieniem, zeby nie klikal za wczesnie, bo 'zawiecha'
+                    odblokujKlawiszeDodatkowe(); //pokazanie z opoznieniem, zeby nie klikal za wczesnie, bo 'zawiecha'
                 }
             },DELAY_EXERC);
         }
     }  //koniec Metody()
 
-    private void znieczulKlawiszeDodatkowe() {
+    private void blokujKlawiszeDodatkowe() {
         bPomin.setEnabled(false);
         bUpperLower.setEnabled(false);
         bAgain.setEnabled(false);
@@ -540,7 +544,7 @@ public class MainActivity extends Activity {
         toUp = !toUp;
 
         //1.Wyraz juz ulozony:
-        if (tvShownWord.getVisibility()== View.VISIBLE) {
+        if (tvShownWord.getVisibility()== VISIBLE) {
             if (toUp) podniesWyraz();
             else restoreOriginalWyraz();
         }
@@ -700,8 +704,8 @@ public class MainActivity extends Activity {
 
     private void pokazUkryjEtykietySledzenia(boolean czyPokazac) {
         int rob;
-        rob = TextView.INVISIBLE;
-        if (czyPokazac) rob = TextView.VISIBLE;
+        rob = INVISIBLE;
+        if (czyPokazac) rob = VISIBLE;
         tvInfo.setVisibility(rob);
         tvInfo1.setVisibility(rob);
         tvInfo2.setVisibility(rob);
@@ -898,7 +902,7 @@ public class MainActivity extends Activity {
         pokazWyraz();                     //w Obszarze pokazany zostaje ulozony wyraz (umieszczaam w tvSHownWord; + ewentualna korekcja polozenia)
 
         //Gasimy wszystkie etykiety:
-        for (MojTV lb : lbs) { lb.setVisibility(View.INVISIBLE);}
+        for (MojTV lb : lbs) { lb.setVisibility(INVISIBLE);}
 
         ukryjKlawiszeDodatkowe();
 
@@ -907,8 +911,8 @@ public class MainActivity extends Activity {
         mHandl.postDelayed(new Runnable() {
             @Override
             public void run() {
-                bDalej.setVisibility(View.VISIBLE);
-                bAgain1.setVisibility(View.VISIBLE);
+                bDalej.setVisibility(VISIBLE);
+                bAgain1.setVisibility(VISIBLE);
             } },2000); //zeby dziecko mialo czas na 'podziwianie' ;)
 
         //Animacja w 'nagrode':
@@ -955,7 +959,7 @@ public class MainActivity extends Activity {
       }
       tvShownWord.setText(sb);
       tvShownWord.setTextColor(lbsRob[0].getTextColors()); //kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka
-      tvShownWord.setVisibility(View.VISIBLE);
+      tvShownWord.setVisibility(VISIBLE);
 
       //!!! BARDZO WAZNE: !!!
       korygujJesliWystaje();
@@ -1495,15 +1499,25 @@ public class MainActivity extends Activity {
     private void ukryjKlawiszeDodatkowe() {
     //Po Zwyciestwie ukrywa klawisze pod Obszarem, zeby dziecko nie moglo zrobic balaganu przed pojawieniem sie bDalej.
     //Nie ukrywa bUpperLower, zeby mozna bylo powiekszac/pomniejszac zwycieski currWord.
-      bPomin.setVisibility(View.INVISIBLE);
-      bAgain.setVisibility(View.INVISIBLE);
+      bPomin.setVisibility(INVISIBLE);
+      bAgain.setVisibility(INVISIBLE);
     }
 
-    private void pokazKlawiszeDodatkowe() {
+    private void odblokujKlawiszeDodatkowe() {
     //Pokazanie (ewentualne) klawiszy pod Obszarem"
-        if (getInstance().BPOMIN_ALL) bPomin.setVisibility(View.VISIBLE);
-        if (getInstance().BUPLOW_ALL) bUpperLower.setVisibility(View.VISIBLE);
-        if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE);
+
+        if (getInstance().BPOMIN_ALL) bPomin.setVisibility(VISIBLE);
+        else bPomin.setVisibility(INVISIBLE);
+
+        if (getInstance().BUPLOW_ALL) bUpperLower.setVisibility(VISIBLE);
+        else bUpperLower.setVisibility(INVISIBLE);
+
+        if (getInstance().BAGAIN_ALL) bAgain.setVisibility(VISIBLE);
+        else bAgain.setVisibility(INVISIBLE);
+
+        /*if (getInstance().BPOMIN_ALL)*/ bPomin.setEnabled(true);
+        /*if (getInstance().BUPLOW_ALL)*/ bUpperLower.setEnabled(true);
+        /*if (getInstance().BAGAIN_ALL)*/ bAgain.setEnabled(true);
     }
 
     public int dpToPx(int dp) {

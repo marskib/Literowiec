@@ -71,7 +71,7 @@ public class ZmienneGlobalne extends Application {
 
         BPOMIN_ALL    = true;
         BAGAIN_ALL    = true;
-        BUPLOW_ALL    = true;
+        BUPLOW_ALL    = false;
 
         DELAYED      = true;
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...

@@ -121,6 +121,7 @@
 
 
         <!--Na wyswietlenie zwycieskiego wyrazu:-->
+        <!--na otoczenie yrazu-sledzenie:    android:background="@drawable/border_probnik"-->
         <TextView
             android:id="@+id/tvShownWord"
             android:layout_width="wrap_content"
@@ -133,9 +134,10 @@
             android:textStyle="bold"
             android:letterSpacing="@dimen/lspacing_ski"
             android:visibility="invisible"
-            android:background="@drawable/border_probnik"
             android:maxLines="1"/>
     </LinearLayout>
+
+
 
     <!--Miesce na obrazek: -->
     <ImageView
@@ -149,26 +151,21 @@
         android:visibility="visible"
     />
 
+    <!--Nazwa pod Obrazkiem: -->
+    <!--na otoczenie yrazu-sledzenie:    android:background="@drawable/border_probnik"-->
     <autyzmsoft.pl.literowiec.ResizeTextView
       android:id="@+id/tvNazwa"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
-
       android:paddingLeft="0dp"
       android:paddingTop="0dp"
-
       android:layout_marginTop="-15dp"
       android:layout_marginLeft="10dp"
-
-
       android:layout_alignParentStart="true"
-
       android:layout_below="@+id/imageView"
       android:gravity="center"
-
       android:text="nazwaObrazka"
       android:maxLines="1"
-      android:background="@drawable/border_probnik"
       android:visibility="visible"/>
 
 

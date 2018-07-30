@@ -196,12 +196,16 @@ public class MainActivity extends Activity {
                 imageView.setImageDrawable(drawable);
             }
 
-            dajPodpowiedz(); //(ewentualna) nazwa pod obtrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej.
 
+            //Pokazania obrazka z 'efektem' (efekciarstwo):
             Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
             imageView.startAnimation(a);
 
-            //Animacja - koniec
+            //Z chwila zakonczenia animacji ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
+            dajPodpowiedz();
+            Animation b = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
+            tvNazwa.startAnimation(b);
+
         } catch (Exception e) {
             Log.e("4321", e.getMessage());
             Toast.makeText(this, "Problem z wyswietleniem obrazka...", Toast.LENGTH_SHORT).show();
@@ -366,21 +370,17 @@ public class MainActivity extends Activity {
 
 
   private void dajPodpowiedz() {
-  //Umieszcza podpowiedzi (=nazwy) pod obrazkiem (jesli ustawiono w ustawieniach)
+  //Umieszcza nazwę pod obrazkiem (jesli ustawiono w ustawieniach)
 
     tvNazwa.setVisibility(View.INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
 
     if (!getInstance().TRYB_PODP) return;
 
-    //Wyśrodkowanie, ustalenie wielkosci liter, pokazanie z lekkim opoznieniem:
-    Handler mHandl = new Handler();
-    mHandl.postDelayed(new Runnable() {
-        @Override
-        public void run() {
-            tvNazwa.setText(currWord);
-            tvNazwa.setVisibility(View.VISIBLE);
-        }
-    },DELAY_EXERC);
+    tvNazwa.setText(currWord);
+      if (toUp) {
+          tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(Locale.getDefault()));
+      }
+      tvNazwa.setVisibility(View.VISIBLE);
 
   }  //koniec Metedy()
 
@@ -499,7 +499,9 @@ public class MainActivity extends Activity {
     //bAgain -  kl. pod Obszarem
     //bAgain1 - kl. pod bDalej
 
-        bAgain.setVisibility(View.INVISIBLE); //zeby nie klikal jak wsciekly... :(
+        //bAgain.setVisibility(View.INVISIBLE); //zeby nie klikal jak wsciekly... :(
+
+        znieczulKlawiszeDodatkowe();
 
         ustawLadnieEtykiety();
         resetujLabelsy();
@@ -519,6 +521,12 @@ public class MainActivity extends Activity {
             },DELAY_EXERC);
         }
     }  //koniec Metody()
+
+    private void znieczulKlawiszeDodatkowe() {
+        bPomin.setEnabled(false);
+        bUpperLower.setEnabled(false);
+        bAgain.setEnabled(false);
+    }
 
 
     public void bPominClick(View v) {

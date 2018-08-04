@@ -1139,7 +1139,7 @@ public class MainActivity extends Activity {
         else
             rob = 0; //bo 0-to jest de facto numer obrazka
 
-        return rob;
+        return rob;  //105-rzeka 33=lalendarz
     } //koniec Metody()
 
 
@@ -1478,11 +1478,17 @@ public class MainActivity extends Activity {
 
     private void ustawWymiaryKlawiszy() {
     //Wymiarowuje klawisze bDalej, bPomin, bAgain
-        //bDalej zajmuje przestrzen od gory do gornej krawedzi Obszaru, ale zostawia miejsce na bAgain1:
-        bDalej.getLayoutParams().height = (int) (yLg - Math.round(1.1*bAgain1.getHeight()));
+        //bDalej zajmuje przestrzen od gory do gornej krawedzi Obszaru, ale zostawia 2/3 swojej wysokosci miejsce na bAgain1:
+        //bDalej.getLayoutParams().height = (int) (yLg - Math.round(1.1*bAgain1.getHeight()));
+
+        bDalej.getLayoutParams().height = (int) (0.66*yLg);
         bDalej.requestLayout();
 
+        bAgain1.getLayoutParams().height = (int) (0.32*yLg);
         bAgain1.getLayoutParams().width = bDalej.getWidth();
+        int lsize = (int) getResources().getDimension(R.dimen.litera_size); //30% rozmiaru liter-etykiet
+        bAgain1.setTextSize(pxToSp(lsize/3));
+        bAgain1.requestLayout();
 
         //cala przestrzen od dolnej krawedzi Obszaru do konca ekranu:
         bPomin.getLayoutParams().height = sizeH - yLd;

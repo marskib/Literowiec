@@ -46,7 +46,7 @@
       android:layout_marginRight="2dp"
       android:layout_marginTop="0dp"
       android:text="\@"
-      android:textSize="@dimen/malpa_size"
+
       android:textStyle="bold"
       android:visibility="invisible"/>
 
@@ -148,6 +148,9 @@
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
         android:src="@drawable/cytryna"
+
+        android:background="@drawable/border_probnik"
+
         android:visibility="visible"
     />
 

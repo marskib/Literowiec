@@ -29,7 +29,7 @@ public class ResizeTextView extends android.support.v7.widget.AppCompatTextView 
     public ResizeTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        int lsize = (int) getResources().getDimension(R.dimen.litera_size); //wlasna wstawka zeby wiedzxial jaki rozmiar defaultowyl w innych aplikacjach-wyrzucic
+        int lsize = (int) getResources().getDimension(R.dimen.litera_size); //wlasna wstawka zeby wiedzial jaki rozmiar defaultowy w innych aplikacjach-wyrzucic
         setTextSize(pxToSp(lsize/2));
 
         mOriginalTextSize = (int) getTextSize();

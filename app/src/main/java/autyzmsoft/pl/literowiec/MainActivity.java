@@ -10,15 +10,17 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -194,9 +196,18 @@ public class MainActivity extends Activity {
                 imageView.setImageBitmap(bm);
             } else {  //pobranie obrazka z Assets
                 nazwaObrazka = listaObrazkowAssets[currImage];
-                InputStream stream = getAssets().open(katalog + "/" + nazwaObrazka);
-                Drawable drawable = Drawable.createFromStream(stream, null);
-                imageView.setImageDrawable(drawable);
+                InputStream streamSki = getAssets().open(katalog + "/" + nazwaObrazka);
+                /********* obrazek "klasyczny", bez rounded corners ***********/
+                //Drawable drawable = Drawable.createFromStream(stream, null);
+                //imageView.setImageDrawable(drawable);
+                //******* obrazek "klasyczny" - koniec ******************/
+
+                /******* rounded corners 2018.08.03 *************/
+                Bitmap bitmap = BitmapFactory.decodeStream(streamSki); //nie trzeba robic bitmapy, mozna bezposrednio ze strumienia, ale bitmap pozwala uzyc bitmat.getWidth() (patrz 3 linie nizej)
+                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(getResources(), bitmap); //ostatnim parametrem moglby byc stremSki (patrz wyzej)
+                dr.setCornerRadius(Math.max(bitmap.getWidth(), bitmap.getHeight()) / 20.0f);
+                imageView.setImageDrawable(dr);
+                /******* rounded corners koniec *************/
             }
 
 

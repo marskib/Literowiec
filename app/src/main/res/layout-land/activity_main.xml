@@ -147,9 +147,15 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
-        android:src="@drawable/cytryna"
+
+
+
+
         android:visibility="visible"
     />
+
+    <!--android:src="@drawable/cytryna"-->
+    <!--android:scaleType="fitEnd"-->
 
     <!--Nazwa pod Obrazkiem: -->
     <!--na otoczenie wyrazu-sledzenie:    android:background="@drawable/border_probnik"-->

@@ -21,12 +21,11 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MojImageView extends ImageView {
+public class MojImageView extends android.support.v7.widget.AppCompatImageView {
 
     public MojImageView(Context context,   @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -34,7 +33,7 @@ public class MojImageView extends ImageView {
 
     @Override
     protected void onDraw(Canvas plotno) {
-        super.onDraw(plotno);
+        //super.onDraw(plotno);
 
 
         String nazwaObrazka = listaObrazkowAssets[currImage];
@@ -45,11 +44,8 @@ public class MojImageView extends ImageView {
             e.printStackTrace();
         }
 
-
-
         Bitmap bmpSki = BitmapFactory.decodeStream(streamSki);
         Drawable drawable = Drawable.createFromStream(streamSki, null);
-
 
         BitmapShader shader;
         shader = new BitmapShader(bmpSki, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
@@ -60,28 +56,30 @@ public class MojImageView extends ImageView {
 
 
         /* rzeczywiste wymiary obrazka w this: *********/
+
         //Drawable drawable = this.getDrawable();
-//you should call after the bitmap drawn
+        //you should call after the bitmap drawn
+
         Rect bounds = drawable.getBounds();
-        int width = bounds.width();
-        int height = bounds.height();
-        int bitmapWidth = drawable.getIntrinsicWidth(); //this is the bitmap's width
-        int bitmapHeight = drawable.getIntrinsicHeight(); //this is the bitmap's height
+        int  width = bounds.width();
+        int  height = bounds.height();
+        int  bitmapWidth = drawable.getIntrinsicWidth(); //this is the bitmap's width
+        int  bitmapHeight = drawable.getIntrinsicHeight(); //this is the bitmap's height
 
         //width  = Math.min(width,bitmapWidth);
         //height = Math.min(height,bitmapHeight);
 
-        /***************************/
+        /***********************/
 
 
+        RectF rect = new RectF(0.0f, 0.0f, this.getWidth(), this.getHeight());
 
-//        RectF rect = new RectF(0.0f, 0.0f, this.getWidth(), this.getHeight());
-        RectF rect = new RectF(0.0f, 0.0f, bitmapWidth, bitmapHeight);
-        //RectF rect = new RectF(0.0f, 0.0f, width, height);
+        //RectF rect = new RectF(0.0f, 0.0f, bitmapWidth, bitmapHeight);
+        //RectF rect = new RectF(0.0f, 0.0f, bounds.width(),   bounds.height());
 
-//        canvas.drawRoundRect(rect, radius, radius, paint);
         plotno.drawRoundRect(rect, 30, 30, paint);
 
 
+        //canvas.drawRoundRect(rect, radius, radius, paint);
     }
 }

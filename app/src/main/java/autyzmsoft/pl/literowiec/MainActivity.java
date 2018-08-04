@@ -455,7 +455,6 @@ public class MainActivity extends Activity {
                }
                if (toUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
                    podniesLabels();
-               //if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE); //bo ewentualne klikniecie schowalo ten klawisz
                odblokujKlawiszeDodatkowe();
            }  //run()
       }, DELAY_EXERC);
@@ -1137,7 +1136,8 @@ public class MainActivity extends Activity {
         else
             rob = 0; //bo 0-to jest de facto numer obrazka
 
-        return rob;
+        //return rob;
+        return 34; //kalendarz
     } //koniec Metody()
 
 

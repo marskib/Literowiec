@@ -140,10 +140,10 @@
 
 
     <!--Miesce na obrazek: -->
-    <ImageView
+    <autyzmsoft.pl.literowiec.MojImageView
         android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_margin="10dp"
@@ -152,7 +152,7 @@
     />
 
     <!--Nazwa pod Obrazkiem: -->
-    <!--na otoczenie yrazu-sledzenie:    android:background="@drawable/border_probnik"-->
+    <!--na otoczenie wyrazu-sledzenie:    android:background="@drawable/border_probnik"-->
     <autyzmsoft.pl.literowiec.ResizeTextView
       android:id="@+id/tvNazwa"
       android:layout_width="0dp"
@@ -166,7 +166,12 @@
       android:gravity="center"
       android:text="nazwaObrazka"
       android:maxLines="1"
-      android:visibility="visible"/>
+      android:visibility="visible"
+
+      android:scaleType="centerInside"
+      android:adjustViewBounds="true"
+
+    />
 
 
 
@@ -371,17 +376,7 @@
         android:layout_marginLeft="50dp"
         android:text="Wspolrzedne Litery" />
 
-    <TextView
-        android:id="@+id/tvInfo3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:layout_toRightOf="@+id/tvoInfoObszar"
-        android:layout_alignTop="@+id/tvoInfoObszar"
-
-        android:layout_marginLeft="50dp"
-        android:text="Rozdzielczosc" />
+   
 
 
 </RelativeLayout>

@@ -13,7 +13,6 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -39,7 +38,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
@@ -104,8 +102,8 @@ public class MainActivity extends Activity {
     public static String katalog = null;                 //Katalogu w Assets, w ktorym trzymane beda obrazki
     public static String listaObrazkowAssets[] = null;   //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
 
-    public int     currImage = -1;      //indeks biezacego obrazka
-    public String  currWord  = "*";     //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
+    public static int  currImage = -1;      //indeks biezacego obrazka
+    public String  currWord  = "*";         //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
 
     Button bDajGestosc; //sledzenie
     public static int density;          //gestosc ekranu - przydatne system-wide
@@ -121,7 +119,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);
-        imageView  = (ImageView) rootLayout.findViewById(R.id.imageView);
+        imageView  = (MojImageView) rootLayout.findViewById(R.id.imageView);
         tvNazwa    = (TextView) findViewById(R.id.tvNazwa);
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
@@ -192,11 +190,11 @@ public class MainActivity extends Activity {
                 String robAbsolutePath = dirObrazkiNaSD + "/" + nazwaObrazka;
                 Bitmap bm = BitmapFactory.decodeFile(robAbsolutePath, options);
                 imageView.setImageBitmap(bm);
-            } else {  //pobranie obrazka z Assets
-                nazwaObrazka = listaObrazkowAssets[currImage];
-                InputStream stream = getAssets().open(katalog + "/" + nazwaObrazka);
-                Drawable drawable = Drawable.createFromStream(stream, null);
-                imageView.setImageDrawable(drawable);
+//            } else {  //pobranie obrazka z Assets
+//                nazwaObrazka = listaObrazkowAssets[currImage];
+//                InputStream stream = getAssets().open(katalog + "/" + nazwaObrazka);
+//                Drawable drawable = Drawable.createFromStream(stream, null);
+//                imageView.setImageDrawable(drawable);
             }
 
 
@@ -746,6 +744,7 @@ public class MainActivity extends Activity {
         }
     } //koniec Metody()
 
+    
 
 
     private final class ChoiceTouchListener implements OnTouchListener {
@@ -1520,6 +1519,10 @@ public class MainActivity extends Activity {
         /*if (getInstance().BAGAIN_ALL)*/ bAgain.setEnabled(true);
     }
 
+
+
+
+
     public int dpToPx(int dp) {
     //Convert dp to pixel:
         DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
@@ -1538,7 +1541,6 @@ public class MainActivity extends Activity {
         float scaledDensity = this.getResources().getDisplayMetrics().scaledDensity;
         return Math.round(px /scaledDensity);
     }
-
 
 }
 

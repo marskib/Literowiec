@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
     private static MojTV[] lbsRob;  //tablica robocza, do dzialań (m.in. latwego wykrycia prawidlowego porzadku ulozenia etykiet w Obszarze); podzbior tab. lbs
 
 
-    TextView tvInfo, tvInfo1, tvInfo2, tvInfo3;
+    TextView tvInfo, tvInfo1, tvInfo2;
 
     TextView tvShownWord; //na umieszczenie wyrazu po Zwyciestwie
 
@@ -133,7 +133,6 @@ public class MainActivity extends Activity {
         tvInfo = (TextView) findViewById(R.id.tvInfo);
         tvInfo1 = (TextView) findViewById(R.id.tvInfo1);
         tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
-        tvInfo3 = (TextView) findViewById(R.id.tvInfo3);
         bDajGestosc = (Button) findViewById(R.id.bDajGestosc);
 
         przypiszLabelsyAndListenery();
@@ -707,7 +706,7 @@ public class MainActivity extends Activity {
         tvInfo.setVisibility(rob);
         tvInfo1.setVisibility(rob);
         tvInfo2.setVisibility(rob);
-        tvInfo3.setVisibility(rob);
+        //tvInfo3.setVisibility(rob);
     } //koniec Metody();
 
 
@@ -1178,9 +1177,6 @@ public class MainActivity extends Activity {
         //przekazanie na zewnatrz:
         sizeW = displaymetrics.widthPixels;
         sizeH = displaymetrics.heightPixels;
-
-        //sledzenie - pokazania wymiarow urządzenia i rozdzielczosci dpi
-        tvInfo3.setText(Integer.toString(sizeW) + "x" + Integer.toString(sizeH)+" dpi="+Integer.toString(displaymetrics.densityDpi));
 
         //Obrazek - ustawiam w lewym górnym rogu:
         lPar = (RelativeLayout.LayoutParams) imageView.getLayoutParams();

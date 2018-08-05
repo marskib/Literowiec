@@ -28,7 +28,7 @@ public class ZmienneGlobalne extends Application {
     public boolean CISZA;               //kompletna Cisza, bez nagrod i bez 'ding,'brrr' po kliknieciu klawisza
 
     public boolean TRYB_TRENING;        //czy pracujemy w trybie treningowym (pokazujac cwiczenie od razu wyswietlamy nazwe pod obrazkiem)
-    public boolean TRYB_PODP;           //czy ma byc nazwa pod obrazkiem
+    public boolean Z_NAZWA;             //czy ma byc nazwa pod obrazkiem
     public boolean DELAYED;             //czy pokazywać klawisze z wyrazami z opóźnieniem (efekciarstwo ;))
     public boolean ODMOWA_DOST;         //na etapie instalacji/1-go uruchomienia user odmowil dostepu do kart(y); dotyczy androida 6 i więcej
 
@@ -54,7 +54,7 @@ public class ZmienneGlobalne extends Application {
     //konstruktor tego singletona + ustawienia poczatkowe aplikacji:
     private ZmienneGlobalne() {
 
-        nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
+        nieGrajJestemW105 = false; //wyrzucić po skonczonym developmencie
 
         PELNA_WERSJA = true;
         WSZYSTKIE_ROZNE  = true;
@@ -67,7 +67,7 @@ public class ZmienneGlobalne extends Application {
         TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
         CISZA         = false;
-        TRYB_PODP     = true;
+        Z_NAZWA       = false;
 
         BPOMIN_ALL    = true;
         BAGAIN_ALL    = true;

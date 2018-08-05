@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -216,9 +215,11 @@ public class MainActivity extends Activity {
             imageView.startAnimation(a);
 
             //Z chwila zakonczenia animacji ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
-            dajPodpowiedz();
-            Animation b = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
-            tvNazwa.startAnimation(b);
+            if (getInstance().Z_NAZWA) {
+                dajNazwe();
+                Animation b = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
+                tvNazwa.startAnimation(b);
+            }
 
         } catch (Exception e) {
             Log.e("4321", e.getMessage());
@@ -383,12 +384,12 @@ public class MainActivity extends Activity {
       } //koniec Metody()
 
 
-  private void dajPodpowiedz() {
+  private void dajNazwe() {
   //Umieszcza nazwę pod obrazkiem (jesli ustawiono w ustawieniach)
 
     tvNazwa.setVisibility(INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
 
-    if (!getInstance().TRYB_PODP) return;
+    if (!getInstance().Z_NAZWA) return;
 
     tvNazwa.setText(currWord);
       if (toUp) {
@@ -469,10 +470,17 @@ public class MainActivity extends Activity {
                }
                if (toUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
                    podniesLabels();
-               //if (getInstance().BAGAIN_ALL) bAgain.setVisibility(View.VISIBLE); //bo ewentualne klikniecie schowalo ten klawisz
-               odblokujKlawiszeDodatkowe();
            }  //run()
       }, DELAY_EXERC);
+
+      //Odblokowanie dodatkowych klawiszy - chwilke po pokazaniu liter (lepszy efekt):
+      Handler mH2 = new Handler();
+      mH2.postDelayed(new Runnable() {
+          @Override
+          public void run() {
+            odblokujKlawiszeDodatkowe();
+          }
+      }, 2*DELAY_EXERC);
 
    } //koniecMetody();
 
@@ -490,7 +498,6 @@ public class MainActivity extends Activity {
 
     public void bDalejOnClick(View v) {
         //sledzenie:
-        //bAgain.setText("*");
         bUpperLower.setText(sizeW+"x"+sizeH);
 
         blokujKlawiszeDodatkowe();
@@ -514,8 +521,6 @@ public class MainActivity extends Activity {
     //bAgain -  kl. pod Obszarem
     //bAgain1 - kl. pod bDalej
 
-        //bAgain.setVisibility(View.INVISIBLE); //zeby nie klikal jak wsciekly... :(
-
         blokujKlawiszeDodatkowe();
 
         ustawLadnieEtykiety();
@@ -525,7 +530,7 @@ public class MainActivity extends Activity {
         tvShownWord.setVisibility(INVISIBLE);
         bDalej.setVisibility(INVISIBLE); //gdyby byl widoczny
 
-        if (v==bAgain1) {
+        if (v==bAgain1) {   //pod klawiszem bDalej
             bAgain1.setVisibility(INVISIBLE);
             Handler mHandl = new Handler();
             mHandl.postDelayed(new Runnable() {
@@ -533,7 +538,7 @@ public class MainActivity extends Activity {
                 public void run() {
                     odblokujKlawiszeDodatkowe(); //pokazanie z opoznieniem, zeby nie klikal za wczesnie, bo 'zawiecha'
                 }
-            },DELAY_EXERC);
+            },2*DELAY_EXERC);
         }
     }  //koniec Metody()
 
@@ -816,16 +821,7 @@ public class MainActivity extends Activity {
                         ((MojTV) view).setInArea(true);
                         if (policzInAreasy() == currWord.length()) {
                             if (poprawnieUlozono()) {
-                                //Toast.makeText(MainActivity.this, "ZWYCIESTWO!!!", Toast.LENGTH_LONG).show();
-                                odegrajZAssets("nagrania/komentarze/ding.mp3",10);
-                                odegrajZAssets("nagrania/komentarze/oklaski.ogg",400);
-                                //uporzadkowanie w Obszarze z lekkim opoznieniem:
-                                Handler mHandl = new Handler();
-                                mHandl.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        uporzadkujObszar();
-                                         } }, DELAY_ORDER);
+                                Zwyciestwo();
                             } else {
                                 //Toast.makeText(MainActivity.this, "Żle.....", Toast.LENGTH_SHORT).show();
                                 odegrajZAssets("nagrania/komentarze/zle.mp3",50);
@@ -873,6 +869,27 @@ public class MainActivity extends Activity {
         }
     } //koniec Metody()
 
+    private void Zwyciestwo() {
+    /* **************************************************************** */
+    /* Dzialania po Zwyciestwie = poprawnym polozeniu ostatniej litery: */
+    /* Porzadkowanie Obszaru, blokowanie klawiszy, dzwieki              */
+    /* **************************************************************** */
+        odegrajZAssets("nagrania/komentarze/ding.mp3",10);
+        odegrajZAssets("nagrania/komentarze/oklaski.ogg",400);
+        //
+        //Zeby w (krotkim) czasie DELAY_ORDER nie mogl naciskac - bo problemy(!) :
+        bPomin.setEnabled(false);
+        bAgain.setEnabled(false);
+        //
+        //uporzadkowanie w Obszarze z lekkim opoznieniem:
+        Handler mHandl = new Handler();
+        mHandl.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                uporzadkujObszar();
+                 } }, DELAY_ORDER);
+    }  //koniec Metody()
+
     private int dajLeftmostX() {
     //Daje wspolrzedną X najbardziej na lewo polozonej przez usera etykiety z Obszaru; pomocnicza
 
@@ -883,8 +900,6 @@ public class MainActivity extends Activity {
         }
         return min;
     }
-
-
 
 
 

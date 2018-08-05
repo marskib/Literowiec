@@ -76,7 +76,7 @@ public class DialogModalny extends Activity {
         ZmienneGlobalne.getInstance().CISZA         = sharedPreferences.getBoolean("CISZA", false);
 
         ZmienneGlobalne.getInstance().TRYB_TRENING  = sharedPreferences.getBoolean("TRYB_TRENING", false);
-        ZmienneGlobalne.getInstance().TRYB_PODP     = sharedPreferences.getBoolean("TRYB_PODP", false);
+        ZmienneGlobalne.getInstance().Z_NAZWA = sharedPreferences.getBoolean("Z_NAZWA", false);
         ZmienneGlobalne.getInstance().DELAYED       = sharedPreferences.getBoolean("DELAYED", true);
         ZmienneGlobalne.getInstance().ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", false);
 

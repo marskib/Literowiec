@@ -91,6 +91,7 @@ public class MainActivity extends Activity {
 
     public  boolean toUp = false; //czy jestesmy w trybie duzych/malych liter
     private Button bUpperLower;   //wielkie/male litery
+    private Button bHint;         //klawisz podpowiedzi
     private Button bAgain;        //wymieszanie liter; klawisz pod Obszarem
     private Button bAgain1;       //wymieszanie liter; klawisz podbDalej
 
@@ -131,6 +132,7 @@ public class MainActivity extends Activity {
         bAgain1 = (Button) findViewById(R.id.bAgain1);
         tvShownWord = (TextView) findViewById(R.id.tvShownWord);
         bUpperLower =(Button) findViewById(R.id.bUpperLower);
+        bHint = (Button) findViewById(R.id.bHint);
 
         //kontrolki do sledzenia:
         tvInfo = (TextView) findViewById(R.id.tvInfo);
@@ -421,6 +423,7 @@ public class MainActivity extends Activity {
        //currWord   = "pies";
        //currWord   = "mmmm";
        //currWord   = "Mikołaj";
+       currWord   = "Mikołajm";
        //currWord   = "lalka";
        //currWord   = "jabłko";
        //currWord   = "słoneczniki";
@@ -761,6 +764,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(this, "nie znalazłem...", Toast.LENGTH_SHORT).show();
         }
     } //koniec Metody()
+
 
 
 
@@ -1526,6 +1530,9 @@ public class MainActivity extends Activity {
         bAgain.getLayoutParams().height = sizeH - yLd;
         bAgain.requestLayout();
 
+        bHint.getLayoutParams().height = sizeH - yLd;
+        bHint.requestLayout();
+
     } //koniec metody()
 
     private void ukryjKlawiszeDodatkowe() {
@@ -1551,6 +1558,46 @@ public class MainActivity extends Activity {
         /*if (getInstance().BUPLOW_ALL)*/ bUpperLower.setEnabled(true);
         /*if (getInstance().BAGAIN_ALL)*/ bAgain.setEnabled(true);
     }
+
+
+    public void bHintOnClick(View view) {
+    /* Podpowiada kolejna litere do ulozenia */
+    /* Idea algorytmu - iteruje po currWord i wskazuje 1sza litere nie na swoim miejscu w Obszarze */
+
+        final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
+        for (int i = 0; i < wyraz.length; i++) {
+            if (isLiteraInObszar(wyraz[i])) {
+
+            }
+            else {
+                podswietlLabel(wyraz[i]);
+                return;
+            }
+        }
+    }  //koniec Metody()
+
+    private void podswietlLabel(char c) {
+    //Podswietla pierwsza napotkana etykiete zawierajaca znak z parametru */
+
+        String coDostalem = String.valueOf(c);
+
+        for (MojTV lb : lbs) {
+            if (!lb.equals("*")) {
+                String etyk = lb.getOrigL();
+                if (etyk.equals(coDostalem)) {
+                    lb.setTextColor(Color.RED);
+                    return;
+                }
+            }
+        }
+
+    }  //koniec Metody()
+
+
+    private boolean isLiteraInObszar(char c) {
+        return false;
+    }
+
 
     public int dpToPx(int dp) {
     //Convert dp to pixel:

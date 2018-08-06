@@ -69,7 +69,6 @@
 
     <Button
         android:id="@+id/bUpperLower"
-
         android:onClick="bUpperLowerOnClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -385,6 +384,15 @@
 
         android:layout_marginLeft="50dp"
         android:text="Rozdzielczosc" />
+
+    <Button
+      android:id="@+id/bHint"
+      android:onClick="bHintOnClick"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_toStartOf="@+id/bPomin"
+      android:text="?"/>
 
 
 </RelativeLayout>

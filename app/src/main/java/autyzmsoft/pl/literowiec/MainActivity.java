@@ -1,5 +1,7 @@
 package autyzmsoft.pl.literowiec;
 
+import static android.graphics.Color.GREEN;
+import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
@@ -44,6 +46,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Random;
+
+//import android.util.Log;
 
 
 //Prowadzenie litery po ekranie Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
@@ -790,7 +794,7 @@ public class MainActivity extends Activity {
                     //Pokazanie szerokosci kontrolki:
                     tvInfo.setText(Integer.toString(view.getWidth()));
 
-                    ((MojTV) view).setTextColor(Color.RED); //zmiana koloru przeciaganej litery - kosmetyka
+                    ((MojTV) view).setTextColor(RED); //zmiana koloru przeciaganej litery - kosmetyka
 
                     //action_down wykonuje sie (chyba) ZAWSZE, wiec zakladam:
                     ((MojTV) view).setInArea(false);
@@ -1569,17 +1573,82 @@ public class MainActivity extends Activity {
     /* Podpowiada kolejna litere do ulozenia */
     /* Idea algorytmu - iteruje po currWord i wskazuje 1sza litere nie na swoim miejscu w Obszarze */
 
-        final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
-        for (int i = 0; i < wyraz.length; i++) {
-            if (isLiteraInObszar(wyraz[i])) {
+        /* Wziete z Sylabowanki (Lazarus):
+        (* Idea algorytmu : przegladam wyraz sylaba po sylabie (od lewej) i jezeli przegladana sylaba nie jest na swoim       *)
+        (* miejscu w ramce, to wyrozniam ją (inaczej: pokazuję pierwszą sylabę, która nie jest na swoim miejscu)              *)
+        (* Inne podejscia prowadzily do b. skomplikowanego algorytmu.                                                         *)
+        */
 
-            }
-            else {
+        final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
+
+        for (int i = 0; i < wyraz.length; i++) {
+            char litera = wyraz[i];
+            if (!jestGdzieTrzeba(litera,i)) {
                 podswietlLabel(wyraz[i]);
-                return;
+                break;
             }
         }
+        return;
     }  //koniec Metody()
+
+
+
+    private boolean jestGdzieTrzeba(char litera, int pozycja) {
+    /* Bada, czy przekazana 'litera' znajduje sie na pozycji 'pozycja' w Obszarze */
+
+        String textInArea = coWidacInObszar();
+
+        if (textInArea==null)
+            return false;
+
+        if (pozycja > (textInArea.length() - 1))
+            return false;
+
+        final char[] tChar = textInArea.toCharArray();
+        return (tChar[pozycja]==litera);
+    }
+
+    private String coWidacInObszar() {
+    /* ********************************************************** */
+    /* Zwraca w postaci Stringa to, co AKTUALNIE widac w Obszarze */
+    /* ********************************************************** */
+
+        MojTV[] tRob = new MojTV[12];                //tablica robocza, do dzialań
+        //Wszystkie z Obszaru odzwierciedlam w tRob:
+        int licznik = 0;                             //po wyjsciu z petli bedzie zawieral liczbe liter w Obszarze
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) {
+                tRob[licznik] = lb;
+                licznik++;
+            }
+        }
+
+        if (licznik==0) return null;
+
+        //Sortowanie (babelkowe) tRob względem lewej wspolrzednej:
+        MojTV elRob = new MojTV(this);    //element roboczy
+        boolean bylSort = true;
+        while (bylSort) {
+            bylSort = false;
+            for (int j = 0; j < licznik-1;  j++) {
+                if (tRob[j].getX() > tRob[j+1].getX()) {
+                    elRob     = tRob[j+1];
+                    tRob[j+1] = tRob[j];
+                    tRob[j]   = elRob;
+                    bylSort = true;
+                }
+            }
+        }  //while
+
+        //Wypakowanie do Stringa i zwrot na zewnatrz:
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i<licznik; i++) {
+            sb.append(tRob[i].getOrigL());
+        }
+        String coWidac = sb.toString();
+        return coWidac;
+    } //koniec Metody()
+
 
     private void podswietlLabel(char c) {
     //Podswietla pierwsza napotkana etykiete zawierajaca znak z parametru */
@@ -1589,8 +1658,25 @@ public class MainActivity extends Activity {
         for (MojTV lb : lbs) {
             if (!lb.equals("*")) {
                 String etyk = lb.getOrigL();
-                if (etyk.equals(coDostalem)) {
-                    lb.setTextColor(Color.RED);
+                if (etyk.equals(coDostalem) && !lb.isInArea()) {
+                    lb.setTextColor(GREEN);
+
+                    //Mruganie:
+                    final MojTV lbf = lb; //sztuczka zeby ominac final
+                    final Handler h = new Handler();
+                    h.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            int currColor = lbf.getCurrentTextColor();
+                            if (currColor==GREEN)  currColor = RED;
+                            else  currColor = GREEN;
+                            lbf.setTextColor(currColor);
+
+                            h.postDelayed(this,500);
+                        }
+                    }, 500);
+
                     return;
                 }
             }
@@ -1598,10 +1684,6 @@ public class MainActivity extends Activity {
 
     }  //koniec Metody()
 
-
-    private boolean isLiteraInObszar(char c) {
-        return false;
-    }
 
 
     public int dpToPx(int dp) {

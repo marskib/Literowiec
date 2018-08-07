@@ -1,11 +1,14 @@
 package autyzmsoft.pl.literowiec;
 
+import android.content.Context;
+import android.os.Handler;
+import android.util.AttributeSet;
+
 /**
  * Klasa do etykiet-liter do ukladania
  */
 
-import android.content.Context;
-import android.util.AttributeSet;
+
 
 public class MojTV extends android.support.v7.widget.AppCompatTextView {
 
@@ -30,4 +33,37 @@ public class MojTV extends android.support.v7.widget.AppCompatTextView {
     public void setOrigL(String origL) {
         this.origL = origL;
     }
+
+
+    public void mrugaj(final MojTV obiekt, final int kolor) {
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                obiekt.setTextColor(kolor);
+                //obiekt.setText("%");
+                handler.postDelayed(this,250);
+            }
+        };
+    }
+
+
+
 }
+
+
+    //Obiekt i metoda do realizowania kroku bGlowy :
+    /*
+
+    final Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (PAUZA) return;
+            krokGlowy();
+            krokOgona();
+            handler.postDelayed(this, 250);
+        }
+    };
+
+    */

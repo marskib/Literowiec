@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#BEBEBE"
-  android:padding="-100dp"
-  android:layout_margin="0dp"
+    android:padding="-100dp"
+    android:layout_margin="0dp"
     tools:context=".MainActivity"
 >
 
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toStartOf="@+id/bAgain"
-        android:text="UpLoCase"
+        android:text="a &lt;--&gt; A"
         android:visibility="invisible"/>
 
     <Button
@@ -87,6 +87,9 @@
         android:layout_alignParentBottom="true"
         android:visibility="invisible"/>
 
+
+    <!--bDajGestosc: daje gestosc ekranu + inne uslugi-->
+    <!--sledzenie - po developmencie wylaczam-->
     <Button
       android:id="@+id/bDajGestosc"
       android:layout_width="wrap_content"
@@ -94,9 +97,15 @@
       android:onClick="bDajGestoscOnClick"
       android:layout_alignParentBottom="true"
       android:layout_alignParentLeft="true"
+
+      android:visibility="invisible"
+
       android:text="Gestosc"
       />
 
+
+    <!--bDajWielkosc: wielkosc ekranu - Sledzenie-->
+    <!--wylaczam po developmencie-->
     <Button
       android:id="@+id/bDajWielkosc"
       android:layout_width="wrap_content"
@@ -104,6 +113,9 @@
       android:layout_alignParentBottom="true"
       android:layout_toEndOf="@+id/tvInfo3"
       android:onClick="bDajWielkoscEkranuOnClick"
+
+      android:visibility="invisible"
+
       android:text="Ekran"
       />
 
@@ -392,6 +404,7 @@
       android:layout_height="wrap_content"
       android:layout_alignParentBottom="true"
       android:layout_toStartOf="@+id/bPomin"
+      android:visibility="invisible"
       android:text="?"/>
 
 

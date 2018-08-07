@@ -36,6 +36,7 @@ public class ZmienneGlobalne extends Application {
     public boolean BPOMIN_ALL;          //czy bPomin dozwolony (allowed)
     public boolean BAGAIN_ALL;          //czy bAgain dozwolony (allowed)
     public boolean BUPLOW_ALL;          //czy bUpperLower dozwolony (allowed)
+    public boolean BHINT_ALL;           //czy bHint dozwolony (allowed)
 
     public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu)
 
@@ -72,6 +73,7 @@ public class ZmienneGlobalne extends Application {
         BPOMIN_ALL    = true;
         BAGAIN_ALL    = true;
         BUPLOW_ALL    = true;
+        BHINT_ALL     = true;
 
         DELAYED      = true;
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...

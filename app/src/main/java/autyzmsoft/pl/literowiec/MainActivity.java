@@ -423,7 +423,7 @@ public class MainActivity extends Activity {
        //currWord   = "pies";
        //currWord   = "mmmm";
        //currWord   = "Mikołaj";
-       currWord   = "Mikołajm";
+       //currWord   = "Mikołajm";
        //currWord   = "lalka";
        //currWord   = "jabłko";
        //currWord   = "słoneczniki";
@@ -464,12 +464,11 @@ public class MainActivity extends Activity {
                    //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
                    lbs[k].setOrigL(z);
                    lbs[k].setText(z);
-                   lbs[k].setTextColor(Color.BLACK);  //kosmetyka
+                   lbs[k].setTextColor(Color.BLACK);  //kosmetyka, ale wazna...
                    lbs[k].setVisibility(VISIBLE);
                    /******/
                    //podpiecie animacji:
                    lbs[k].startAnimation(a);
-
                }
                if (toUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
                    podniesLabels();
@@ -549,6 +548,7 @@ public class MainActivity extends Activity {
         bPomin.setEnabled(false);
         bUpperLower.setEnabled(false);
         bAgain.setEnabled(false);
+        bHint.setEnabled(false);
     }
 
 
@@ -1536,10 +1536,11 @@ public class MainActivity extends Activity {
     } //koniec metody()
 
     private void ukryjKlawiszeDodatkowe() {
-    //Po Zwyciestwie ukrywa klawisze pod Obszarem, zeby dziecko nie moglo zrobic balaganu przed pojawieniem sie bDalej.
+    //Natychmiast po Zwyciestwie ukrywa klawisze pod Obszarem, zeby dziecko nie moglo zrobic balaganu przed pojawieniem sie bDalej.
     //Nie ukrywa bUpperLower, zeby mozna bylo powiekszac/pomniejszac zwycieski currWord.
       bPomin.setVisibility(INVISIBLE);
       bAgain.setVisibility(INVISIBLE);
+      bHint.setVisibility(INVISIBLE);
     }
 
     private void odblokujKlawiszeDodatkowe() {
@@ -1554,9 +1555,13 @@ public class MainActivity extends Activity {
         if (getInstance().BAGAIN_ALL) bAgain.setVisibility(VISIBLE);
         else bAgain.setVisibility(INVISIBLE);
 
+        if (getInstance().BHINT_ALL) bHint.setVisibility(VISIBLE);
+        else bHint.setVisibility(INVISIBLE);
+
         /*if (getInstance().BPOMIN_ALL)*/ bPomin.setEnabled(true);
         /*if (getInstance().BUPLOW_ALL)*/ bUpperLower.setEnabled(true);
         /*if (getInstance().BAGAIN_ALL)*/ bAgain.setEnabled(true);
+        /*if (getInstance().BHINT_ALL) */ bHint.setEnabled(true);
     }
 
 

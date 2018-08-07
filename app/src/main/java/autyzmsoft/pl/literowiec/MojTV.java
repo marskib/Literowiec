@@ -1,7 +1,6 @@
 package autyzmsoft.pl.literowiec;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.AttributeSet;
 
 /**
@@ -35,24 +34,11 @@ public class MojTV extends android.support.v7.widget.AppCompatTextView {
     }
 
 
-    public void mrugaj(final MojTV obiekt, final int kolor) {
-        final Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                obiekt.setTextColor(kolor);
-                //obiekt.setText("%");
-                handler.postDelayed(this,250);
-            }
-        };
-    }
-
-
-
 }
 
 
-    //Obiekt i metoda do realizowania kroku bGlowy :
+    // proby z blinkiem,,,,,,
+// Obiekt i metoda do realizowania kroku bGlowy :
     /*
 
     final Handler handler = new Handler();

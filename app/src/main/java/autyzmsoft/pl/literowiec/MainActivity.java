@@ -1,6 +1,6 @@
 package autyzmsoft.pl.literowiec;
 
-import static android.graphics.Color.GREEN;
+import static android.graphics.Color.BLACK;
 import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
@@ -31,6 +31,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -115,6 +116,7 @@ public class MainActivity extends Activity {
 
     Button bDajGestosc; //sledzenie
     public static int density;          //gestosc ekranu - przydatne system-wide
+
 
 
     @Override
@@ -792,14 +794,16 @@ public class MainActivity extends Activity {
 
                     //sledzenie:
                     //Pokazanie szerokosci kontrolki:
-                    tvInfo.setText(Integer.toString(view.getWidth()));
+                    //tvInfo.setText(Integer.toString(view.getWidth()));
+
+                    usunPozostalosciKolorow();  //kosmetyka
 
                     ((MojTV) view).setTextColor(RED); //zmiana koloru przeciaganej litery - kosmetyka
 
                     //action_down wykonuje sie (chyba) ZAWSZE, wiec zakladam:
                     ((MojTV) view).setInArea(false);
-                    //policzInAreasy(); //sledzenie
-                    //a potem sie to ww. zmodyfikuje na action up....
+                    //policzInAreasy(); -> sledzenie
+                    //a potem sie to ww. zmodyfikuje w action up....
 
                     break;
                 case MotionEvent.ACTION_UP:
@@ -1579,6 +1583,9 @@ public class MainActivity extends Activity {
         (* Inne podejscia prowadzily do b. skomplikowanego algorytmu.                                                         *)
         */
 
+        //Gasze ewentualne pozostalosci po zignorowanych podpowiedziach:
+        usunPozostalosciKolorow();
+
         final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
 
         for (int i = 0; i < wyraz.length; i++) {
@@ -1591,6 +1598,14 @@ public class MainActivity extends Activity {
         return;
     }  //koniec Metody()
 
+    private void usunPozostalosciKolorow() {
+    //Gassi ewentualne pozostalosci po zignorowanych podpowiedziach
+        for (MojTV lb : lbs) {
+            if (!lb.getOrigL().equals("*"))
+                if (lb.getCurrentTextColor() != BLACK)
+                    lb.setTextColor(BLACK);
+        }
+    }  //koniec Metody()
 
 
     private boolean jestGdzieTrzeba(char litera, int pozycja) {
@@ -1659,24 +1674,27 @@ public class MainActivity extends Activity {
             if (!lb.equals("*")) {
                 String etyk = lb.getOrigL();
                 if (etyk.equals(coDostalem) && !lb.isInArea()) {
-                    lb.setTextColor(GREEN);
+                    lb.setTextColor(RED);
+
+                    makeMeBlink(lb,350,10, 3);
+
 
                     //Mruganie:
-                    final MojTV lbf = lb; //sztuczka zeby ominac final
-                    final Handler h = new Handler();
-                    h.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            int currColor = lbf.getCurrentTextColor();
-                            if (currColor==GREEN)  currColor = RED;
-                            else  currColor = GREEN;
-                            lbf.setTextColor(currColor);
-
-                            h.postDelayed(this,500);
-                        }
-                    }, 500);
-
+//                    final MojTV lbf = lb; //sztuczka zeby ominac final
+//                    final Handler h = new Handler();
+//                    h.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//
+//                            int currColor = lbf.getCurrentTextColor();
+//                            if (currColor==GREEN)  currColor = RED;
+//                            else  currColor = GREEN;
+//                            lbf.setTextColor(currColor);
+//
+//                            h.postDelayed(this,500);
+//                        }
+//                    }, 500);
+//
                     return;
                 }
             }
@@ -1684,6 +1702,27 @@ public class MainActivity extends Activity {
 
     }  //koniec Metody()
 
+
+
+    /**
+     * Make a View Blink for a desired duration
+     *
+     * @param view     view that will be animated
+     * @param duration for how long in ms will it blink
+     * @param offset   start offset of the animation
+     * @param ileRazy  ile razy ma mrugnac
+     * zrodlo: https://gist.github.com/cesarferreira/4fcae632b18904035d3b
+     */
+    public static void makeMeBlink(View view, int duration, int offset, int ileRazy) {
+
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(duration);
+        anim.setStartOffset(offset);
+        anim.setRepeatMode(Animation.REVERSE);
+        //anim.setRepeatCount(Animation.INFINITE);
+        anim.setRepeatCount(ileRazy);
+        view.startAnimation(anim);
+    }
 
 
     public int dpToPx(int dp) {

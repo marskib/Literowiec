@@ -74,8 +74,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toStartOf="@+id/bAgain"
-        android:text="a &lt;--&gt; A"
+        android:text="|"
+      android:letterSpacing="-0.05"
         android:visibility="invisible"/>
+
+        <!--android:text="a &lt;&#45;&#45;&gt; A"-->
 
     <Button
         android:id="@+id/bPomin"

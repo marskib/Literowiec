@@ -56,6 +56,8 @@ import java.util.Random;
 
 public class MainActivity extends Activity {
 
+    public static final int MAXL = 12;          //maxymalna dopuszczalna liczba liter w wyrazie
+
     public static final int DELAY_EXERC = 1000; //opoznienie w pokazywaniu rozrzuconych liter i podpisu pod Obrazkiem
 
     public static final long DELAY_ORDER = 600; //opoznienie uporządkowania Obszaru po Zwyciestwie
@@ -568,6 +570,13 @@ public class MainActivity extends Activity {
 
         toUp = !toUp;
 
+        //Kosmetyka - zmiana symbolu na buttonie:
+        if (toUp)
+            ((Button) v).setText("-----");
+        else
+            ((Button) v).setText("|");
+
+
         //1.Wyraz juz ulozony:
         if (tvShownWord.getVisibility()== VISIBLE) {
             if (toUp) podniesWyraz();
@@ -650,7 +659,7 @@ public class MainActivity extends Activity {
     //Wyraz z Obszaru zmniejszany jest do małych (scislej: oryginalnych) liter.
     //Uwzględnia to problem MIKOŁAJ->Mikołaj
     //Wywolywane w kontekscie zmiany z Wielkich->małe, wiec staram sie, zeby wyraz z malymi literami
-    //rozpoczynal sie tam, gdzie zaczynal sie wyraz z "macierzysty" (jezeli wyraz<12 znakow)
+    //rozpoczynal sie tam, gdzie zaczynal sie wyraz z "macierzysty" (jezeli wyraz<MAXL znakow)
 
         String coPokazac = currWord;
         restoreLetterSpacing(tvShownWord);
@@ -658,9 +667,9 @@ public class MainActivity extends Activity {
 
         //Jezeli wyraz nie jest zbyt dlugi, to wyraz zacznie sie tam, gdzie zaczynal sie wyraz z Wielimi literami
         //(przy b.dlugich wyrazach nie mozna sobie na to pozwolic - patrz 'niedziedzie' przy zmianie Wielki->male nie miesci sie w Obszarze(!)
-        //(wieloliterowy wyraz malymi literami moze byc dluzszy niz ten sam wyraz Wielkimi, bo wielki ma usuniety letterSpacin(!)):
+        //(wieloliterowy wyraz malymi literami moze byc dluzszy niz ten sam wyraz Wielkimi, bo wielki ma usuniety letterSpacing(!)):
         final int pocz = tvShownWord.getLeft();
-        if (currWord.length()<12) {
+        if (currWord.length()<MAXL) {
             tvShownWord.post(new Runnable() {
                 @Override
                 public void run() {
@@ -991,12 +1000,16 @@ public class MainActivity extends Activity {
     //Pokazanie ulozonego wyrazu w Obszarze;
     //Wyraz skladam z tego, co widac na ekranie, nie uzywając currWord (bo duze/male litery)
 
+     /* dialajace do 2018-08-08:
       StringBuilder sb = new StringBuilder();
       for (MojTV lb : lbsRob) {
         sb.append(lb.getText());
       }
       tvShownWord.setText(sb);
-      tvShownWord.setTextColor(lbsRob[0].getTextColors()); //kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka
+      */
+
+      tvShownWord.setText(coWidacInObszar());
+      tvShownWord.setTextColor(lbs[0].getTextColors()); //kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka
       tvShownWord.setVisibility(VISIBLE);
 
       //!!! BARDZO WAZNE: !!!
@@ -1029,7 +1042,7 @@ public class MainActivity extends Activity {
     //Jezeli API<21 nie robie nic, bo taki wyraz nie jest sciesniony i na pewno(?) sie miesci....
     //Zakladam, ze wywolywana tylko, gdy duze litery; przy malych- wszystko sie miesci
 
-        if (currWord.length()<12) return;
+        if (currWord.length()<MAXL) return;
 
         int versionINT = Build.VERSION.SDK_INT;
 
@@ -1056,6 +1069,7 @@ public class MainActivity extends Activity {
     /* Sprawdzenie, czy poprawnie ulozone.      */
     /* **************************************** */
 
+    /*
         //Najpierw przepisanie do tab. roboczej - bedzie krotsza...; potem manipulacje na roboczej:
         lbsRob = new MojTV[currWord.length()];
         int i = 0;
@@ -1088,6 +1102,19 @@ public class MainActivity extends Activity {
         }
         String wyrazWObszarze = sb.toString();
         return wyrazWObszarze.equals(currWord); //porownywane są ORYGINAŁY, więc aktualna wielkosc liter nie ma znaczenia
+     */
+
+        String coUlozyl = coWidacInObszar();
+
+        if (coUlozyl.equals(currWord)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+
+//       return coUlozyl.equals(currWord);
+
     } //koniec Metody();
 
 
@@ -1320,7 +1347,7 @@ public class MainActivity extends Activity {
 
         final int poprPion = 25;
         lPar.topMargin = marginesTop - poprPion;
-        int poprPoziom = (rootLayout.getRight()-imageView.getRight())/12;
+        int poprPoziom = (rootLayout.getRight()-imageView.getRight())/MAXL;
         //troche w prawo, jesli dobre urzadzenie:
 
         if (sizeW>1100) poprPoziom = (int) (1.24*poprPoziom);
@@ -1515,9 +1542,8 @@ public class MainActivity extends Activity {
     }  //koniec Metody()
 
     private void ustawWymiaryKlawiszy() {
-    //Wymiarowuje klawisze bDalej, bPomin, bAgain
+    //Wymiarowuje klawisze bDalej, bPomin, bAgain, bHint, bUpperLOwer
         //bDalej zajmuje przestrzen od gory do gornej krawedzi Obszaru, ale zostawia 2/3 swojej wysokosci miejsce na bAgain1:
-        //bDalej.getLayoutParams().height = (int) (yLg - Math.round(1.1*bAgain1.getHeight()));
 
         bDalej.getLayoutParams().height = (int) (0.66*yLg);
         bDalej.requestLayout();
@@ -1532,14 +1558,17 @@ public class MainActivity extends Activity {
         bPomin.getLayoutParams().height = sizeH - yLd;
         bPomin.requestLayout();
 
-        bUpperLower.getLayoutParams().height = sizeH - yLd;
-        bUpperLower.requestLayout();
-
         bAgain.getLayoutParams().height = sizeH - yLd;
         bAgain.requestLayout();
 
+        bUpperLower.getLayoutParams().height = sizeH - yLd;
+        bUpperLower.getLayoutParams().width  = 2*bAgain.getWidth();
+        bUpperLower.requestLayout();
+
         bHint.getLayoutParams().height = sizeH - yLd;
+        bHint.getLayoutParams().width  = (int) (1.5*bAgain.getWidth());
         bHint.requestLayout();
+
 
     } //koniec metody()
 
@@ -1613,10 +1642,10 @@ public class MainActivity extends Activity {
 
         String textInArea = coWidacInObszar();
 
-        if (textInArea==null)
+        if (textInArea==null) //w Obszarze nic jeszcze nie ma
             return false;
 
-        if (pozycja > (textInArea.length() - 1))
+        if (pozycja > (textInArea.length() - 1))   //text w Obszarze jest krotszy niz pozycja litery
             return false;
 
         final char[] tChar = textInArea.toCharArray();
@@ -1628,7 +1657,7 @@ public class MainActivity extends Activity {
     /* Zwraca w postaci Stringa to, co AKTUALNIE widac w Obszarze */
     /* ********************************************************** */
 
-        MojTV[] tRob = new MojTV[12];                //tablica robocza, do dzialań
+        MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
         //Wszystkie z Obszaru odzwierciedlam w tRob:
         int licznik = 0;                             //po wyjsciu z petli bedzie zawieral liczbe liter w Obszarze
         for (MojTV lb : lbs) {

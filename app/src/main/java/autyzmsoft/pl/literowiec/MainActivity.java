@@ -1070,10 +1070,13 @@ public class MainActivity extends Activity {
 
         String coUlozyl = coWidacInObszar();
 
-        //Obie strony 'rownania' podnosimy do duzych liter (bezpieczniej, bo currWord jest napisem oryginalnym, przewznie z malych liter):
-        coUlozyl = coUlozyl.toUpperCase(Locale.getDefault());
-
-        return (coUlozyl.equals(currWord.toUpperCase(Locale.getDefault())));
+        //Uwaga - nie nalezy podnosic do upperCase obydwu stron - problemy (Mikolaj-Mikolaj):
+        if (!toUp) {
+            return coUlozyl.equals(currWord);
+        }
+        else {
+            return coUlozyl.equals(currWord.toUpperCase(Locale.getDefault()));
+        }
 
     } //koniec Metody();
 
@@ -1086,7 +1089,6 @@ public class MainActivity extends Activity {
         for (MojTV lb : lbs) {
             if (lb.isInArea()) licznik++;
         }
-        //bUpperLower.setText(Integer.toString(licznik)); //sledzenie
         return licznik;
     }
 

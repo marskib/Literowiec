@@ -31,7 +31,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -431,7 +430,7 @@ public class MainActivity extends Activity {
        //currWord   = "pies";
        //currWord   = "mmmm";
        //currWord   = "Mikołaj";
-       currWord   = "Mikołajm";
+       //currWord   = "Mikołajm";
        //currWord   = "lalka";
        //currWord   = "jabłko";
        //currWord   = "słoneczniki";
@@ -1668,27 +1667,16 @@ public class MainActivity extends Activity {
             if (!lb.equals("*")) {
                 String etyk = lb.getOrigL();
                 if (etyk.equals(coDostalem) && !lb.isInArea()) {
+
+                    //Ponizej 2 instrukcje sa OK:
+                    //lb.setTextColor(RED);
+                    //makeMeBlink(lb,350,10, 3);
+
+                    //lb.blink(5);
                     lb.setTextColor(RED);
+                    lb.makeMeBlink(400,5,6);
 
-                    makeMeBlink(lb,350,10, 3);
 
-
-                    //Mruganie:
-//                    final MojTV lbf = lb; //sztuczka zeby ominac final
-//                    final Handler h = new Handler();
-//                    h.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//
-//                            int currColor = lbf.getCurrentTextColor();
-//                            if (currColor==GREEN)  currColor = RED;
-//                            else  currColor = GREEN;
-//                            lbf.setTextColor(currColor);
-//
-//                            h.postDelayed(this,500);
-//                        }
-//                    }, 500);
-//
                     return;
                 }
             }
@@ -1698,25 +1686,6 @@ public class MainActivity extends Activity {
 
 
 
-    /**
-     * Make a View Blink for a desired duration
-     *
-     * @param view     view that will be animated
-     * @param duration for how long in ms will it blink
-     * @param offset   start offset of the animation
-     * @param ileRazy  ile razy ma mrugnac
-     * zrodlo: https://gist.github.com/cesarferreira/4fcae632b18904035d3b
-     */
-    public static void makeMeBlink(View view, int duration, int offset, int ileRazy) {
-
-        Animation anim = new AlphaAnimation(0.0f, 1.0f);
-        anim.setDuration(duration);
-        anim.setStartOffset(offset);
-        anim.setRepeatMode(Animation.REVERSE);
-        //anim.setRepeatCount(Animation.INFINITE);
-        anim.setRepeatCount(ileRazy);
-        view.startAnimation(anim);
-    }
 
 
     public int dpToPx(int dp) {

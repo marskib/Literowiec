@@ -75,7 +75,8 @@
         android:layout_alignParentBottom="true"
         android:layout_toStartOf="@+id/bAgain"
         android:text="-----"
-      android:letterSpacing="-0.05"
+        android:textStyle="bold"
+        android:letterSpacing="-0.15"
         android:visibility="invisible"/>
 
         <!--android:text="a &lt;&#45;&#45;&gt; A"-->
@@ -86,6 +87,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=" X "
+        android:textStyle="bold"
         android:layout_toStartOf="@+id/bUpperLower"
         android:layout_alignParentBottom="true"
         android:visibility="invisible"/>
@@ -408,6 +410,7 @@
       android:layout_alignParentBottom="true"
       android:layout_toStartOf="@+id/bPomin"
       android:visibility="invisible"
+      android:textStyle="bold"
       android:text="?"/>
 
 

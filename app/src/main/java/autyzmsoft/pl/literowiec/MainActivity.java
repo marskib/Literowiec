@@ -431,7 +431,7 @@ public class MainActivity extends Activity {
        //currWord   = "pies";
        //currWord   = "mmmm";
        //currWord   = "Mikołaj";
-       //currWord   = "Mikołajm";
+       currWord   = "Mikołajm";
        //currWord   = "lalka";
        //currWord   = "jabłko";
        //currWord   = "słoneczniki";
@@ -571,7 +571,7 @@ public class MainActivity extends Activity {
         toUp = !toUp;
 
         //Kosmetyka - zmiana symbolu na buttonie:
-        if (toUp)
+        if (!toUp)
             ((Button) v).setText("-----");
         else
             ((Button) v).setText("|");
@@ -899,8 +899,7 @@ public class MainActivity extends Activity {
         odegrajZAssets("nagrania/komentarze/oklaski.ogg",400);
         //
         //Zeby w (krotkim) czasie DELAY_ORDER nie mogl naciskac - bo problemy(!) :
-        bPomin.setEnabled(false);
-        bAgain.setEnabled(false);
+        blokujKlawiszeDodatkowe();
         //
         //uporzadkowanie w Obszarze z lekkim opoznieniem:
         Handler mHandl = new Handler();
@@ -951,15 +950,15 @@ public class MainActivity extends Activity {
         //Gasimy wszystkie etykiety:
         for (MojTV lb : lbs) { lb.setVisibility(INVISIBLE);}
 
-        ukryjKlawiszeDodatkowe();
-
-        //Przywrocenie/pokazanie klawisza bDalej i bAgain1 (z lekkim opoznieniem):
+        //Przywrocenie/pokazanie klawisza bDalej i bAgain1 oraz niektorych dodatkowych (z lekkim opoznieniem):
         Handler mHandl = new Handler();
         mHandl.postDelayed(new Runnable() {
             @Override
             public void run() {
                 bDalej.setVisibility(VISIBLE);
                 bAgain1.setVisibility(VISIBLE);
+                if(getInstance().BUPLOW_ALL)
+                  bUpperLower.setEnabled(true);
             } },2000); //zeby dziecko mialo czas na 'podziwianie' ;)
 
         //Animacja w 'nagrode':
@@ -1069,51 +1068,12 @@ public class MainActivity extends Activity {
     /* Sprawdzenie, czy poprawnie ulozone.      */
     /* **************************************** */
 
-    /*
-        //Najpierw przepisanie do tab. roboczej - bedzie krotsza...; potem manipulacje na roboczej:
-        lbsRob = new MojTV[currWord.length()];
-        int i = 0;
-        for (MojTV lb : lbs) {
-            if (lb.isInArea()) {
-                lbsRob[i] = lb;
-                i++;
-            }
-        }
-        //Tablicę roboczą sortujemy rosnaco babelkowo wg. wspolrzednej X.
-        //Wynikiem jest tablica rob. lbsRob, w ktorej kolejne elementy odpowiadają etykietom w Obszarze, ulozonym od lewej do prawej:
-        MojTV elRob = new MojTV(this);    //element roboczy
-        boolean bylSort = true;
-        while (bylSort) {
-            bylSort = false;
-            for (int j = 0; j < (currWord.length()-1);  j++) {
-                if (lbsRob[j].getX() > lbsRob[j +1].getX()) {
-                   elRob       = lbsRob[j +1];
-                   lbsRob[j+1] = lbsRob[j];
-                   lbsRob[j]   = elRob;
-                   bylSort = true;
-                }
-            }
-        }
-
-        //Na pdst. tablicy lbsRob skladam wyraz jaki "widac" w Obszarze:
-        StringBuilder sb = new StringBuilder();
-        for (MojTV el : lbsRob) {
-            sb.append(el.getOrigL());
-        }
-        String wyrazWObszarze = sb.toString();
-        return wyrazWObszarze.equals(currWord); //porownywane są ORYGINAŁY, więc aktualna wielkosc liter nie ma znaczenia
-     */
-
         String coUlozyl = coWidacInObszar();
 
-        if (coUlozyl.equals(currWord)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        //Obie strony 'rownania' podnosimy do duzych liter (bezpieczniej, bo currWord jest napisem oryginalnym, przewznie z malych liter):
+        coUlozyl = coUlozyl.toUpperCase(Locale.getDefault());
 
-//       return coUlozyl.equals(currWord);
+        return (coUlozyl.equals(currWord.toUpperCase(Locale.getDefault())));
 
     } //koniec Metody();
 
@@ -1572,13 +1532,6 @@ public class MainActivity extends Activity {
 
     } //koniec metody()
 
-    private void ukryjKlawiszeDodatkowe() {
-    //Natychmiast po Zwyciestwie ukrywa klawisze pod Obszarem, zeby dziecko nie moglo zrobic balaganu przed pojawieniem sie bDalej.
-    //Nie ukrywa bUpperLower, zeby mozna bylo powiekszac/pomniejszac zwycieski currWord.
-      bPomin.setVisibility(INVISIBLE);
-      bAgain.setVisibility(INVISIBLE);
-      bHint.setVisibility(INVISIBLE);
-    }
 
     private void odblokujKlawiszeDodatkowe() {
     //Pokazanie (ewentualne) klawiszy pod Obszarem"
@@ -1648,8 +1601,17 @@ public class MainActivity extends Activity {
         if (pozycja > (textInArea.length() - 1))   //text w Obszarze jest krotszy niz pozycja litery
             return false;
 
-        final char[] tChar = textInArea.toCharArray();
-        return (tChar[pozycja]==litera);
+        char[] tChar = textInArea.toCharArray();
+
+        //Litera w tekscie w Obszarze i litera w parametrach jako Stringi (do porownań):
+        String litWtext = Character.toString(tChar[pozycja]);
+        String litWpar  = Character.toString(litera);
+        //Bedziemy porownywac przez upperCasy - bezpieczniej:
+        litWtext = litWtext.toUpperCase(Locale.getDefault());
+        litWpar  = litWpar.toUpperCase(Locale.getDefault());
+
+        return (litWpar.equals(litWtext));
+
     }
 
     private String coWidacInObszar() {
@@ -1687,7 +1649,8 @@ public class MainActivity extends Activity {
         //Wypakowanie do Stringa i zwrot na zewnatrz:
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i<licznik; i++) {
-            sb.append(tRob[i].getOrigL());
+            //sb.append(tRob[i].getOrigL());
+            sb.append(tRob[i].getText());
         }
         String coWidac = sb.toString();
         return coWidac;

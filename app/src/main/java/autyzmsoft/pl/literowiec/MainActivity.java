@@ -7,6 +7,7 @@ import static android.view.View.VISIBLE;
 
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.getInstance;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -119,14 +120,58 @@ public class MainActivity extends Activity {
     public static int density;          //gestosc ekranu - przydatne system-wide
 
 
+    /* eksperymenty ze status barem - 2018.08.11 */
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Toast.makeText(this, "pkt1", Toast.LENGTH_SHORT).show();
+        if (hasFocus) {
+            Toast.makeText(this, "pkt2", Toast.LENGTH_SHORT).show();
+            hideSystemUI();
+        }
+    }
+
+    private void hideSystemUI() {
+        // Enables regular immersive mode.
+        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
+        // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        Toast.makeText(this, "pkt3", Toast.LENGTH_SHORT).show();
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+            View.SYSTEM_UI_FLAG_IMMERSIVE
+                // Set the content to appear under the system bars so that the
+                // content doesn't resize when the system bars hide and show.
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                // Hide the nav bar and status bar
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN);
+    }
+
+    /* eksperymenty ze status barem - 2018.08.11 - KONIEC*/
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //na caly ekran:
+        //Na caly ekran:
+        //1.Remove title bar:
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //2.Remove notification bar:
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //3.Set content view AFTER ABOVE sequence (to avoid crash):
+
+     /*   proby blokady status bara:
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+        ActionBar actionBar = getActionBar();
+        actionBar.hide();*/
+
         setContentView(R.layout.activity_main);
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);

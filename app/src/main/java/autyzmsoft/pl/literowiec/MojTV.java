@@ -39,10 +39,10 @@ public class MojTV extends android.support.v7.widget.AppCompatTextView {
     }
 
 
-    public void blink(int ile) {
+    public void blink(int ileRazy) {
     /* Mruganie etykietą */
 
-        mBlink = 2*ile-1;  //nieparzysta, zeby pozostal na RED
+        mBlink = 2* ileRazy -1;  //nieparzysta, zeby pozostal na RED
         final Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
@@ -71,10 +71,14 @@ public class MojTV extends android.support.v7.widget.AppCompatTextView {
      * @param duration for how long in ms will it blink
      * @param offset   start offset of the animation
      * @param ileRazy  ile razy ma mrugnac
+     * @param kolor    jakim kolorem ma mrugac
      * zrodlo: https://gist.github.com/cesarferreira/4fcae632b18904035d3b
      */
-    public void makeMeBlink(int duration, int offset, int ileRazy) {
+    public void makeMeBlink(int duration, int offset, int ileRazy, int kolor) {
 
+        final int savedColor = this.getCurrentTextColor();
+
+        MojTV.this.setTextColor(kolor);
         Animation anim = new AlphaAnimation(0.0f, 1.0f);
         anim.setDuration(duration);
         anim.setStartOffset(offset);
@@ -82,7 +86,17 @@ public class MojTV extends android.support.v7.widget.AppCompatTextView {
         //anim.setRepeatCount(Animation.INFINITE);
         anim.setRepeatCount(ileRazy);
         this.startAnimation(anim);
-    }
+
+        //Przywrocenie pierwotnego koloru etykiecie po skonczonej animacji:
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                MojTV.this.setTextColor(savedColor);
+            }
+        },duration*(ileRazy+2)+offset);  //wyr. arytm. - doswiadczalnie....
+
+    } //koniec Metody()
 
 
 

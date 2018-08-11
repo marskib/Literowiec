@@ -1,13 +1,11 @@
 package autyzmsoft.pl.literowiec;
 
-import static android.graphics.Color.BLACK;
 import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.getInstance;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -121,6 +119,7 @@ public class MainActivity extends Activity {
 
 
     /* eksperymenty ze status barem - 2018.08.11 */
+/*
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -148,6 +147,7 @@ public class MainActivity extends Activity {
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
+*/
 
     /* eksperymenty ze status barem - 2018.08.11 - KONIEC*/
 
@@ -848,8 +848,6 @@ public class MainActivity extends Activity {
                     //sledzenie:
                     //Pokazanie szerokosci kontrolki:
                     //tvInfo.setText(Integer.toString(view.getWidth()));
-
-                    usunPozostalosciKolorow();  //kosmetyka
 
                     ((MojTV) view).setTextColor(RED); //zmiana koloru przeciaganej litery - kosmetyka
 
@@ -1611,9 +1609,6 @@ public class MainActivity extends Activity {
         (* Inne podejscia prowadzily do b. skomplikowanego algorytmu.                                                         *)
         */
 
-        //Gasze ewentualne pozostalosci po zignorowanych podpowiedziach:
-        usunPozostalosciKolorow();
-
         final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
 
         for (int i = 0; i < wyraz.length; i++) {
@@ -1624,15 +1619,6 @@ public class MainActivity extends Activity {
             }
         }
         return;
-    }  //koniec Metody()
-
-    private void usunPozostalosciKolorow() {
-    //Gassi ewentualne pozostalosci po zignorowanych podpowiedziach
-        for (MojTV lb : lbs) {
-            if (!lb.getOrigL().equals("*"))
-                if (lb.getCurrentTextColor() != BLACK)
-                    lb.setTextColor(BLACK);
-        }
     }  //koniec Metody()
 
 
@@ -1711,19 +1697,20 @@ public class MainActivity extends Activity {
         for (MojTV lb : lbs) {
             if (!lb.equals("*")) {
                 String etyk = lb.getOrigL();
-                if (etyk.equals(coDostalem) && !lb.isInArea()) {
+                if (etyk.equals(coDostalem) && !lb.isInArea()) {  //tylko mrugamy poza Obszarem - inaczej niejednznacznosci....
 
-                    //Ponizej 2 instrukcje sa OK:
-                    //lb.setTextColor(RED);
-                    //makeMeBlink(lb,350,10, 3);
-
-                    //lb.blink(5);
-                    lb.setTextColor(RED);
-                    lb.makeMeBlink(400,5,6);
-
+                    //lb.blink(5); -- inna wersja
+                    lb.makeMeBlink(400,5,4, RED);
 
                     return;
                 }
+            }
+        }
+
+        //Nie mrugnal litera spoza Obszaru, zatem walę po calym Obszarze, bo ulozono 'kaszanę' i trzeba jakos dac znac:
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) {
+                lb.makeMeBlink( 400,5,4, Color.BLUE);
             }
         }
 

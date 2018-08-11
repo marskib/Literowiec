@@ -44,16 +44,15 @@ public class ZmienneGlobalne extends Application {
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
 
 
-    private static final ZmienneGlobalne
-            ourInstance = new ZmienneGlobalne();
 
-    public static ZmienneGlobalne getInstance() {
-        return ourInstance;
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        ustawParametryDefault();
     }
 
-
     //konstruktor tego singletona + ustawienia poczatkowe aplikacji:
-    private ZmienneGlobalne() {
+    private void ustawParametryDefault() {
 
         nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
 
@@ -70,12 +69,11 @@ public class ZmienneGlobalne extends Application {
         CISZA         = false;
         Z_NAZWA       = false;
 
-        BPOMIN_ALL    = true;
+        BPOMIN_ALL    = true;                //Onomastyka - ALL = allowed:
         BAGAIN_ALL    = true;
         BUPLOW_ALL    = true;
         BHINT_ALL     = true;
 
-        DELAYED      = true;
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
         POKAZ_MODAL  = false;

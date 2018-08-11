@@ -4,8 +4,6 @@ import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-import static autyzmsoft.pl.literowiec.ZmienneGlobalne.getInstance;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -30,6 +28,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -152,11 +151,13 @@ public class MainActivity extends Activity {
     /* eksperymenty ze status barem - 2018.08.11 - KONIEC*/
 
 
-
+    ZmienneGlobalne mGlob;       //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mGlob = (ZmienneGlobalne) getApplication();
 
         //Na caly ekran:
         //1.Remove title bar:
@@ -201,7 +202,7 @@ public class MainActivity extends Activity {
 
         //ustalam polozenie obrazkow - przy pelnej wersji - duuzo więcej... ;):
         katalog = "obrazki_demo_ver";
-        if (getInstance().PELNA_WERSJA) {
+        if (mGlob.PELNA_WERSJA) {
             katalog = "obrazki_pelna_ver";
         }
 
@@ -240,7 +241,7 @@ public class MainActivity extends Activity {
         String nazwaObrazka; //zawiera rozszerzenie (.jpg , .bmp , ...)
 
         try {
-            if (getInstance().ZRODLEM_JEST_KATALOG) { //pobranie z Directory
+            if (mGlob.ZRODLEM_JEST_KATALOG) { //pobranie z Directory
                 nazwaObrazka = "aaaa";//myObrazkiSD[currImage];
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
@@ -269,7 +270,7 @@ public class MainActivity extends Activity {
             imageView.startAnimation(a);
 
             //Z chwila zakonczenia animacji ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
-            if (getInstance().Z_NAZWA) {
+            if (mGlob.Z_NAZWA) {
                 dajNazwe();
                 Animation b = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
                 tvNazwa.startAnimation(b);
@@ -292,7 +293,7 @@ public class MainActivity extends Activity {
         /*************************************************/
         //najpierw sprawdzam, czy trzeba:
         //Jezeli w ustawieniech jest, zeby nie grac - to wychodzimy:
-        if (getInstance().BEZ_DZWIEKU == true) {
+        if (mGlob.BEZ_DZWIEKU == true) {
             return;
         }
         //zeby nie gral zaraz po po starcie apki:
@@ -302,7 +303,7 @@ public class MainActivity extends Activity {
         }
         //Granie wlasciwe:
 
-        if (!getInstance().ZRODLEM_JEST_KATALOG) {
+        if (!mGlob.ZRODLEM_JEST_KATALOG) {
             //odeggranie z Assets (tam TYLKO ogg):
             String nazwaObrazka = listaObrazkowAssets[currImage];
             String rdzenNazwy = usunLastDigitIfAny(getRemovedExtensionName(nazwaObrazka));
@@ -328,7 +329,7 @@ public class MainActivity extends Activity {
         // Odegranie dzwieku umieszczonego w Assets (w katalogu 'nagrania'):
         /* ***************************************************************** */
 
-        if (getInstance().nieGrajJestemW105) return; //na czas developmentu....
+        if (mGlob.nieGrajJestemW105) return; //na czas developmentu....
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -363,7 +364,7 @@ public class MainActivity extends Activity {
         /* Odegranie pliku dzwiekowego z karty SD */
         /* ************************************** */
 
-        if (getInstance().nieGrajJestemW105) return; //na czas developmentu....
+        if (mGlob.nieGrajJestemW105) return; //na czas developmentu....
 
         //Na pdst. parametru metody szukam odpowiedniego pliku do odegrania:
         //(typuję, jak moglby sie nazywac plik i sprawdzam, czy istbieje. jezeli istnieje - OK, wychodze ze sprawdzania majac wytypowaną nazwe pliku)
@@ -443,7 +444,7 @@ public class MainActivity extends Activity {
 
     tvNazwa.setVisibility(INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
 
-    if (!getInstance().Z_NAZWA) return;
+    if (!mGlob.Z_NAZWA) return;
 
     tvNazwa.setText(currWord);
       if (toUp) {
@@ -999,7 +1000,7 @@ public class MainActivity extends Activity {
             public void run() {
                 bDalej.setVisibility(VISIBLE);
                 bAgain1.setVisibility(VISIBLE);
-                if(getInstance().BUPLOW_ALL)
+                if(mGlob.BUPLOW_ALL)
                   bUpperLower.setEnabled(true);
             } },2000); //zeby dziecko mialo czas na 'podziwianie' ;)
 
@@ -1142,8 +1143,8 @@ public class MainActivity extends Activity {
         /* *************************************   */
         super.onResume();
         //Pokazujemy zupelnie nowe cwiczenie z paramatrami ustawionymi na Zmiennych Glob. (np. poprzez splashScreena Ustawienia):
-        final boolean wszystkieRozne = getInstance().WSZYSTKIE_ROZNE;
-        final boolean roznicujObrazki = getInstance().ROZNICUJ_OBRAZKI;
+        final boolean wszystkieRozne = mGlob.WSZYSTKIE_ROZNE;
+        final boolean roznicujObrazki = mGlob.ROZNICUJ_OBRAZKI;
         tworzListyObrazkow(); //konieczne, bo moglo zmienic sie zrodlo obrazkow
 
 //        dajNextObrazek();
@@ -1154,12 +1155,12 @@ public class MainActivity extends Activity {
     private void tworzListyObrazkow() {
         //Tworzenie listy obrazków z Katalogu lub Assets:
 
-        if (getInstance().ZRODLEM_JEST_KATALOG == true) {
-            dirObrazkiNaSD = new File(getInstance().WYBRANY_KATALOG);
+        if (mGlob.ZRODLEM_JEST_KATALOG == true) {
+            dirObrazkiNaSD = new File(mGlob.WYBRANY_KATALOG);
             myObrazkiSD = findObrazki(dirObrazkiNaSD);
         }
 
-        if (getInstance().ZRODLEM_JEST_KATALOG == false) {
+        if (mGlob.ZRODLEM_JEST_KATALOG == false) {
             //Pobranie listy obrazkow z Assets:
             AssetManager mgr = getAssets();
             try {
@@ -1195,7 +1196,7 @@ public class MainActivity extends Activity {
     private int dajLosowyNumerObrazka() {
         int rob;
         int rozmiar_tab;
-        if (getInstance().ZRODLEM_JEST_KATALOG)
+        if (mGlob.ZRODLEM_JEST_KATALOG)
             rozmiar_tab = myObrazkiSD.size();
         else
             rozmiar_tab = listaObrazkowAssets.length;
@@ -1310,7 +1311,7 @@ public class MainActivity extends Activity {
 
     private boolean pokazModal() {
 
-        if (!getInstance().POKAZ_MODAL) return true;
+        if (!mGlob.POKAZ_MODAL) return true;
 
         //Pokazanie modalnego okienka.
         //Okienko realizowane jest jako Activity  o nazwie DialogModalny
@@ -1580,22 +1581,23 @@ public class MainActivity extends Activity {
     private void odblokujKlawiszeDodatkowe() {
     //Pokazanie (ewentualne) klawiszy pod Obszarem"
 
-        if (getInstance().BPOMIN_ALL) bPomin.setVisibility(VISIBLE);
+        if (mGlob.BPOMIN_ALL) bPomin.setVisibility(VISIBLE);
         else bPomin.setVisibility(INVISIBLE);
 
-        if (getInstance().BUPLOW_ALL) bUpperLower.setVisibility(VISIBLE);
+        if (mGlob.BUPLOW_ALL) bUpperLower.setVisibility(VISIBLE);
         else bUpperLower.setVisibility(INVISIBLE);
 
-        if (getInstance().BAGAIN_ALL) bAgain.setVisibility(VISIBLE);
+        if (mGlob.BAGAIN_ALL) bAgain.setVisibility(VISIBLE);
         else bAgain.setVisibility(INVISIBLE);
 
-        if (getInstance().BHINT_ALL) bHint.setVisibility(VISIBLE);
+        if (mGlob.BHINT_ALL) bHint.setVisibility(VISIBLE);
         else bHint.setVisibility(INVISIBLE);
 
-        /*if (getInstance().BPOMIN_ALL)*/ bPomin.setEnabled(true);
-        /*if (getInstance().BUPLOW_ALL)*/ bUpperLower.setEnabled(true);
-        /*if (getInstance().BAGAIN_ALL)*/ bAgain.setEnabled(true);
-        /*if (getInstance().BHINT_ALL) */ bHint.setEnabled(true);
+
+        /*if (mGlob.BPOMIN_ALL)*/ bPomin.setEnabled(true);
+        /*if (mGlob.BUPLOW_ALL)*/ bUpperLower.setEnabled(true);
+        /*if (mGlob.BAGAIN_ALL)*/ bAgain.setEnabled(true);
+        /*if (mGlob.BHINT_ALL) */ bHint.setEnabled(true);
     }
 
 
@@ -1708,6 +1710,7 @@ public class MainActivity extends Activity {
         }
 
         //Nie mrugnal litera spoza Obszaru, zatem walę po calym Obszarze, bo ulozono 'kaszanę' i trzeba jakos dac znac:
+        makeMeBlink(bAgain,400,5,4,Color.BLUE);  //sugeruje, zeby to nacisnal
         for (MojTV lb : lbs) {
             if (lb.isInArea()) {
                 lb.makeMeBlink( 400,5,4, Color.BLUE);
@@ -1717,7 +1720,42 @@ public class MainActivity extends Activity {
     }  //koniec Metody()
 
 
+    /**
+     * Make a View Blink for a desired duration
+     *
+     * @param obiekt   Button we blink the text on
+     * @param duration for how long in ms will it blink
+     * @param offset   start offset of the animation
+     * @param ileRazy  ile razy ma mrugnac
+     * @param kolor    jakim kolorem ma mrugac
+     * zrodlo: https://gist.github.com/cesarferreira/4fcae632b18904035d3b
+     */
 
+    private static void makeMeBlink(final Button obiekt, int duration, int offset, int ileRazy, int kolor) {
+
+        final int savedColor = obiekt.getCurrentTextColor();
+
+        obiekt.setTextColor(kolor);
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(duration);
+        anim.setStartOffset(offset);
+        anim.setRepeatMode(Animation.REVERSE);
+        //anim.setRepeatCount(Animation.INFINITE);
+        anim.setRepeatCount(ileRazy);
+        obiekt.startAnimation(anim);
+
+        //Przywrocenie pierwotnego koloru klawiszowi po skonczonej animacji:
+//        final Button finalB = obiekt;
+//        Handler h = new Handler();
+//        h.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                finalB.setTextColor(savedColor);
+//            }
+//        },duration*(ileRazy+2)+offset);  //wyr. arytm. - doswiadczalnie....
+
+
+    } //koniec Metody()
 
 
     public int dpToPx(int dp) {

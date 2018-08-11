@@ -18,10 +18,14 @@ import java.io.File;
  */
 
 public class DialogModalny extends Activity {
+    
+    ZmienneGlobalne mGlobalne;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        mGlobalne = (ZmienneGlobalne) getApplication();
 
         //setFinishOnTouchOutside (false);  //to make it behave like a modal dialog
 
@@ -63,33 +67,33 @@ public class DialogModalny extends Activity {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
 
-        ZmienneGlobalne.getInstance().WSZYSTKIE_ROZNE  = sharedPreferences.getBoolean("WSZYSTKIE_ROZNE",true);
-        ZmienneGlobalne.getInstance().ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI",true);
+        mGlobalne.WSZYSTKIE_ROZNE  = sharedPreferences.getBoolean("WSZYSTKIE_ROZNE",true);
+        mGlobalne.ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI",true);
 
         //Ponizej zapewniamy, ze apka obudzi sie zawsze z obrazkiem i dzwiekiem (inaczej user bylby zdezorientowany):
-        ZmienneGlobalne.getInstance().BEZ_OBRAZKOW = false;
-        ZmienneGlobalne.getInstance().BEZ_DZWIEKU  = false;
+        mGlobalne.BEZ_OBRAZKOW = false;
+        mGlobalne.BEZ_DZWIEKU  = false;
 
-        ZmienneGlobalne.getInstance().BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT",false);
-        ZmienneGlobalne.getInstance().TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", false);
-        ZmienneGlobalne.getInstance().TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS", false);
-        ZmienneGlobalne.getInstance().CISZA         = sharedPreferences.getBoolean("CISZA", false);
+        mGlobalne.BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT",false);
+        mGlobalne.TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", false);
+        mGlobalne.TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS", false);
+        mGlobalne.CISZA         = sharedPreferences.getBoolean("CISZA", false);
 
-        ZmienneGlobalne.getInstance().TRYB_TRENING  = sharedPreferences.getBoolean("TRYB_TRENING", false);
-        ZmienneGlobalne.getInstance().Z_NAZWA = sharedPreferences.getBoolean("Z_NAZWA", false);
-        ZmienneGlobalne.getInstance().DELAYED       = sharedPreferences.getBoolean("DELAYED", true);
-        ZmienneGlobalne.getInstance().ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", false);
+        mGlobalne.TRYB_TRENING  = sharedPreferences.getBoolean("TRYB_TRENING", false);
+        mGlobalne.Z_NAZWA = sharedPreferences.getBoolean("Z_NAZWA", false);
+        mGlobalne.DELAYED       = sharedPreferences.getBoolean("DELAYED", true);
+        mGlobalne.ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", false);
 
-        ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", false);
+        mGlobalne.ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", false);
 
         //Jesli zrodlem miałby byc katalog, to potrzebne dotatkowe sprawdzenie,bo gdyby pomiedzy uruchomieniami
         // zlikwidowano wybrany katalog to mamy problem, i wtedy przelaczamy sie na zrodlo z zasobow aplikacji:
         //Sprawdzam też, czy w wersji Demo user nie dorzucił >5 obrazków do ostatniego katalogu.
-        if (ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG) {
+        if (mGlobalne.ZRODLEM_JEST_KATALOG) {
             String katalog = sharedPreferences.getString("WYBRANY_KATALOG", "*^5%dummy");
             File file = new File(katalog);
             if (!file.exists()) {
-                ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG = false;
+                mGlobalne.ZRODLEM_JEST_KATALOG = false;
             }
             //gdyby nie zlikwidowano katalogu, ale tylko 'wycieto' obrazki (lub dorzucono > 5) - przelaczenie na Zasoby applikacji:
             else {
@@ -97,12 +101,12 @@ public class DialogModalny extends Activity {
                 /* ski ski 2018.06.03 na razie wylaczam, zeby sie skompilowalo
 
                 int lObr = SplashKlasa.policzObrazki(katalog);//liczba obrazkow
-                if ((lObr == 0) || (!ZmienneGlobalne.getInstance().PELNA_WERSJA && lObr > 5)) {
-                    ZmienneGlobalne.getInstance().ZRODLEM_JEST_KATALOG = false;
+                if ((lObr == 0) || (!mGlob.PELNA_WERSJA && lObr > 5)) {
+                    mGlob.ZRODLEM_JEST_KATALOG = false;
 
                 }
                 else {
-                    ZmienneGlobalne.getInstance().WYBRANY_KATALOG = katalog;
+                    mGlob.WYBRANY_KATALOG = katalog;
                 }
                 do powyzej: ski ski 2018.06.03 na razie wylaczam, zeby sie skompilowalo */
             }
@@ -111,7 +115,7 @@ public class DialogModalny extends Activity {
 
     public void czyscDlaKrzyska() {
     /* Ukrywanie obrazkow i 'śladów' do strony www - przed przekazanie do Krzyska; Potem usunac */
-        if (ZmienneGlobalne.getInstance().DLA_KRZYSKA) {
+        if (mGlobalne.DLA_KRZYSKA) {
             //ImageView obrazek = (ImageView) findViewById(R.id.imageView1);
             //if (obrazek != null) obrazek.setVisibility(View.INVISIBLE);
             //ski ski ski 2018.06.03 TextView link = (TextView) findViewById(R.id.autyzmsoftpl); //bo na niektorych konfiguracjach nie pokazuje tego linku

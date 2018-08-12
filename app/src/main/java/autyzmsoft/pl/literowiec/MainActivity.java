@@ -4,6 +4,9 @@ import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -15,8 +18,10 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.DisplayMetrics;
@@ -600,7 +605,10 @@ public class MainActivity extends Activity {
     private void blokujKlawiszeDodatkowe() {
         bPomin.setEnabled(false);
         bUpperLower.setEnabled(false);
+
         bAgain.setEnabled(false);
+        bAgain.setText(""); //czyszcze, bo cos moze zostac po animacji.... (patrz opi MakeMeBlink()
+
         bHint.setEnabled(false);
     }
 
@@ -1587,7 +1595,10 @@ public class MainActivity extends Activity {
         if (mGlob.BUPLOW_ALL) bUpperLower.setVisibility(VISIBLE);
         else bUpperLower.setVisibility(INVISIBLE);
 
-        if (mGlob.BAGAIN_ALL) bAgain.setVisibility(VISIBLE);
+        if (mGlob.BAGAIN_ALL) {
+            bAgain.setVisibility(VISIBLE);
+            bAgain.setText(R.string.bAgain_text);  //odtwarzam, bo Animacja mogla zaburzyc...
+        }
         else bAgain.setVisibility(INVISIBLE);
 
         if (mGlob.BHINT_ALL) bHint.setVisibility(VISIBLE);
@@ -1710,7 +1721,11 @@ public class MainActivity extends Activity {
         }
 
         //Nie mrugnal litera spoza Obszaru, zatem walę po calym Obszarze, bo ulozono 'kaszanę' i trzeba jakos dac znac:
-        makeMeBlink(bAgain,400,5,4,Color.BLUE);  //sugeruje, zeby to nacisnal
+        //koniecznie odblokowuję bAgain (jesli zablokowany)....:
+        bAgain.setEnabled(true);
+        bAgain.setVisibility(VISIBLE);
+        bAgain.setText(R.string.bAgain_text);
+        makeMeBlink(bAgain,400,5,10,Color.BLUE);  //... i sugeruję, zeby to nacisnal
         for (MojTV lb : lbs) {
             if (lb.isInArea()) {
                 lb.makeMeBlink( 400,5,4, Color.BLUE);
@@ -1729,9 +1744,10 @@ public class MainActivity extends Activity {
      * @param ileRazy  ile razy ma mrugnac
      * @param kolor    jakim kolorem ma mrugac
      * zrodlo: https://gist.github.com/cesarferreira/4fcae632b18904035d3b
+     * slaby punk: text na buttonie traci "dziewictwo" i pozostaje potem nie do ruszenia... - dlatego w innych punktach kodu niszcze go i regeneruję
      */
 
-    private static void makeMeBlink(final Button obiekt, int duration, int offset, int ileRazy, int kolor) {
+    private static void makeMeBlink(Button obiekt, int duration, int offset, int ileRazy, int kolor) {
 
         final int savedColor = obiekt.getCurrentTextColor();
 
@@ -1745,14 +1761,14 @@ public class MainActivity extends Activity {
         obiekt.startAnimation(anim);
 
         //Przywrocenie pierwotnego koloru klawiszowi po skonczonej animacji:
-//        final Button finalB = obiekt;
-//        Handler h = new Handler();
-//        h.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                finalB.setTextColor(savedColor);
-//            }
-//        },duration*(ileRazy+2)+offset);  //wyr. arytm. - doswiadczalnie....
+        final Button finalB = obiekt;
+        Handler h = new Handler();
+        h.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finalB.setTextColor(savedColor);
+            }
+        },duration*(ileRazy+2)+offset);  //wyr. arytm. - doswiadczalnie....
 
 
     } //koniec Metody()

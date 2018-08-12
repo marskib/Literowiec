@@ -7,8 +7,25 @@ package autyzmsoft.pl.literowiec;
 import android.app.Application;
 
 /**
- singleton na przechowywanie zmiennych globalnych
+ singleton na przechowywanie zmiennych globalnych.
+
+ Szczegoly: patrz film z Educativo odc. 4-3 Application-Glowny-obiekt-aplikacji...
+ Obiekt klasy dzieciczacej po klasie Application pozostaje zywy podczas calej sesji z apką.
+ Obiekt ten tworzony jest przez system, jest tylko JEDEN i nadaje sie do przechowywania zmiennych wspoldzielonych.
+ Mozna nadpisywać jego onCreate() ! Mozna tam nawet powolywac nowe obiekty z klas wewnetrzych(!)
+ W manifest.xml TRZEBA go zadeklarowac w tagu 'applicatin', w atrybucie name jak w przykladzie:
+ <application android:name=".ZmienneGlobalne"
+
+ Odwolanie we wszystkich klasach apki w np. onCreate() poprzez (przyklad z mojego MainActivity) :
+ ZmienneGlobalne mGlob;   //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
+ mGlob = (ZmienneGlobalne) getApplication();
+ (zwroc uwage na rzutowanie!!!)
+
+ W onCreate() tego obiektu najlepiej odwolywac sie do SharedPreferences... :)
+
+ Obiekt ten ( getApplication() ) ma wszystkie zalety Singletona, ale jest NIEZNISZCZALNY!
  */
+
 public class ZmienneGlobalne extends Application {
 
     public boolean PELNA_WERSJA;
@@ -67,10 +84,10 @@ public class ZmienneGlobalne extends Application {
         TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
         CISZA         = false;
-        Z_NAZWA       = false;
+        Z_NAZWA       = true;
 
         BPOMIN_ALL    = true;                //Onomastyka - ALL = allowed:
-        BAGAIN_ALL    = true;
+        BAGAIN_ALL    = false;
         BUPLOW_ALL    = true;
         BHINT_ALL     = true;
 

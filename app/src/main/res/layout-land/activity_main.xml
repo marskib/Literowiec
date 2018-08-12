@@ -48,7 +48,7 @@
 
       android:layout_marginRight="2dp"
       android:layout_marginTop="-3dp"
-      android:text="\@"
+      android:text="@string/bAgain_text"
 
       android:textStyle="bold"
       android:visibility="invisible"/>
@@ -63,7 +63,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="2dp"
-        android:text=" @ "
+        android:text="@string/bAgain_text"
         android:textStyle="bold"
         android:visibility="invisible"/>
 

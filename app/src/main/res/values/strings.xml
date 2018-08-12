@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Literowiec</string>
+    <string name="bAgain_text">@</string>
 </resources>

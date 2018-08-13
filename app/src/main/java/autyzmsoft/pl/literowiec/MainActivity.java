@@ -4,9 +4,6 @@ import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
@@ -18,10 +15,8 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.DisplayMetrics;
@@ -56,7 +51,7 @@ import java.util.Random;
 //Prowadzenie litery po ekranie Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
 //YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener {
 
     public static final int MAXL = 12;          //maxymalna dopuszczalna liczba liter w wyrazie
 
@@ -66,6 +61,8 @@ public class MainActivity extends Activity {
 
 
     Intent intModalDialog;  //Na okienko dialogu 'modalnego' orzy starcie aplikacji
+    Intent intUstawienia;   //Na przywolanie ekranu z ustawieniami
+
     static MediaPlayer mp = null;
 
     private ViewGroup rootLayout;
@@ -182,7 +179,8 @@ public class MainActivity extends Activity {
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);
         imageView  = (ImageView) rootLayout.findViewById(R.id.imageView);
-        tvNazwa    = (TextView) findViewById(R.id.tvNazwa);
+        imageView.setOnLongClickListener(this);
+        tvNazwa = (TextView) findViewById(R.id.tvNazwa);
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
         bPomin  = (Button) findViewById(R.id.bPomin);
@@ -833,7 +831,21 @@ public class MainActivity extends Activity {
         }
     } //koniec Metody()
 
+    @Override
+    public void onClick(View view) {
 
+    }
+
+    @Override
+    /**
+     * dotyczy: imageView
+     * Co na dlugim kliknieciu na obrazku - powolanie ekranu z opcjami
+     */ public boolean onLongClick(View view) {
+        //pokazanie splash screena :
+        intUstawienia = new Intent("autyzmsoft.pl.literowiec.UstawieniaActivity");
+        startActivity(intUstawienia);
+        return true;
+    } //koniec Metody()
 
 
     private final class ChoiceTouchListener implements OnTouchListener {

@@ -60,6 +60,12 @@ public class ZmienneGlobalne extends Application {
 
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
 
+    //Dopisane 2018.08 - zeby przeszla kompilacja:
+    public int POZIOM = 1;
+    public boolean TRYB_PODP = true;
+
+
+
 
 
     @Override

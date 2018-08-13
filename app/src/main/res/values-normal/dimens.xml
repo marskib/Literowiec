@@ -17,6 +17,8 @@
     <dimen name="od_obrazka">25dp</dimen>
     <dimen name="btn_zrodlo_text_rozmiar">15sp</dimen>
     <dimen name="tvPoziom_size">28dp</dimen>
+    <dimen name="tvGledzenie_size">10sp</dimen>
+    <dimen name="tvInstrukcja_size">20sp</dimen>
 
 
 

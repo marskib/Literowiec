@@ -1,5 +1,156 @@
-<resources>
-  <string name="app_name">Literowiec</string>
-  <string name="bAgain_text">@</string>
-  <string name="title_activity_ustawienia">UstawieniaActivity</string>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Literowiec</string>
+    <string name="bAgain_text">\@</string>
+    <string name="title_activity_ustawienia">UstawieniaActivity</string>
+
+    <string name="ostrzegaj_demo"><b>Informacja.</b>\n
+        Używasz aplikacji w wersji Demonstracyjnej.
+        \n\n
+        W wersji Demonstracyjnej, w katalogu zewnętrznym (zasoby tworzone przez Użytkownika) może znajdować się maksymalnie <b>5</b> obrazków.
+        \n\n
+        Jeżeli wskazany przez Ciebie katalog będzie zawierał więcej niż 5 obrazków, nie zostanie on użyty przez aplikację.
+        \n\n
+        Pełna wersja może obsłużyć katalogi z dowolną liczbą obrazków.
+        \n\n
+        Pełna wersja jest dostępna na stronie <b>AutyzmSoft.pl</b>
+    </string>
+
+
+    <string name="apka_info_01" tools:ignore="Typos">Informacje o aplikacji\n\n
+        Aplikacja stworzona przez Autora jako pomoc naukowa dla jego dziecka.
+
+        Udostępniając aplikację Autor wyraża nadzieję, iż będzie ona również przydatna w nauczaniu
+        innych dzieci,
+        jednak nie jest w stanie udzielić co do tego absolutnie żadnej gwarancji.
+        \n
+        Używając aplikacji godzisz się na powyższy warunek.
+        \n\n
+        Baza danych aplikacji dołączona do wersji dystrybucyjnej umieszczonej na stronie
+        AutyzmSoft.pl zawiera
+    </string>
+
+
+    <string name="apka_info_02">par obrazek-dźwięk. Wszystkie</string>
+
+    <string name="apka_info_03" tools:ignore="Typos">elementy graficzne i dźwiękowe zostały
+        utworzone
+        przez Autora we własnym zakresie lub pochodzi z serwisu Pixabay.com, skąd zostały pobrane
+        bez naruszania praw autorskich.
+
+        Użytkownik rozbudowując bazę danych powinien przestrzegać praw autorskich do zdjęć i nagrań
+        dźwiękowych umieszczanych przez siebie w bazie aplikacji.
+        Powyższe dotyczy również rozpowszechniania bazy danych utworzonej bądź pozyskanej
+        przez Użytkownika.
+        \n
+        Autor nie ponosi odpowiedzialności za naruszenie przez Użytkownika praw osób trzecich.
+        \n
+        Sound effects obtained from
+        <a href="https://www.zapsplat.com">https://www.zapsplat.com</a>
+        \n
+    </string>
+
+    <string name="instrukcja">
+        \n
+        Na zewnętrznej karcie SD tworzymy katog. W tym katalogu umieszczamy samodzielnie
+        przygotowane zdjęcia i nagrania dźwiekowe.\n
+        Zdjęciami mogą być pliki JPG, PNG, BMP, WEBP. Nagraniami dźwiękowymi mogą być pliki MP3,
+        OGG, WAV, M4A, AMR. Nagrania dźwiękowe nie są obowiązkowe. Uwaga - aplikacja nie obsługuje
+        plików dźwiękowych typu WMA.
+        \n
+        \nZdjęcie i nagranie dźwiękowe powinny mieć tę samą nazwę i różnić się jedynie
+        rozszerzeniem.
+        \n
+        \nPrzykład:
+        \nTworzymy katalog i nadajemy mu nazwę np.
+        <i>
+            <b>Rodzina</b>
+        </i>
+        \nRobimy zdjęcie mamusi. Zdjęciu nadajemy nazwę
+        <i>
+            <b>mama.jpg</b>
+        </i>
+        \nZdjęcie umieszczamy w stworzonym przez nas katalogu
+        <i>
+            <b>Rodzina</b>
+        </i>
+        .
+        \nNagrywamy, np. za pomoca dyktafonu w telefonie, słowo \"mama\".
+        \nOtrzymany w ten sposób plik będzie typu M4A (najprawdopodobniej, zależne od rodzaju
+        urządzenia).
+        \nPlikowi z dźwiękiem \"mama\" nadajemy nazwę
+        <i>
+            <b>mama.m4a</b>
+        </i>
+        \nJeżeli urządzenie utworzy plik dźwiękowy innego typu - np. MP3, to plikowi nadajemy nazwę
+        <i>
+            <b>mama.mp3</b>
+        </i>
+        \nPlik
+        <i>
+            <b>mama.m4a</b>
+        </i>
+        umieszczamy w tym samym katalogu, w którym umieściliśmy zdjęcie.
+        \nW ustawieniach aplikacji ProfMarcin, w grupie <i>Źródło obrazków i nagrań</i>, wybieramy
+        opcję:
+        <i>
+            <b>mój katalog</b>
+        </i>
+        i wskazujemy katalog, w którym umieściliśmy zdjęcie i nagranie - w naszym przypadku będzie
+        to katalog
+        <i>
+            <b>Rodzina</b>
+        </i>
+        \nAplikacja wyświetli zdjęcie, odegra dźwięk, a na jednym z klawiszy umieści nazwę obrazka
+        (czyli wyraz <i>mama</i>).
+        \n
+        W ten sam sposów wrzucamy do katalogu zdjęcia pozostałych członków rodziny.
+        \n
+        \nJeżeli chcemy demonstrować dziecku więcej niż jedno zdjęcie tej samej osoby lub rzeczy
+        (tzw. generalizacja), nazwa każdego kolejnego zdjęcia tej samej osoby/rzeczy powinna kończyć
+        się cyfrą.
+        \nPrzykład:
+        <i>
+            <b>mama.jpg , mama1.jpg , mama2.jpg , …</b>
+        </i>
+        \nNie trzeba tworzyć dodatkowych plików z dźwiękiem - wszystkie \"mamy\" zostaną obsłużone
+        przez ten sam plik dźwiękowy
+        <i>
+            <b>mama.m4a</b>
+        </i>
+        \n
+        \nAplikacja w pełnej wersji pozwala umieścić we włanym katalogu dowolną liczbę zdjęć i
+        nagrań.
+        \nW wersji darmowej liczba zdjęć i nagrań jest ograniczona do 5.
+        \nW obydwu wersjach można tworzyć i wykorzystywać dowolną liczbę katalogów.
+        \nCzynność tworzenia katalogu na urządzeniu i czynność umieszczania w nim obrazków i nagrań
+        najwygodniej jest przeprowadzić na komputerze stacjonarnym, do którego podłączamy telefon za
+        pomocą kabla usb, ale wykonanie tego za pomocą odpowiedniej aplikacji na telefonie (tzw.
+        menedżer plików) jest również możliwe.
+        \n
+        Aplikacja akceptuje zasoby stworzone dla wersji ProfMarcin na komputer stacjonarny -
+        wystarczy przekopiować katalog z zasobami z komputera na telefon/tablet.
+        \n
+        Aplikacja akceptuje również zasoby stworzone na potrzeby aplikacji MPrzegladarka (zarówno
+        wersji Windowsowej jak Androidowej).
+        \n
+    </string>
+
+    <string name="obsluga_opis">
+        \n<b>Długie dotknięcie na obrazku lub w pustym miejscu po obrazku</b>  - Ekran z
+        ustawieniami
+        \n<b>Krótkie dotknięcie na obrazku lub w pustym miejscu po obrazku</b> - ponowne odegranie
+        dźwięku
+        \n<b>Krótkie dotknięcie na czerwonym napisie pod obrazkiem</b> - zmiana wielkie/małe litery
+        \n
+        \n
+        <b>Ekran z ustawieniami:</b>
+        \nMożemy wyłączyć/włączyć głos, obraz, podpowiedzi, ustalać formę nagrody dźwiękowej, możemy
+        wybrać źródło z którego mają być pobierane obrazki - własny katalog/zasoby aplikacji.
+        \n
+        \n
+        \n
+    </string>
+    <string name="title_activity_file_choser">FileChoserActivity</string>
+
+
 </resources>

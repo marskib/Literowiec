@@ -7,7 +7,7 @@
   android:scrollbars="vertical"
   android:fadeScrollbars="false"
 
-  tools:context="autyzmsoft.pl.">
+  tools:context="autyzmsoft.pl.literowiec.UstawieniaActivity">
 
   <RelativeLayout
     android:layout_width="match_parent"

@@ -195,25 +195,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     finish();
   }
 
-  public void  btn_Poziom_Click(View v) {
-    /**
-     * Zwiekszenie/Zmniejszenie poziomu (liczby klawiszy) poprzez klikniecie na odpowiednich buttonach na ekranie ustawien
-     */
-    int level = Integer.parseInt(tv_Poziom.getText().toString());
-    Button bPlus  = (Button) findViewById(R.id.btn_Plus);
-    Button bMinus = (Button) findViewById(R.id.btn_Minus);
-    if (v==bPlus) {
-      level++;
-    } else if (v==bMinus) {
-      level--;
-    }
-    switch (level) {  //zapewniam zakres od 1..6
-      case 7: level=6; return;
-      case 0: level=1; return;
-    }
-    String strLevel = Integer.toString(level);
-    tv_Poziom.setText(strLevel);
-  }  //koniec Metody()
 
 
   public void bInfoClick(View v) {
@@ -375,9 +356,11 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Ustawienie kontrolek na layoucie splash.xml na wartosci inicjacyjne ze ZmiennychGlobalnych
     /*******************************************************************************************/
 
+    /* 2018.08.13 - zakomentarzowane zeby przeszla kompilacja
     tv_Poziom = (TextView) findViewById(R.id.tv_Poziom);
     String strPoziom = Integer.toString(mGlob.POZIOM);
     tv_Poziom.setText(strPoziom);
+    */
 
     cb_RoznicujKlawisze = (CheckBox) findViewById(R.id.cb_RoznicujKlawisze);
     boolean isChecked = mGlob.WSZYSTKIE_ROZNE;

@@ -18,13 +18,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.io.File;
-import autyzmsoft.pl.literowiec.ZmienneGlobalne;
 
 
 
@@ -360,7 +359,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     tv_Poziom = (TextView) findViewById(R.id.tv_Poziom);
     String strPoziom = Integer.toString(mGlob.POZIOM);
     tv_Poziom.setText(strPoziom);
-    */
+
 
     cb_RoznicujKlawisze = (CheckBox) findViewById(R.id.cb_RoznicujKlawisze);
     boolean isChecked = mGlob.WSZYSTKIE_ROZNE;
@@ -373,9 +372,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     cb_Trening = (CheckBox) findViewById(R.id.cb_Trening);
     isChecked = mGlob.TRYB_TRENING;
     cb_Trening.setChecked(isChecked);
+    */
 
     cb_Podp = (CheckBox) findViewById(R.id.cb_Podp);
-    isChecked = mGlob.TRYB_PODP;
+    boolean isChecked = mGlob.TRYB_PODP;
     cb_Podp.setChecked(isChecked);
 
     cb_Delayed = (CheckBox) findViewById(R.id.cb_Delay);

@@ -840,8 +840,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     /**
      * dotyczy: imageView
      * Co na dlugim kliknieciu na obrazku - powolanie ekranu z opcjami
-     */ public boolean onLongClick(View view) {
-        //pokazanie splash screena :
+     */
+    public boolean onLongClick(View view) {
         intUstawienia = new Intent("autyzmsoft.pl.literowiec.UstawieniaActivity");
         startActivity(intUstawienia);
         return true;

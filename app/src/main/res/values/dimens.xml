@@ -22,4 +22,7 @@
     <!-- rozsuniecie liter (api dependent >= 21 -->
     <dimen name="lspacing_ski">0.1</dimen>
 
+    <dimen name="bOK_size">25sp</dimen>
+    <dimen name="tvPoziom_size">28dp</dimen>
+
 </resources>

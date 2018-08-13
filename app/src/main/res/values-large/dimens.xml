@@ -15,4 +15,9 @@
 
     <!-- wartosc na rozsuniecie etykiet wzgledem siebie w rzędzie; wykorzystywana w kodzie: -->
     <dimen name="poprawka">210dp</dimen>
+
+    <dimen name="bOK_size">45sp</dimen>
+    <dimen name="btn_zrodlo_text_rozmiar">25sp</dimen>
+    <dimen name="tvPoziom_size">38dp</dimen>
+
 </resources>

@@ -1,4 +1,5 @@
 <resources>
-    <string name="app_name">Literowiec</string>
-    <string name="bAgain_text">@</string>
+  <string name="app_name">Literowiec</string>
+  <string name="bAgain_text">@</string>
+  <string name="title_activity_ustawienia">UstawieniaActivity</string>
 </resources>

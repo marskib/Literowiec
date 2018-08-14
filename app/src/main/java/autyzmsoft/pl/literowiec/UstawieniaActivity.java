@@ -31,10 +31,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
   public static final int REQUEST_CODE_WRACAM_Z_APKA_INFO = 222;
   TextView tv_Poziom;
-  CheckBox cb_RoznicujKlawisze;
-  CheckBox cb_RoznicujObrazki;
-  CheckBox cb_Trening;
-  CheckBox cb_Delayed;
+
   CheckBox cb_Podp;
   RadioButton rb_NoPictures;
   RadioButton rb_NoSound;
@@ -87,19 +84,17 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //*******************************************//
     super.onPause();
     //Przekazanie poziomu trudnosci:
+
+    /* ski ski 2018.08.14 - na potrzeby kompilacji usuwam...
     int poziom = Integer.parseInt(tv_Poziom.getText().toString());
     mGlob.POZIOM = poziom;
+    */
+
     //Przekazanie checkboxow:
-    boolean isCheckedKlawisze = cb_RoznicujKlawisze.isChecked();
-    boolean isCheckedObrazki  = cb_RoznicujObrazki.isChecked();
-    boolean isCheckedTrening  = cb_Trening.isChecked();
     boolean isCheckedPodp     = cb_Podp.isChecked();
-    boolean isCheckedDelayed  = cb_Delayed.isChecked();
-    mGlob.WSZYSTKIE_ROZNE  = isCheckedKlawisze;
-    mGlob.ROZNICUJ_OBRAZKI = isCheckedObrazki;
-    mGlob.TRYB_TRENING     = isCheckedTrening;
+
     mGlob.TRYB_PODP        = isCheckedPodp;
-    mGlob.DELAYED          = isCheckedDelayed;
+
 
     //Komentarze/Nagrody:
     boolean isCheckedNoComments  = rb_NoComments.isChecked();
@@ -208,11 +203,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
      * Przywrócenie domyślnych ustawien aplikacji.
      */
     tv_Poziom.setText("4");
-    cb_RoznicujKlawisze.setChecked(true);
-    cb_RoznicujObrazki.setChecked(true);
-    cb_Trening.setChecked(false);
     cb_Podp.setChecked(false);
-    cb_Delayed.setChecked(true);
     rb_NoPictures.setChecked(false);
     rb_NoSound.setChecked(false);
     rb_TylkoOklaski.setChecked(false);
@@ -378,9 +369,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     boolean isChecked = mGlob.TRYB_PODP;
     cb_Podp.setChecked(isChecked);
 
-    cb_Delayed = (CheckBox) findViewById(R.id.cb_Delay);
-    isChecked = mGlob.DELAYED;
-    cb_Delayed.setChecked(isChecked);
 
     rb_NoPictures = (RadioButton) findViewById(R.id.rb_noPicture);
     isChecked     = mGlob.BEZ_OBRAZKOW;
@@ -430,17 +418,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
       sciezka.setText(strLiczba+" szt.");
     }
   } //koniec Metody()
-
-
-
-  public void cbTreningPodpClicked(View v) {
-    //Kontrolki in question must be mutually exclusive
-    if (v==cb_Trening) {
-      cb_Podp.setChecked(false);
-    } else {
-      cb_Trening.setChecked(false);
-    }
-  }
 
 
 

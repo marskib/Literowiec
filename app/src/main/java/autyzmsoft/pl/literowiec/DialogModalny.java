@@ -13,7 +13,7 @@ import java.io.File;
  * Wyswietla okienko modalne.
  * Zrodlo - stackoverflow
  * Dotakowo jest jeszcze potrzebny wpis w manifest.xml:
- * action android:name="autyzmsoft.pl.profmarcin.DialogModalny"/>   --> it gives the activity the dialog look...
+ * action android:name="autyzmsoft.pl.literowiec.DialogModalny"/>   --> it gives the activity the dialog look...
  * Uzywane do startowania aplikacji
  */
 
@@ -80,7 +80,7 @@ public class DialogModalny extends Activity {
         mGlobalne.CISZA         = sharedPreferences.getBoolean("CISZA", false);
 
         mGlobalne.TRYB_TRENING  = sharedPreferences.getBoolean("TRYB_TRENING", false);
-        mGlobalne.Z_NAZWA = sharedPreferences.getBoolean("Z_NAZWA", false);
+        mGlobalne.Z_NAZWA       = sharedPreferences.getBoolean("Z_NAZWA", true);
         mGlobalne.DELAYED       = sharedPreferences.getBoolean("DELAYED", true);
         mGlobalne.ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", false);
 

@@ -85,6 +85,7 @@ public class ZmienneGlobalne extends Application {
 
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
+        Z_NAZWA      = true;
 
         BEZ_KOMENT    = false;
         TYLKO_OKLASKI = false;

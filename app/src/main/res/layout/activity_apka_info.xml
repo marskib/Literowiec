@@ -46,7 +46,7 @@
 
 
 
-            <autyzmsoft.pl.profmarcin.ResizeTextView
+            <autyzmsoft.pl.literowiec.ResizeTextView
                 android:text="Instrukcja tworzenia własnych zdjęć i nagrań"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
@@ -61,7 +61,7 @@
                 android:text="@string/instrukcja"
                 android:textSize="@dimen/tvInstrukcja_size"/>
 
-            <autyzmsoft.pl.profmarcin.ResizeTextView
+            <autyzmsoft.pl.literowiec.ResizeTextView
                 android:text="Obsługa aplikacji"
                 android:textStyle="bold"
                 android:layout_width="match_parent"

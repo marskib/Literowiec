@@ -272,7 +272,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
             imageView.startAnimation(a);
 
-            //Z chwila zakonczenia animacji ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
+            //Ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
             if (mGlob.Z_NAZWA) {
                 dajNazwe();
                 Animation b = AnimationUtils.loadAnimation(this, R.anim.skalowanie);

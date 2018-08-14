@@ -35,12 +35,24 @@
       android:textStyle="bold"
       />
 
+    <CheckBox
+      android:id="@+id/cb_TvNazwa"
+      android:text=" Nazwa pod obrazkiem"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/cb_Podp"
+      android:layout_marginTop="@dimen/text_margin"
+      android:textStyle="bold"
+      android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+      android:layout_marginLeft="@dimen/text_margin"
+      />
+
 
     <LinearLayout
       android:id="@+id/l_Zobrazowanie"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:layout_below="@id/cb_Podp"
+      android:layout_below="@id/cb_TvNazwa"
       android:layout_marginLeft="@dimen/text_margin"
       android:layout_marginRight="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
       android:layout_marginTop="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
@@ -324,6 +336,7 @@
         android:textStyle="bold"
         />
     </LinearLayout>
+
 
 
   </RelativeLayout>

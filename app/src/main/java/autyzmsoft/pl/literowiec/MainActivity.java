@@ -274,7 +274,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
             //Ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
             if (mGlob.Z_NAZWA) {
-                dajNazwe();
+                dajUkryjNazwe();
                 Animation b = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
                 tvNazwa.startAnimation(b);
             }
@@ -442,7 +442,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
       } //koniec Metody()
 
 
-  private void dajNazwe() {
+  private void dajUkryjNazwe() {
   //Umieszcza nazwę pod obrazkiem (jesli ustawiono w ustawieniach)
 
     tvNazwa.setVisibility(INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
@@ -536,7 +536,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
       mH2.postDelayed(new Runnable() {
           @Override
           public void run() {
-            odblokujKlawiszeDodatkowe();
+            odblokujZablokujKlawiszeDodatkowe();
           }
       }, 2*DELAY_EXERC);
 
@@ -594,7 +594,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             mHandl.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    odblokujKlawiszeDodatkowe(); //pokazanie z opoznieniem, zeby nie klikal za wczesnie, bo 'zawiecha'
+                    odblokujZablokujKlawiszeDodatkowe(); //pokazanie z opoznieniem, zeby nie klikal za wczesnie, bo 'zawiecha'
                 }
             },2*DELAY_EXERC);
         }
@@ -1163,9 +1163,11 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         /* *************************************   */
         super.onResume();
         //Pokazujemy zupelnie nowe cwiczenie z paramatrami ustawionymi na Zmiennych Glob. (np. poprzez splashScreena Ustawienia):
-        final boolean wszystkieRozne = mGlob.WSZYSTKIE_ROZNE;
         final boolean roznicujObrazki = mGlob.ROZNICUJ_OBRAZKI;
-        tworzListyObrazkow(); //konieczne, bo moglo zmienic sie zrodlo obrazkow
+        tworzListyObrazkow();                   //konieczne, bo moglo zmienic sie zrodlo obrazkow
+        odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
+        dajUkryjNazwe();                        //j.w. - nazwa pod obrazkiem
+
 
 //        dajNextObrazek();
 //        setCurrentImage();
@@ -1598,7 +1600,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     } //koniec metody()
 
 
-    private void odblokujKlawiszeDodatkowe() {
+    private void odblokujZablokujKlawiszeDodatkowe() {
     //Pokazanie (ewentualne) klawiszy pod Obszarem"
 
         if (mGlob.BPOMIN_ALL) bPomin.setVisibility(VISIBLE);

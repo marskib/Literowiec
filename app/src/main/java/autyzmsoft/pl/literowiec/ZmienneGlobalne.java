@@ -33,7 +33,6 @@ public class ZmienneGlobalne extends Application {
     public String  WYBRANY_KATALOG;      //katalog (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
     public boolean ZMIENIONO_ZRODLO;     //jakakolwiek zmiana zrodla obrazkow - Assets/Katalog JAK ROWNIEZ zmiana katalogu
     public boolean DLA_KRZYSKA;          //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
-    public boolean WSZYSTKIE_ROZNE;      //Wszystkie klawisze(napisy) maja byc rożne
     public boolean ROZNICUJ_OBRAZKI;     //Za każdym razem pokazywany inny obrazek
 
     public boolean BEZ_OBRAZKOW;         //nie pokazywac obrazkow
@@ -44,7 +43,6 @@ public class ZmienneGlobalne extends Application {
     public boolean TYLKO_GLOS;          //patrz wyżej
     public boolean CISZA;               //kompletna Cisza, bez nagrod i bez 'ding,'brrr' po kliknieciu klawisza
 
-    public boolean TRYB_TRENING;        //czy pracujemy w trybie treningowym (pokazujac cwiczenie od razu wyswietlamy nazwe pod obrazkiem)
     public boolean Z_NAZWA;             //czy ma byc nazwa pod obrazkiem
     public boolean DELAYED;             //czy pokazywać klawisze z wyrazami z opóźnieniem (efekciarstwo ;))
     public boolean ODMOWA_DOST;         //na etapie instalacji/1-go uruchomienia user odmowil dostepu do kart(y); dotyczy androida 6 i więcej
@@ -53,7 +51,7 @@ public class ZmienneGlobalne extends Application {
     public boolean BPOMIN_ALL;          //czy bPomin dozwolony (allowed)
     public boolean BAGAIN_ALL;          //czy bAgain dozwolony (allowed)
     public boolean BUPLOW_ALL;          //czy bUpperLower dozwolony (allowed)
-    public boolean BHINT_ALL;           //czy bHint dozwolony (allowed)
+    public boolean BHINT_ALL;           //czy bHint dozwolony (allowed) -> klawisz [ ? ]
 
     public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu)
 
@@ -62,7 +60,6 @@ public class ZmienneGlobalne extends Application {
 
     //Dopisane 2018.08 - zeby przeszla kompilacja:
     public int POZIOM = 1;
-    public boolean TRYB_PODP = true;
 
 
 
@@ -80,7 +77,6 @@ public class ZmienneGlobalne extends Application {
         nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
 
         PELNA_WERSJA = true;
-        WSZYSTKIE_ROZNE  = true;
         ROZNICUJ_OBRAZKI = true;
 
         BEZ_OBRAZKOW = false;
@@ -91,11 +87,11 @@ public class ZmienneGlobalne extends Application {
         TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
         CISZA         = false;
-        Z_NAZWA       = true;
+        Z_NAZWA       = false;
 
-        BPOMIN_ALL    = true;                //Onomastyka - ALL = allowed:
+        BPOMIN_ALL    = true;                //Onomastyka -> ALL = allowed:
         BAGAIN_ALL    = false;
-        BUPLOW_ALL    = true;
+        BUPLOW_ALL    = false;
         BHINT_ALL     = true;
 
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...

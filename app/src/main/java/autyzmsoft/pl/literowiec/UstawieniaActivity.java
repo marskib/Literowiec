@@ -33,6 +33,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   TextView tv_Poziom;
 
   CheckBox cb_Podp;
+  CheckBox cb_Pomin;
+  CheckBox cb_Nazwa;
+  CheckBox cb_UpLo;
+  CheckBox cb_Again;
   RadioButton rb_NoPictures;
   RadioButton rb_NoSound;
   RadioButton rb_zAssets;
@@ -47,7 +51,9 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    
+
+    super.onCreate(savedInstanceState);
+
     //pobranie zmiennych globalnych:
     mGlob = (ZmienneGlobalne) getApplication();
     
@@ -57,7 +63,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
         WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-    super.onCreate(savedInstanceState);
+
     setContentView(R.layout.activity_ustawienia);
 
     ustawKontrolki(); //kontrolki <-- ZmienneGlobalne
@@ -91,9 +97,16 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     */
 
     //Przekazanie checkboxow:
-    boolean isCheckedPodp     = cb_Podp.isChecked();
-
-    mGlob.TRYB_PODP        = isCheckedPodp;
+    boolean isCheckedPodp  = cb_Podp.isChecked();
+    boolean isCheckedPomin = cb_Pomin.isChecked();
+    boolean isCheckedNazwa = cb_Nazwa.isChecked();
+    boolean isCheckedUpLo  = cb_UpLo.isChecked();
+    boolean isCheckedAgain = cb_Again.isChecked();
+    mGlob.BHINT_ALL        = isCheckedPodp;
+    mGlob.BPOMIN_ALL       = isCheckedPomin;
+    mGlob.Z_NAZWA          = isCheckedNazwa;
+    mGlob.BUPLOW_ALL       = isCheckedUpLo;
+    mGlob.BAGAIN_ALL       = isCheckedAgain;
 
 
     //Komentarze/Nagrody:
@@ -204,6 +217,11 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
      */
     tv_Poziom.setText("4");
     cb_Podp.setChecked(false);
+    cb_Pomin.setChecked(false);
+    cb_Nazwa.setChecked(false);
+    cb_UpLo.setChecked(true);
+    cb_Again.setChecked(false);
+
     rb_NoPictures.setChecked(false);
     rb_NoSound.setChecked(false);
     rb_TylkoOklaski.setChecked(false);
@@ -366,9 +384,24 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     */
 
     cb_Podp = (CheckBox) findViewById(R.id.cb_Podp);
-    boolean isChecked = mGlob.TRYB_PODP;
+    boolean isChecked = mGlob.BHINT_ALL;
     cb_Podp.setChecked(isChecked);
 
+    cb_Pomin  = (CheckBox) findViewById(R.id.cb_Pomin);
+    isChecked = mGlob.BPOMIN_ALL;
+    cb_Pomin.setChecked(isChecked);
+
+    cb_Nazwa  = (CheckBox) findViewById(R.id.cb_Nazwa);
+    isChecked = mGlob.Z_NAZWA;
+    cb_Nazwa.setChecked(isChecked);
+
+    cb_UpLo  = (CheckBox) findViewById(R.id.cb_UpLo);
+    isChecked = mGlob.BUPLOW_ALL;
+    cb_UpLo.setChecked(isChecked);
+
+    cb_Again  = (CheckBox) findViewById(R.id.cb_Again);
+    isChecked = mGlob.BAGAIN_ALL;
+    cb_Again.setChecked(isChecked);
 
     rb_NoPictures = (RadioButton) findViewById(R.id.rb_noPicture);
     isChecked     = mGlob.BEZ_OBRAZKOW;
@@ -446,7 +479,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     SharedPreferences.Editor edit = sharedPreferences.edit();
 
     edit.putInt("POZIOM", mGlob.POZIOM);
-    edit.putBoolean("WSZYSTKIE_ROZNE", mGlob.WSZYSTKIE_ROZNE);
     edit.putBoolean("ROZNICUJ_OBRAZKI", mGlob.ROZNICUJ_OBRAZKI);
 
     edit.putBoolean("BEZ_OBRAZKOW", mGlob.BEZ_OBRAZKOW);
@@ -457,9 +489,8 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     edit.putBoolean("TYLKO_GLOS", mGlob.TYLKO_GLOS);
     edit.putBoolean("CISZA", mGlob.CISZA);
 
-    edit.putBoolean("TRYB_TRENING", mGlob.TRYB_TRENING);
-    edit.putBoolean("TRYB_PODP", mGlob.TRYB_PODP);
-    edit.putBoolean("DELAYED",mGlob.DELAYED);
+    edit.putBoolean("BHINT_ALL",   mGlob.BHINT_ALL);
+    edit.putBoolean("BPOMIN_ALL",  mGlob.BPOMIN_ALL);
     edit.putBoolean("ODMOWA_DOST", mGlob.ODMOWA_DOST);
 
     edit.putBoolean("ZRODLEM_JEST_KATALOG", mGlob.ZRODLEM_JEST_KATALOG);

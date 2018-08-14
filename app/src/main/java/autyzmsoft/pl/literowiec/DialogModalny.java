@@ -67,7 +67,6 @@ public class DialogModalny extends Activity {
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
 
-        mGlobalne.WSZYSTKIE_ROZNE  = sharedPreferences.getBoolean("WSZYSTKIE_ROZNE",true);
         mGlobalne.ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI",true);
 
         //Ponizej zapewniamy, ze apka obudzi sie zawsze z obrazkiem i dzwiekiem (inaczej user bylby zdezorientowany):
@@ -79,7 +78,6 @@ public class DialogModalny extends Activity {
         mGlobalne.TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS", false);
         mGlobalne.CISZA         = sharedPreferences.getBoolean("CISZA", false);
 
-        mGlobalne.TRYB_TRENING  = sharedPreferences.getBoolean("TRYB_TRENING", false);
         mGlobalne.Z_NAZWA       = sharedPreferences.getBoolean("Z_NAZWA", true);
         mGlobalne.DELAYED       = sharedPreferences.getBoolean("DELAYED", true);
         mGlobalne.ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", false);

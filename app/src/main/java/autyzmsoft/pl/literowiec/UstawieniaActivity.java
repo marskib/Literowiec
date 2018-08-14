@@ -49,12 +49,13 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   
   ZmienneGlobalne mGlob;
 
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
 
     super.onCreate(savedInstanceState);
 
-    //pobranie zmiennych globalnych:
+    //pobranie zmiennych globalnych (ustawien):
     mGlob = (ZmienneGlobalne) getApplication();
     
     //Uwaga - wywoluje sie rowniez po wejsciu z MainActivity przez LongClick na obrazku(!)

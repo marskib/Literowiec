@@ -4,8 +4,12 @@ import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
@@ -17,6 +21,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.util.DisplayMetrics;
@@ -155,8 +161,40 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     ZmienneGlobalne mGlob;       //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
 
+    /*Ponizej, do konca metody onRequestPermissionResult() kod zapewniajacy dostep do kart SD: */
+    final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+    private float tvWyrazSize;  //rozmiar wyrazu pod obrazkiem
+    private double screenInches;
+
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        /* Wywolywana po udzieleniu/odmowie zezwolenia na dostęp do karty (od API 23 i wyzej) */
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_PERMISSIONS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //reload my activity with permission granted or use the features what required the permission
+                } else {
+                    //toast("Nie udzieliłeś zezwolenia na odczyt. Opcja 'obrazki z mojego katalogu' nie będzie działać. Możesz zainstalować aplikacje ponownie lub zmienić zezwolenie w Menadżerze aplikacji.");
+                    wypiszOstrzezenie(
+                            "Nie udzieliłeś zezwolenia na odczyt. Opcja 'mój katalog' nie będzie działać. Możesz zainstalować aplikację ponownie lub zmienić zezwolenie w Menadżerze aplikacji.");
+                    mGlob.ODMOWA_DOST = true;  //dajemy znać, ze odmowiono dostepu; bedzie potrzebne na Ustawieniach przy próbie wybrania wlasnych zasobow
+                }
+            }
+        }
+    } //koniec Metody
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
+        /* ZEZWOLENIA NA KARTE _ WERSJA na MARSHMALLOW, jezeli dziala na starszej wersji, to ten kod wykona sie jako dummy */
+        int jestZezwolenie = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (jestZezwolenie != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                    REQUEST_CODE_ASK_PERMISSIONS);
+        }
+        /* KONIEC **************** ZEZWOLENIA NA KARTE _ WERSJA na MARSHMALLOW */
+
         super.onCreate(savedInstanceState);
 
         mGlob = (ZmienneGlobalne) getApplication();
@@ -245,10 +283,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
         try {
             if (mGlob.ZRODLEM_JEST_KATALOG) { //pobranie z Directory
-                nazwaObrazka = "aaaa";//myObrazkiSD[currImage];
+                nazwaObrazka = myObrazkiSD.get(currImage).toString();
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
-                String robAbsolutePath = dirObrazkiNaSD + "/" + nazwaObrazka;
+                String robAbsolutePath = nazwaObrazka; //dirObrazkiNaSD + "/" + nazwaObrazka;
                 Bitmap bm = BitmapFactory.decodeFile(robAbsolutePath, options);
                 imageView.setImageBitmap(bm);
             } else {  //pobranie obrazka z Assets
@@ -1787,6 +1825,19 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
     } //koniec Metody()
 
+    private void wypiszOstrzezenie(String tekscik) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this, R.style.MyDialogTheme);
+        builder1.setMessage(tekscik);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    } //koniec Metody()
+
 
     public int dpToPx(int dp) {
     //Convert dp to pixel:
@@ -1806,6 +1857,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         float scaledDensity = this.getResources().getDisplayMetrics().scaledDensity;
         return Math.round(px /scaledDensity);
     }
+
 
 
 }

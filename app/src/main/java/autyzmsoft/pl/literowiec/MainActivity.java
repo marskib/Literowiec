@@ -281,9 +281,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 
     public void setCurrentImage() {
-    /* Werysowanie Obrazka; Odegranie dźwieku; Animacja */
+    /* Wyrysowanie Obrazka; Odegranie dźwieku; Animacja */
 
         String nazwaObrazka; //zawiera rozszerzenie (.jpg , .bmp , ...)
+        Bitmap bitmap;       //nie trzeba robic bitmapy, mozna bezposrednio ze strumienia, ale bitmap pozwala uzyc bitmat.getWidth() (patrz setCornerRadius())
 
         try {
             if (mGlob.ZRODLEM_JEST_KATALOG) { //pobranie z Directory
@@ -291,24 +292,25 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
                 String robAbsolutePath = nazwaObrazka; //dirObrazkiNaSD + "/" + nazwaObrazka;
-                Bitmap bm = BitmapFactory.decodeFile(robAbsolutePath, options);
-                imageView.setImageBitmap(bm);
+                bitmap = BitmapFactory.decodeFile(robAbsolutePath, options);
+                //bez corner radius:
+                //imageView.setImageBitmap(bitmap);
+
             } else {  //pobranie obrazka z Assets
                 nazwaObrazka = listaObrazkowAssets[currImage];
                 InputStream streamSki = getAssets().open(katalog + "/" + nazwaObrazka);
+                bitmap = BitmapFactory.decodeStream(streamSki);
                 /********* obrazek "klasyczny", bez rounded corners ***********/
                 //Drawable drawable = Drawable.createFromStream(stream, null);
                 //imageView.setImageDrawable(drawable);
                 //******* obrazek "klasyczny" - koniec ******************/
-
-                /******* rounded corners 2018.08.03 *************/
-                Bitmap bitmap = BitmapFactory.decodeStream(streamSki); //nie trzeba robic bitmapy, mozna bezposrednio ze strumienia, ale bitmap pozwala uzyc bitmat.getWidth() (patrz 3 linie nizej)
-                RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(getResources(), bitmap); //ostatnim parametrem moglby byc stremSki (patrz wyzej)
-                dr.setCornerRadius(Math.max(bitmap.getWidth(), bitmap.getHeight()) / 20.0f);
-                imageView.setImageDrawable(dr);
-                /******* rounded corners koniec *************/
             }
 
+            /******* rounded corners 2018.08.03 *************/
+            RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(getResources(), bitmap); //ostatnim parametrem moglby byc stremSki (patrz wyzej)
+            dr.setCornerRadius(Math.max(bitmap.getWidth(), bitmap.getHeight()) / 20.0f);
+            imageView.setImageDrawable(dr);
+            /******* rounded corners koniec *************/
 
             //Pokazania obrazka z 'efektem' (efekciarstwo):
             Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
@@ -488,8 +490,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
         //Uwaga - Uwaga : przyciecie do 12 liter !!!!
-        currWord  = nazwaPliku.substring(0,Math.min(MAXL,nazwaPliku.length()));
-
+        currWord  = nazwaPliku.substring(0, Math.min(MAXL,nazwaPliku.length()) );
 
       } //koniec Metody()
 
@@ -1209,10 +1210,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 
     @Override protected void onResume() {
-        /* *************************************   */
-        /* Aplikowanie zmian wprowadzonych w menu  */
-        /* Bądż pierwsze uruchomienie (po splashu) */
-        /* *************************************   */
+    /* *************************************   */
+    /* Aplikowanie zmian wprowadzonych w menu  */
+    /* Bądż pierwsze uruchomienie (po splashu) */
+    /* *************************************   */
         super.onResume();
 
         if (PW) {

@@ -139,8 +139,7 @@ public class InternalExternalKlasa extends Activity {
                 }
             }
 
-            mGlob.WYBRANY_KATALOG =
-                    filePath;  //przekazanie wybranego katalogu (if any) do zm. globalnych
+            mGlob.WYBRANY_KATALOG = filePath;  //przekazanie wybranego katalogu (if any) do zm. globalnych
             mGlob.ZRODLEM_JEST_KATALOG = true;
 
             finish();

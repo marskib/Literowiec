@@ -98,7 +98,7 @@ public class ZmienneGlobalne extends Application {
         POKAZ_MODAL  = false;
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
-        ZMIENIONO_ZRODLO = true;             //inicjacyjnie na true, zeby po uruchomieniu apki wykonala sie onResume() w calosci
+        ZMIENIONO_ZRODLO     = false;
         WYBRANY_KATALOG = "*^5%dummy";       //"nic jeszcze nie wybrano" - lepiej to niz null, bo z null'em problemy...
 
         DLA_KRZYSKA = false;

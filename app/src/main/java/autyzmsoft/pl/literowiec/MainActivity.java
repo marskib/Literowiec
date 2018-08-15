@@ -484,10 +484,12 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             nazwaPliku = myObrazkiSD.get(currImage).getName();
 
         nazwaPliku = getRemovedExtensionName(nazwaPliku);
-        //nazwaPliku = usunLastDigitIfAny(nazwaPliku);
-        //nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
+        nazwaPliku = usunLastDigitIfAny(nazwaPliku);
+        nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
-        currWord  = nazwaPliku;
+        //Uwaga - Uwaga : przyciecie do 12 liter !!!!
+        currWord  = nazwaPliku.substring(0,Math.min(MAXL,nazwaPliku.length()));
+
 
       } //koniec Metody()
 
@@ -1279,7 +1281,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
                         || (singleFile.getName().toUpperCase().endsWith(".BMP"))
                         || (singleFile.getName().toUpperCase().endsWith(".WEBP"))
                         || (singleFile.getName().toUpperCase().endsWith(".JPEG"))) {
-                    al.add(singleFile);
+                        al.add(singleFile);
                 }
             }
         }

@@ -124,6 +124,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     Button bDajGestosc; //sledzenie
     public static int density;          //gestosc ekranu - przydatne system-wide
 
+    public static boolean PW = true; //Pierwsze Wejscie do aplikacji
+
 
     /* eksperymenty ze status barem - 2018.08.11 */
 /*
@@ -266,10 +268,12 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         });
 
 
+
         tworzListyObrazkow();
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
+
 
         pokazModal();
 
@@ -480,8 +484,8 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             nazwaPliku = myObrazkiSD.get(currImage).getName();
 
         nazwaPliku = getRemovedExtensionName(nazwaPliku);
-        nazwaPliku = usunLastDigitIfAny(nazwaPliku);
-        nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
+        //nazwaPliku = usunLastDigitIfAny(nazwaPliku);
+        //nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
         currWord  = nazwaPliku;
 
@@ -657,7 +661,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     }
 
 
-    public void bPominClick(View v) {
+    public void bPominOnClick(View v) {
         bDalej.callOnClick();
     }
 
@@ -1208,16 +1212,38 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         /* Bądż pierwsze uruchomienie (po splashu) */
         /* *************************************   */
         super.onResume();
-        //Pokazujemy zupelnie nowe cwiczenie z paramatrami ustawionymi na Zmiennych Glob. (np. poprzez splashScreena Ustawienia):
+
+        if (PW) {
+            PW = false;
+            return;
+        }
+
+        //Pokazujemy zupelnie nowe cwiczenie z paramatrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
         final boolean roznicujObrazki = mGlob.ROZNICUJ_OBRAZKI;
-        tworzListyObrazkow();                   //konieczne, bo moglo zmienic sie zrodlo obrazkow
+        if (mGlob.ZMIENIONO_ZRODLO) {
+            tworzListyObrazkow();                   //konieczne, bo zmienilo sie zrodlo obrazkow
+            bDalej.callOnClick();
+
+//            tworzListyObrazkow();               //konieczne, bo zmienilo sie zrodlo obrazkow
+//            dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
+//            setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
+//            rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
+
+            /* jak bDalejOnClick()
+            resetujLabelsy();
+            ustawLadnieEtykiety();
+            dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz currWord = nazwa obrazka bez nalecialosci)
+            setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
+            rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currWord
+            */
+
+
+        }
+
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
-        pokazUkryjNazwe();                        //j.w. - nazwa pod obrazkiem
+        pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
 
 
-//        dajNextObrazek();
-//        setCurrentImage();
-//        rozrzucWyraz();
     } //koniec Metody()
 
     private void tworzListyObrazkow() {

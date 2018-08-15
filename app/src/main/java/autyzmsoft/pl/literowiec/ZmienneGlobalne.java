@@ -87,7 +87,6 @@ public class ZmienneGlobalne extends Application {
         TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
         CISZA         = false;
-        Z_NAZWA       = false;
 
         BPOMIN_ALL    = true;                //Onomastyka -> ALL = allowed:
         BAGAIN_ALL    = false;
@@ -96,7 +95,7 @@ public class ZmienneGlobalne extends Application {
 
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
-        POKAZ_MODAL  = true;
+        POKAZ_MODAL  = false;
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
         ZMIENIONO_ZRODLO = true;             //inicjacyjnie na true, zeby po uruchomieniu apki wykonala sie onResume() w calosci

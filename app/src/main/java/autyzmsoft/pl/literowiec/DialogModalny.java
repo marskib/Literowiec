@@ -82,7 +82,7 @@ public class DialogModalny extends Activity {
         mGlobalne.DELAYED       = sharedPreferences.getBoolean("DELAYED", true);
         mGlobalne.ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", false);
 
-        mGlobalne.ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", false);
+        //mGlobalne.ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", false);
 
         //Jesli zrodlem miałby byc katalog, to potrzebne dotatkowe sprawdzenie,bo gdyby pomiedzy uruchomieniami
         // zlikwidowano wybrany katalog to mamy problem, i wtedy przelaczamy sie na zrodlo z zasobow aplikacji:

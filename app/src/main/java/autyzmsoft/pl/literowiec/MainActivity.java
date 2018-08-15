@@ -312,7 +312,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
             //Ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
             if (mGlob.Z_NAZWA) {
-                dajUkryjNazwe();
+                pokazUkryjNazwe();
                 Animation b = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
                 tvNazwa.startAnimation(b);
             }
@@ -465,12 +465,20 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 
       private void dajNextObrazek() {
-     //Daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
+     //Daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage;
+     //Na podst. currImage ustawia nazwe currWord.
 
         currImage = dajLosowyNumerObrazka();
 
         //Nazwe odpowiadajacego pliku oczyszczamy z nalecialosci:
-        String nazwaPliku = listaObrazkowAssets[currImage];
+
+        String nazwaPliku;
+
+        if (!mGlob.ZRODLEM_JEST_KATALOG)
+            nazwaPliku = listaObrazkowAssets[currImage];
+        else
+            nazwaPliku = myObrazkiSD.get(currImage).getName();
+
         nazwaPliku = getRemovedExtensionName(nazwaPliku);
         nazwaPliku = usunLastDigitIfAny(nazwaPliku);
         nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
@@ -480,7 +488,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
       } //koniec Metody()
 
 
-  private void dajUkryjNazwe() {
+  private void pokazUkryjNazwe() {
   //Umieszcza nazwę pod obrazkiem (jesli ustawiono w ustawieniach)
 
     tvNazwa.setVisibility(INVISIBLE);  //wymazanie (rowniez) ewentualnej poprz. nazwy
@@ -1204,7 +1212,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         final boolean roznicujObrazki = mGlob.ROZNICUJ_OBRAZKI;
         tworzListyObrazkow();                   //konieczne, bo moglo zmienic sie zrodlo obrazkow
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
-        dajUkryjNazwe();                        //j.w. - nazwa pod obrazkiem
+        pokazUkryjNazwe();                        //j.w. - nazwa pod obrazkiem
 
 
 //        dajNextObrazek();

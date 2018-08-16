@@ -1216,36 +1216,22 @@ public class MainActivity extends Activity implements View.OnClickListener, View
     /* *************************************   */
         super.onResume();
 
+        //Kwestia pierwszego wejscia:
         if (PW) {
             PW = false;
             return;
         }
 
-        //Pokazujemy zupelnie nowe cwiczenie z paramatrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
+        //Pokazujemy zupelnie nowe cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
         final boolean roznicujObrazki = mGlob.ROZNICUJ_OBRAZKI;
         if (mGlob.ZMIENIONO_ZRODLO) {
-            tworzListyObrazkow();                   //konieczne, bo zmienilo sie zrodlo obrazkow
-            bDalej.callOnClick();
-
-//            tworzListyObrazkow();               //konieczne, bo zmienilo sie zrodlo obrazkow
-//            dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
-//            setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
-//            rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
-
-            /* jak bDalejOnClick()
-            resetujLabelsy();
-            ustawLadnieEtykiety();
-            dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz currWord = nazwa obrazka bez nalecialosci)
-            setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
-            rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currWord
-            */
-
-
+            mGlob.ZMIENIONO_ZRODLO = false;      //na przyszlosc...
+            tworzListyObrazkow();                //konieczne, bo zmienilo sie zrodlo obrazkow
+            bDalej.callOnClick();                //dalek jak normalnie...
         }
 
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
         pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
-
 
     } //koniec Metody()
 

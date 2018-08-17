@@ -157,7 +157,6 @@
     </LinearLayout>
 
 
-
     <!--Miesce na obrazek: -->
     <ImageView
         android:id="@+id/imageView"
@@ -169,6 +168,7 @@
         android:src="@drawable/cytryna"
         android:visibility="visible"
     />
+
 
     <!--Nazwa pod Obrazkiem: -->
     <!--na otoczenie yrazu-sledzenie:    android:background="@drawable/border_probnik"-->

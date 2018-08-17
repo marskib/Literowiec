@@ -5,6 +5,9 @@ package autyzmsoft.pl.literowiec;
  */
 
 import android.app.Application;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import java.io.File;
 
 /**
  singleton na przechowywanie zmiennych globalnych.
@@ -69,14 +72,16 @@ public class ZmienneGlobalne extends Application {
     public void onCreate() {
         super.onCreate();
         ustawParametryDefault();
+        //Pobranie zapisanych ustawien i zaladowanie do -> ZmiennychGlobalnych, (if any) gdy startujemy aplikacje :
+        pobierzSharedPreferences();
     }
 
-    //konstruktor tego singletona + ustawienia poczatkowe aplikacji:
+    //ustawienia poczatkowe aplikacji:
     private void ustawParametryDefault() {
 
         nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
 
-        PELNA_WERSJA = false;
+        PELNA_WERSJA = true;
         ROZNICUJ_OBRAZKI = true;
 
         BEZ_OBRAZKOW = false;
@@ -102,7 +107,65 @@ public class ZmienneGlobalne extends Application {
         WYBRANY_KATALOG = "*^5%dummy";       //"nic jeszcze nie wybrano" - lepiej to niz null, bo z null'em problemy...
 
         DLA_KRZYSKA = false;
-    } //konstruktor
+    } //koniec Metody()
+
+
+
+    private void pobierzSharedPreferences() {
+        /* ******************************************************** */
+        /* Zapisane ustawienia wczytywane sa do ZmiennychGlobalnych */
+        /* Gdy nie ma klucza (np. first run) - wartosci defaultowe, */
+        /* jak ustawione przez ustawParametryDefault()              */
+        /* ******************************************************** */
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
+
+        ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI", this.ROZNICUJ_OBRAZKI);
+
+        //Ponizej zapewniamy, ze apka obudzi sie zawsze z obrazkiem i dzwiekiem (inaczej user bylby zdezorientowany):
+        BEZ_OBRAZKOW = false;
+        BEZ_DZWIEKU  = false;
+
+        BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT", this.BEZ_KOMENT);
+        TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", this.TYLKO_OKLASKI);
+        TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS", this.TYLKO_GLOS);
+        CISZA         = sharedPreferences.getBoolean("CISZA", this.CISZA);
+
+        Z_NAZWA       = sharedPreferences.getBoolean("Z_NAZWA", this.Z_NAZWA);
+        DELAYED       = sharedPreferences.getBoolean("DELAYED", this.DELAYED);
+        ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", this.ODMOWA_DOST);
+
+        BHINT_ALL     = sharedPreferences.getBoolean("BHINT_ALL",  this.BHINT_ALL);
+        BPOMIN_ALL    = sharedPreferences.getBoolean("BPOMIN_ALL", this.BPOMIN_ALL);
+        BUPLOW_ALL    = sharedPreferences.getBoolean("BUPLOW_ALL", this.BUPLOW_ALL);
+        BAGAIN_ALL    = sharedPreferences.getBoolean("BAGAIN_ALL", this.BAGAIN_ALL);
+
+
+        ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", ZRODLEM_JEST_KATALOG);
+
+        //Jesli zrodlem miałby byc katalog, to potrzebne dotatkowe sprawdzenie,bo gdyby pomiedzy uruchomieniami
+        //zlikwidowano wybrany katalog to mamy problem, i wtedy przelaczamy sie na zrodlo z zasobow aplikacji:
+        //Sprawdzam też, czy w wersji Demo user nie dorzucił >5 obrazków do ostatniego katalogu.
+        if (ZRODLEM_JEST_KATALOG) {
+            String katalog = sharedPreferences.getString("WYBRANY_KATALOG", "*^5%dummy");
+            File file = new File(katalog);
+            if (!file.exists()) {
+                ZRODLEM_JEST_KATALOG = false;
+            }
+            //gdyby nie zlikwidowano katalogu, ale tylko 'wycieto' obrazki (lub dorzucono > 5) - przelaczenie na Zasoby applikacji:
+            else {
+                int lObr = MainActivity.findObrazki(new File(katalog)).size();   //liczba obrazkow
+                if ((lObr == 0) || (!PELNA_WERSJA && lObr > 5)) {
+                    ZRODLEM_JEST_KATALOG = false;
+                }
+                else {
+                    WYBRANY_KATALOG = katalog;
+                }
+            }
+        }
+    } //koniec Metody()
+
+
 }
 
 

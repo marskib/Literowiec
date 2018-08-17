@@ -9,6 +9,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
@@ -21,6 +22,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -57,7 +59,7 @@ import java.util.Random;
 //Prowadzenie litery po ekranie Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
 //YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
 
-public class MainActivity extends Activity implements View.OnClickListener, View.OnLongClickListener {
+public class MainActivity extends Activity implements View.OnLongClickListener {
 
     public static final int MAXL = 12;          //maxymalna dopuszczalna liczba liter w wyrazie
 
@@ -286,6 +288,13 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         String nazwaObrazka; //zawiera rozszerzenie (.jpg , .bmp , ...)
         Bitmap bitmap;       //nie trzeba robic bitmapy, mozna bezposrednio ze strumienia, ale bitmap pozwala uzyc bitmat.getWidth() (patrz setCornerRadius())
 
+        if (mGlob.BEZ_OBRAZKOW) {
+            imageView.setVisibility(View.INVISIBLE);
+            uczulPusteMiejsce();
+        }else {
+            imageView.setVisibility(View.VISIBLE);
+        }
+
         try {
             if (mGlob.ZRODLEM_JEST_KATALOG) { //pobranie z Directory
                 nazwaObrazka = myObrazkiSD.get(currImage).toString();
@@ -313,8 +322,10 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             /******* rounded corners koniec *************/
 
             //Pokazania obrazka z 'efektem' (efekciarstwo):
-            Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
-            imageView.startAnimation(a);
+            if (!mGlob.BEZ_OBRAZKOW) { //trzeba sprawdzic warunek, bo animacja pokazalaby obrazek na chwile...
+                Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
+                imageView.startAnimation(a);
+            }
 
             //Ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
             if (mGlob.Z_NAZWA) {
@@ -884,10 +895,7 @@ public class MainActivity extends Activity implements View.OnClickListener, View
         }
     } //koniec Metody()
 
-    @Override
-    public void onClick(View view) {
 
-    }
 
     @Override
     /**
@@ -1230,9 +1238,26 @@ public class MainActivity extends Activity implements View.OnClickListener, View
             bDalej.callOnClick();                //dalek jak normalnie...
         }
 
+        //Jezeli bez obrazkow, to trzeba jakos 'uczulić' puste miejsce po obrazku, zeby nadal mozna bylo wchodzic do Ustawien i uzyskiwac słowo po krotkim kliknieciu:
+        if (mGlob.BEZ_OBRAZKOW) {
+            uczulPusteMiejsce();
+        }
+
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
         pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
 
+    } //koniec Metody()
+
+    private void uczulPusteMiejsce() {
+    //Gdy nie pokazujemy obrazka, puste miejsce po nim tezz musi reagowac na kliki(!)
+
+        lObszar.setOnLongClickListener(this);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                odegrajWyraz(0);
+            }
+        });
     } //koniec Metody()
 
     private void tworzListyObrazkow() {
@@ -1847,6 +1872,39 @@ public class MainActivity extends Activity implements View.OnClickListener, View
 
 
     } //koniec Metody()
+
+
+    @Override
+    protected void onDestroy() {
+        /* Zapisanie ustawienia w SharedPreferences na przyszła sesję */
+        super.onDestroy();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
+        SharedPreferences.Editor edit = sharedPreferences.edit();
+
+        edit.putInt("POZIOM", mGlob.POZIOM);
+        edit.putBoolean("ROZNICUJ_OBRAZKI", mGlob.ROZNICUJ_OBRAZKI);
+
+        edit.putBoolean("BEZ_OBRAZKOW", mGlob.BEZ_OBRAZKOW);
+        edit.putBoolean("BEZ_DZWIEKU", mGlob.BEZ_DZWIEKU);
+
+        edit.putBoolean("BEZ_KOMENT", mGlob.BEZ_KOMENT);
+        edit.putBoolean("TYLKO_OKLASKI", mGlob.TYLKO_OKLASKI);
+        edit.putBoolean("TYLKO_GLOS", mGlob.TYLKO_GLOS);
+        edit.putBoolean("CISZA", mGlob.CISZA);
+
+        edit.putBoolean("BHINT_ALL",   mGlob.BHINT_ALL);
+        edit.putBoolean("BPOMIN_ALL",  mGlob.BPOMIN_ALL);
+        edit.putBoolean("BUPLOW_ALL",  mGlob.BUPLOW_ALL);
+        edit.putBoolean("BAGAIN_ALL",  mGlob.BAGAIN_ALL);
+
+
+        edit.putBoolean("ODMOWA_DOST", mGlob.ODMOWA_DOST);
+
+        edit.putBoolean("ZRODLEM_JEST_KATALOG", mGlob.ZRODLEM_JEST_KATALOG);
+        edit.putString("WYBRANY_KATALOG", mGlob.WYBRANY_KATALOG);
+
+        edit.apply();
+    } //onDestroy
 
     private void wypiszOstrzezenie(String tekscik) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this, R.style.MyDialogTheme);

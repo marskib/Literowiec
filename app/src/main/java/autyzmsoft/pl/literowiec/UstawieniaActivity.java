@@ -11,9 +11,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -470,34 +468,5 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //toast(Integer.toString(resultCode));
   } //koniec metody()
 
-
-
-  @Override
-  protected void onDestroy() {
-    /* Zapisanie ustawienia w SharedPreferences na przyszła sesję */
-    super.onDestroy();
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
-    SharedPreferences.Editor edit = sharedPreferences.edit();
-
-    edit.putInt("POZIOM", mGlob.POZIOM);
-    edit.putBoolean("ROZNICUJ_OBRAZKI", mGlob.ROZNICUJ_OBRAZKI);
-
-    edit.putBoolean("BEZ_OBRAZKOW", mGlob.BEZ_OBRAZKOW);
-    edit.putBoolean("BEZ_DZWIEKU", mGlob.BEZ_DZWIEKU);
-
-    edit.putBoolean("BEZ_KOMENT", mGlob.BEZ_KOMENT);
-    edit.putBoolean("TYLKO_OKLASKI", mGlob.TYLKO_OKLASKI);
-    edit.putBoolean("TYLKO_GLOS", mGlob.TYLKO_GLOS);
-    edit.putBoolean("CISZA", mGlob.CISZA);
-
-    edit.putBoolean("BHINT_ALL",   mGlob.BHINT_ALL);
-    edit.putBoolean("BPOMIN_ALL",  mGlob.BPOMIN_ALL);
-    edit.putBoolean("ODMOWA_DOST", mGlob.ODMOWA_DOST);
-
-    edit.putBoolean("ZRODLEM_JEST_KATALOG", mGlob.ZRODLEM_JEST_KATALOG);
-    edit.putString("WYBRANY_KATALOG", mGlob.WYBRANY_KATALOG);
-
-    edit.apply();
-  } //onDestroy
 
 }

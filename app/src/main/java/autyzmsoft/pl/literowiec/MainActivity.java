@@ -78,8 +78,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     //Obrazek i nazwa pod obrazkiem:
     private  ImageView imageView;
     TextView tvNazwa;
+    //Kontener z obrazkiem (do [long]klikania (lepiej niz na image - rozwiazuje problem z niewidzialnym obrazkiem):
+    RelativeLayout l_imageContainer;
 
-    //Placeholders'y na etykiety:
+    //Placeholders'y na etykiety (12 szt.):
     MojTV L00, L01, L02, L03,
           L04, L05, L06, L07,
           L08, L09, L10, L11;
@@ -113,11 +115,11 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
     private Button bPomin;                              //na pominiecie/ucieczke z cwiczenia nie konczac go
 
-    public static File   dirObrazkiNaSD;                 //katalog z obrazkami na SD (internal i external)
-    public static ArrayList<File> myObrazkiSD;           //lista obrazkow w SD    //katalog z obrazkami na SD (internal i external)
+    public static File   dirObrazkiNaSD;                 //katalogAssets z obrazkami na SD (internal i external)
+    public static ArrayList<File> myObrazkiSD;           //lista obrazkow w SD    //katalogAssets z obrazkami na SD (internal i external)
     boolean nieGraj = true;
     //przelacznik(semafar) : grac/nie grac - jesli start apk. to ma nie grac slowa (bo glupio..)
-    public static String katalog = null;                 //Katalogu w Assets, w ktorym trzymane beda obrazki
+    public static String katalogAssets = null;           //Katalogu w Assets, w ktorym trzymane beda obrazki
     public static String listaObrazkowAssets[] = null;   //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
 
     public int     currImage = -1;      //indeks biezacego obrazka
@@ -180,7 +182,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 } else {
                     //toast("Nie udzieliłeś zezwolenia na odczyt. Opcja 'obrazki z mojego katalogu' nie będzie działać. Możesz zainstalować aplikacje ponownie lub zmienić zezwolenie w Menadżerze aplikacji.");
                     wypiszOstrzezenie(
-                            "Nie udzieliłeś zezwolenia na odczyt. Opcja 'mój katalog' nie będzie działać. Możesz zainstalować aplikację ponownie lub zmienić zezwolenie w Menadżerze aplikacji.");
+                            "Nie udzieliłeś zezwolenia na odczyt. Opcja 'mój katalogAssets' nie będzie działać. Możesz zainstalować aplikację ponownie lub zmienić zezwolenie w Menadżerze aplikacji.");
                     mGlob.ODMOWA_DOST = true;  //dajemy znać, ze odmowiono dostepu; bedzie potrzebne na Ustawieniach przy próbie wybrania wlasnych zasobow
                 }
             }
@@ -220,8 +222,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         setContentView(R.layout.activity_main);
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);
-        imageView  = (ImageView) rootLayout.findViewById(R.id.imageView);
-        imageView.setOnLongClickListener(this);
+
+        l_imageContainer = (RelativeLayout) findViewById(R.id.l_imgContainer);
+        imageView = (ImageView) rootLayout.findViewById(R.id.imageView);
+
         tvNazwa = (TextView) findViewById(R.id.tvNazwa);
         lObszar = (LinearLayout) findViewById(R.id.l_Obszar);
         bDalej  = (Button) findViewById(R.id.bDalej);
@@ -246,9 +250,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         layoutParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
 
         //ustalam polozenie obrazkow - przy pelnej wersji - duuzo więcej... ;):
-        katalog = "obrazki_demo_ver";
+        katalogAssets = "obrazki_demo_ver";
         if (mGlob.PELNA_WERSJA) {
-            katalog = "obrazki_pelna_ver";
+            katalogAssets = "obrazki_pelna_ver";
         }
 
 
@@ -269,17 +273,27 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             }
         });
 
+        //Stworzenie statycznej, raz na zawsze listy z Assets:
+        tworzListeFromAssets();
 
-
-        tworzListyObrazkow();
+        tworzEwentualnaListeFromKatalog();  //ewentualna lista z SD (jezeli ma byc na starcie)
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
 
-
-        pokazModal();
+        pokazModal();                       //startowe okienko modalne z logo i objasnieniami 'klikologii'
 
     }  //koniec onCreate()
+
+    private void tworzListeFromAssets() {
+        //Pobranie listy obrazkow z Assets (statyczna, raz na zawsze, wiec najlepiej tutaj):
+        AssetManager mgr = getAssets();
+        try {
+            listaObrazkowAssets = mgr.list(katalogAssets);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public void setCurrentImage() {
@@ -288,12 +302,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         String nazwaObrazka; //zawiera rozszerzenie (.jpg , .bmp , ...)
         Bitmap bitmap;       //nie trzeba robic bitmapy, mozna bezposrednio ze strumienia, ale bitmap pozwala uzyc bitmat.getWidth() (patrz setCornerRadius())
 
-        if (mGlob.BEZ_OBRAZKOW) {
-            imageView.setVisibility(View.INVISIBLE);
-            uczulPusteMiejsce();
-        }else {
-            imageView.setVisibility(View.VISIBLE);
-        }
+        if (mGlob.BEZ_OBRAZKOW)
+            imageView.setVisibility(INVISIBLE);
+        else
+            imageView.setVisibility(VISIBLE);
 
         try {
             if (mGlob.ZRODLEM_JEST_KATALOG) { //pobranie z Directory
@@ -307,7 +319,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
             } else {  //pobranie obrazka z Assets
                 nazwaObrazka = listaObrazkowAssets[currImage];
-                InputStream streamSki = getAssets().open(katalog + "/" + nazwaObrazka);
+                InputStream streamSki = getAssets().open(katalogAssets + "/" + nazwaObrazka);
                 bitmap = BitmapFactory.decodeStream(streamSki);
                 /********* obrazek "klasyczny", bez rounded corners ***********/
                 //Drawable drawable = Drawable.createFromStream(stream, null);
@@ -556,6 +568,11 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
        //currWord   = "huśtawka";
        //currWord   = "buty";
        //currWord   = "W";
+
+      //Odsiewam/zamieniam ewentualne spacje z wyrazu bo problemy:
+      if (currWord.contains(" "))
+          //currWord = currWord.replaceAll("\\s","");
+          currWord = currWord.replaceAll("\\s","_");
 
       //Pobieramy wyraz do rozrzucenia:
       final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
@@ -1086,16 +1103,17 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             } },2000); //zeby dziecko mialo czas na 'podziwianie' ;)
 
         //Animacja w 'nagrode':
-        Handler mHandl1 = new Handler();
-        mHandl1.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.obrot);
-                //Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.puls);
-                imageView.startAnimation(a);
-            }
-        },DELAY_ORDER+DELAY_ORDER/2);
-
+        if (!mGlob.BEZ_OBRAZKOW) {
+            Handler mHandl1 = new Handler();
+            mHandl1.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.obrot);
+                    //Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.puls);
+                    imageView.startAnimation(a);
+                }
+            }, DELAY_ORDER + DELAY_ORDER / 2);
+        }
 
     } //koniec Metody()
 
@@ -1234,13 +1252,18 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         final boolean roznicujObrazki = mGlob.ROZNICUJ_OBRAZKI;
         if (mGlob.ZMIENIONO_ZRODLO) {
             mGlob.ZMIENIONO_ZRODLO = false;      //na przyszlosc...
-            tworzListyObrazkow();                //konieczne, bo zmienilo sie zrodlo obrazkow
+            tworzEwentualnaListeFromKatalog();   //konieczne, bo zmienilo sie zrodlo obrazkow, byc moze na SD (katalogAssets)
             bDalej.callOnClick();                //dalek jak normalnie...
         }
 
-        //Jezeli bez obrazkow, to trzeba jakos 'uczulić' puste miejsce po obrazku, zeby nadal mozna bylo wchodzic do Ustawien i uzyskiwac słowo po krotkim kliknieciu:
+        //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl niewidoczny):
         if (mGlob.BEZ_OBRAZKOW) {
-            uczulPusteMiejsce();
+            imageView.setVisibility(INVISIBLE);
+            l_imageContainer.setBackgroundResource(R.drawable.border_skib_gray);
+        }else {
+            imageView.setVisibility(VISIBLE);
+            l_imageContainer.setBackgroundColor(Color.TRANSPARENT);
+            //l_imageContainer.setBackgroundResource(0); - alternatywa do Color.TRANSPARENT (podobno TRANSPARENT lepszy)
         }
 
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
@@ -1248,41 +1271,21 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     } //koniec Metody()
 
-    private void uczulPusteMiejsce() {
-    //Gdy nie pokazujemy obrazka, puste miejsce po nim tezz musi reagowac na kliki(!)
 
-        lObszar.setOnLongClickListener(this);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                odegrajWyraz(0);
-            }
-        });
-    } //koniec Metody()
+    private void tworzEwentualnaListeFromKatalog() {
+    //Tworzenie (ewentualne) listy obrazków z Katalogu:
 
-    private void tworzListyObrazkow() {
-        //Tworzenie listy obrazków z Katalogu lub Assets:
-
-        if (mGlob.ZRODLEM_JEST_KATALOG == true) {
+        if (mGlob.ZRODLEM_JEST_KATALOG ) {
             dirObrazkiNaSD = new File(mGlob.WYBRANY_KATALOG);
             myObrazkiSD = findObrazki(dirObrazkiNaSD);
         }
 
-        if (mGlob.ZRODLEM_JEST_KATALOG == false) {
-            //Pobranie listy obrazkow z Assets:
-            AssetManager mgr = getAssets();
-            try {
-                listaObrazkowAssets = mgr.list(katalog);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     } //koniec Metody()
 
 
     public static ArrayList<File> findObrazki(File katalog) {
         /* ******************************************************************************************************************* */
-        /* Zwraca liste obrazkow (plikow graficznych .jpg .bmp .png) z katalogu katalog - uzywana tylko dla przypadku SD karty */
+        /* Zwraca liste obrazkow (plikow graficznych .jpg .bmp .png) z katalogu katalogAssets - uzywana tylko dla przypadku SD karty */
         /* ******************************************************************************************************************* */
         ArrayList<File> al = new ArrayList<File>(); //al znaczy "Array List"
         File[] files = katalog.listFiles(); //w files WSZYSTKIE pliki z katalogu (rowniez nieporządane)
@@ -1337,14 +1340,23 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         L10 = (MojTV) findViewById(R.id.L10);
         L11 = (MojTV) findViewById(R.id.L11);
 
-
         //ustawienie tablicy do operowania na ww. etykietach:
         lbs = new MojTV[] {L00, L01, L02, L03, L04, L05, L06, L07, L08, L09, L10, L11};
 
-        //podpiecie listenerow:
+        //podpiecie listenerow po labelsy:
         for (MojTV lb : lbs) {
             lb.setOnTouchListener(new ChoiceTouchListener());
         }
+
+        //Listenery na obszarze na Obrazek:
+        l_imageContainer.setOnLongClickListener(this);
+        l_imageContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                odegrajWyraz(0);
+            }
+        });
+
     } //koniec Metody()
 
 

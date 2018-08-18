@@ -43,7 +43,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   RadioButton rb_TylkoOklaski;
   RadioButton rb_TylkoGlos;
   RadioButton rb_Cisza;
-  TextView sciezka; //informacyjny teksci pokazujacy biezacy katalog i/lub liczbe obrazkow
+  TextView sciezka; //informacyjny teksci pokazujacy biezacy katalogAssets i/lub liczbe obrazkow
   
   ZmienneGlobalne mGlob;
 
@@ -161,7 +161,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
       int liczbaObrazkow = policzObrazki(strKatalog);
       if (liczbaObrazkow>0) {
         if (!mGlob.PELNA_WERSJA) {
-          if (liczbaObrazkow>5) {  //werja Demo, a wybrano katalog z wiecej niz 5 obrazkami
+          if (liczbaObrazkow>5) {  //werja Demo, a wybrano katalogAssets z wiecej niz 5 obrazkami
             ostrzegajPowyzej5();
             //przywrócenie wyboru 'domyslnego' - z zasobów aplikacji:
             onClick(rb_zAssets);
@@ -269,7 +269,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
   private void ostrzegajBrakObrazkow(){
     /* **************************************************************** */
-    /* Wyswietlany, gdy user wybierze katalog nie zawierajacy obrazkow. */
+    /* Wyswietlany, gdy user wybierze katalogAssets nie zawierajacy obrazkow. */
     /* **************************************************************** */
     wypiszOstrzezenie("Brak obrazków w wybranym katalogu.\nZostanie zastosowany wybór\nz zasobów aplikacji.");
   }
@@ -277,9 +277,9 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
   private void ostrzegajPowyzej5() {
     /* ************************************************************************************ */
-    /* Wyswietlany, gdy user wybierze katalog z wiecej niz 5 obrazkami, a wersja jest Demo. */
+    /* Wyswietlany, gdy user wybierze katalogAssets z wiecej niz 5 obrazkami, a wersja jest Demo. */
     /* ************************************************************************************ */
-    wypiszOstrzezenie("Uwaga - używasz wersji Demonstracyjnej.\nWybrano katalog zawierający więcej niż 5 obrazków.\nZostanie przywrócony wybór\nz zasobów aplikacji.");
+    wypiszOstrzezenie("Uwaga - używasz wersji Demonstracyjnej.\nWybrano katalogAssets zawierający więcej niż 5 obrazków.\nZostanie przywrócony wybór\nz zasobów aplikacji.");
   }
 
 

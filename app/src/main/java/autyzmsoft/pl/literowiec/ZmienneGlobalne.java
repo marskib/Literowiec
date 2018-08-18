@@ -32,8 +32,8 @@ import java.io.File;
 public class ZmienneGlobalne extends Application {
 
     public boolean PELNA_WERSJA;
-    public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalog na karcie SD)
-    public String  WYBRANY_KATALOG;      //katalog (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
+    public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
+    public String  WYBRANY_KATALOG;      //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
     public boolean ZMIENIONO_ZRODLO;     //jakakolwiek zmiana zrodla obrazkow - Assets/Katalog JAK ROWNIEZ zmiana katalogu
     public boolean DLA_KRZYSKA;          //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
     public boolean ROZNICUJ_OBRAZKI;     //Za każdym razem pokazywany inny obrazek
@@ -141,10 +141,10 @@ public class ZmienneGlobalne extends Application {
         BAGAIN_ALL    = sharedPreferences.getBoolean("BAGAIN_ALL", this.BAGAIN_ALL);
 
 
-        ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", ZRODLEM_JEST_KATALOG);
+        ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", this.ZRODLEM_JEST_KATALOG);
 
-        //Jesli zrodlem miałby byc katalog, to potrzebne dotatkowe sprawdzenie,bo gdyby pomiedzy uruchomieniami
-        //zlikwidowano wybrany katalog to mamy problem, i wtedy przelaczamy sie na zrodlo z zasobow aplikacji:
+        //Jesli zrodlem miałby byc katalogAssets, to potrzebne dotatkowe sprawdzenie,bo gdyby pomiedzy uruchomieniami
+        //zlikwidowano wybrany katalogAssets to mamy problem, i wtedy przelaczamy sie na zrodlo z zasobow aplikacji:
         //Sprawdzam też, czy w wersji Demo user nie dorzucił >5 obrazków do ostatniego katalogu.
         if (ZRODLEM_JEST_KATALOG) {
             String katalog = sharedPreferences.getString("WYBRANY_KATALOG", "*^5%dummy");

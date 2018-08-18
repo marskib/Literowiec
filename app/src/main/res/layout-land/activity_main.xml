@@ -156,32 +156,46 @@
             android:maxLines="1"/>
     </LinearLayout>
 
-
-    <!--Miesce na obrazek: -->
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+    <!--Miesce na obrazek:
+    realizuję wewnątrz layoutu, bo w przypadku wylaczenia zobrazowania obrazkow
+    nie ma na czym kliknac, zeby wrococ do Ustawien (niewidoczny obrazek nie reaguje na [long]onClick'i...
+    -->
+    <RelativeLayout
+        android:id="@+id/l_imgContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:layout_margin="10dp"
-        android:src="@drawable/cytryna"
-        android:visibility="visible"
-    />
+        >
+
+        <!--android:background="@drawable/border_skib_gray"-->
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="10dp"
+            android:src="@drawable/cytryna"
+            android:visibility="visible"
+        />
+
+    </RelativeLayout>
 
 
     <!--Nazwa pod Obrazkiem: -->
-    <!--na otoczenie yrazu-sledzenie:    android:background="@drawable/border_probnik"-->
+    <!--na otoczenie wyrazu-sledzenie: android:background="@drawable/border_probnik"-->
     <autyzmsoft.pl.literowiec.ResizeTextView
       android:id="@+id/tvNazwa"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:paddingLeft="0dp"
       android:paddingTop="0dp"
-      android:layout_marginTop="-15dp"
+      android:layout_marginTop="-11dp"
       android:layout_marginLeft="10dp"
       android:layout_alignParentStart="true"
-      android:layout_below="@+id/imageView"
+      android:layout_below="@+id/l_imgContainer"
       android:gravity="center"
 
       android:maxLines="1"

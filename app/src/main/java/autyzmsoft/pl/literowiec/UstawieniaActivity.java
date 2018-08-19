@@ -28,17 +28,24 @@ import java.io.File;
 public class UstawieniaActivity extends Activity implements View.OnClickListener{
 
   public static final int REQUEST_CODE_WRACAM_Z_APKA_INFO = 222;
-  TextView tv_Poziom;
+
+  RadioButton rb_zAssets;
+  RadioButton rb_zKatalogu;
 
   CheckBox cb_Podp;
   CheckBox cb_Pomin;
   CheckBox cb_Nazwa;
   CheckBox cb_UpLo;
   CheckBox cb_Again;
+
   RadioButton rb_NoPictures;
   RadioButton rb_NoSound;
-  RadioButton rb_zAssets;
-  RadioButton rb_zKatalogu;
+
+  RadioButton rb_Latwe;
+  RadioButton rb_Srednie;
+  RadioButton rb_Trudne;
+  RadioButton rb_Wszystkie;
+
   RadioButton rb_NoComments;
   RadioButton rb_TylkoOklaski;
   RadioButton rb_TylkoGlos;
@@ -214,7 +221,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     /**
      * Przywrócenie domyślnych ustawien aplikacji.
      */
-    tv_Poziom.setText("4");
+
+    rb_
+
+
     cb_Podp.setChecked(false);
     cb_Pomin.setChecked(false);
     cb_Nazwa.setChecked(false);

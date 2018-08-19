@@ -41,6 +41,9 @@ public class ZmienneGlobalne extends Application {
     public boolean BEZ_OBRAZKOW;         //nie pokazywac obrazkow
     public boolean BEZ_DZWIEKU;          //nie odgrywać słów
 
+    public int POZIOM;                   //poziom trudnosci: 0-wszystkie wyrazy; 1 - wyrazy o max. 4 literach; 2 - wyrazy od 5 do 7 liter; 3 - od 8 do 12 liter
+
+
     public boolean BEZ_KOMENT;          //Bez Komentarza-Nagrody po wybraniu klawisza
     public boolean TYLKO_OKLASKI;       //patrz wyżej
     public boolean TYLKO_GLOS;          //patrz wyżej
@@ -61,8 +64,6 @@ public class ZmienneGlobalne extends Application {
 
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
 
-    //Dopisane 2018.08 - zeby przeszla kompilacja:
-    public int POZIOM = 1;
 
 
 
@@ -87,6 +88,8 @@ public class ZmienneGlobalne extends Application {
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
         Z_NAZWA      = true;
+
+        POZIOM       = 0;
 
         BEZ_KOMENT    = false;
         TYLKO_OKLASKI = false;
@@ -115,7 +118,7 @@ public class ZmienneGlobalne extends Application {
         /* ******************************************************** */
         /* Zapisane ustawienia wczytywane sa do ZmiennychGlobalnych */
         /* Gdy nie ma klucza (np. first run) - wartosci defaultowe, */
-        /* jak ustawione przez ustawParametryDefault()              */
+        /* takie jak ustawione przez niniejszą metode.              */
         /* ******************************************************** */
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
@@ -125,6 +128,8 @@ public class ZmienneGlobalne extends Application {
         //Ponizej zapewniamy, ze apka obudzi sie zawsze z obrazkiem i dzwiekiem (inaczej user bylby zdezorientowany):
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
+
+        POZIOM       = sharedPreferences.getInt("POZIOM", this.POZIOM);
 
         BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT", this.BEZ_KOMENT);
         TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", this.TYLKO_OKLASKI);

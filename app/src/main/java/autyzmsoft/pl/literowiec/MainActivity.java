@@ -17,6 +17,8 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -128,7 +130,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     Button bDajGestosc; //sledzenie
     public static int density;          //gestosc ekranu - przydatne system-wide
 
-    public static boolean PW = true; //Pierwsze Wejscie do aplikacji
+    public static boolean PW = true;    //Pierwsze Wejscie do aplikacji
 
 
     /* eksperymenty ze status barem - 2018.08.11 */
@@ -314,6 +316,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 options.inSampleSize = 2;
                 String robAbsolutePath = nazwaObrazka; //dirObrazkiNaSD + "/" + nazwaObrazka;
                 bitmap = BitmapFactory.decodeFile(robAbsolutePath, options);
+                //Wykrycie orientacji i ewentualny obrot obrazka:
+                //bitmap = obrocJesliTrzeba(bitmap, robAbsolutePath); - wylaczam, bo chyba(?) nie dziala
+
                 //bez corner radius:
                 //imageView.setImageBitmap(bitmap);
 
@@ -515,6 +520,12 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         //Uwaga - Uwaga : przyciecie do 12 liter !!!!
         currWord  = nazwaPliku.substring(0, Math.min(MAXL,nazwaPliku.length()) );
 
+        //Odsiewam/zamieniam ewentualne spacje z wyrazu bo problemy:
+        if (currWord.contains(" ")) {
+            //currWord = currWord.replaceAll("\\s","");
+            currWord = currWord.replaceAll("\\s", "_");
+        }
+
       } //koniec Metody()
 
 
@@ -568,11 +579,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
        //currWord   = "huśtawka";
        //currWord   = "buty";
        //currWord   = "W";
+       //currWord   = "ze spacjom";
 
-      //Odsiewam/zamieniam ewentualne spacje z wyrazu bo problemy:
-      if (currWord.contains(" "))
-          //currWord = currWord.replaceAll("\\s","");
-          currWord = currWord.replaceAll("\\s","_");
 
       //Pobieramy wyraz do rozrzucenia:
       final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
@@ -1917,6 +1925,60 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         edit.apply();
     } //onDestroy
+
+
+
+
+    private Bitmap obrocJesliTrzeba(Bitmap bitmap, String sciezkaDoPliku) {
+    //Wykrywa(?) orientacje obrazka i ewentualnie obraca obrazek pobrany z dysku tak aby byl pokazany prawidłowo
+
+        ExifInterface ei = null;
+        try {
+            ei = new ExifInterface(sciezkaDoPliku);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED);
+
+        Bitmap rotatedBitmap = null;
+
+        switch(orientation) {
+
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotatedBitmap = rotateImage(bitmap, 90);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotatedBitmap = rotateImage(bitmap, 180);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotatedBitmap = rotateImage(bitmap, 270);
+                break;
+
+            case ExifInterface.ORIENTATION_NORMAL:
+            default:
+                rotatedBitmap = bitmap;
+        }
+
+        return rotatedBitmap;
+
+    } //koniec Metody();
+
+
+    private Bitmap rotateImage(Bitmap source, float angle) {
+        //Wyrzucic Toasta
+        //Toast.makeText(this, "Będzie Obrót "+angle, Toast.LENGTH_LONG).show();
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
+                matrix, true);
+    } //koniec Metody()
+
+
 
     private void wypiszOstrzezenie(String tekscik) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(this, R.style.MyDialogTheme);

@@ -40,6 +40,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
   RadioButton rb_NoPictures;
   RadioButton rb_NoSound;
+  RadioButton rb_SoundPicture;
 
   RadioButton rb_Latwe;
   RadioButton rb_Srednie;
@@ -222,9 +223,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
      * Przywrócenie domyślnych ustawien aplikacji.
      */
 
-    rb_
+    mGlob.ustawParametryDefault();
+    this.ustawKontrolki();
 
-
+/*
     cb_Podp.setChecked(false);
     cb_Pomin.setChecked(false);
     cb_Nazwa.setChecked(false);
@@ -245,6 +247,8 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     rb_GlosOklaski.setChecked(true);
 
     mGlob.POZIOM = 4;
+    */
+
   }
 
 
@@ -374,22 +378,11 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     /*******************************************************************************************/
 
     /* 2018.08.13 - zakomentarzowane zeby przeszla kompilacja
-    tv_Poziom = (TextView) findViewById(R.id.tv_Poziom);
-    String strPoziom = Integer.toString(mGlob.POZIOM);
-    tv_Poziom.setText(strPoziom);
-
-
-    cb_RoznicujKlawisze = (CheckBox) findViewById(R.id.cb_RoznicujKlawisze);
-    boolean isChecked = mGlob.WSZYSTKIE_ROZNE;
-    cb_RoznicujKlawisze.setChecked(isChecked);
 
     cb_RoznicujObrazki = (CheckBox) findViewById(R.id.cb_RoznicujObrazki);
     isChecked = mGlob.ROZNICUJ_OBRAZKI;
     cb_RoznicujObrazki.setChecked(isChecked);
 
-    cb_Trening = (CheckBox) findViewById(R.id.cb_Trening);
-    isChecked = mGlob.TRYB_TRENING;
-    cb_Trening.setChecked(isChecked);
     */
 
     cb_Podp = (CheckBox) findViewById(R.id.cb_Podp);
@@ -412,6 +405,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     isChecked = mGlob.BAGAIN_ALL;
     cb_Again.setChecked(isChecked);
 
+    /* zobrazowanie: */
     rb_NoPictures = (RadioButton) findViewById(R.id.rb_noPicture);
     isChecked     = mGlob.BEZ_OBRAZKOW;
     rb_NoPictures.setChecked(isChecked);
@@ -420,6 +414,32 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     isChecked  = mGlob.BEZ_DZWIEKU;
     rb_NoSound.setChecked(isChecked);
 
+    rb_SoundPicture = (RadioButton) findViewById(R.id.rb_SoundPicture);
+    isChecked = (!mGlob.BEZ_OBRAZKOW && !mGlob.BEZ_DZWIEKU);
+    rb_SoundPicture.setChecked(isChecked);
+    /* zobrazowanie - koniec */
+
+
+    /* poziomy trudnosci: */
+    rb_Latwe     = (RadioButton) findViewById(R.id.rb_latwe);
+    isChecked    = (mGlob.POZIOM == 1);
+    rb_Latwe.setChecked(isChecked);
+
+    rb_Srednie   = (RadioButton) findViewById(R.id.rb_srednie);
+    isChecked    = (mGlob.POZIOM == 2);
+    rb_Srednie.setChecked(isChecked);
+
+    rb_Trudne    = (RadioButton) findViewById(R.id.rb_trudne);
+    isChecked    = (mGlob.POZIOM == 2);
+    rb_Trudne.setChecked(isChecked);
+
+    rb_Wszystkie = (RadioButton) findViewById(R.id.rb_wszystkie);
+    isChecked    = (mGlob.POZIOM == 0);
+    rb_Wszystkie.setChecked(isChecked);
+    /* poziomy trudnosci - koniec */
+
+
+    /* nagrody: */
     rb_NoComments = (RadioButton) findViewById(R.id.rb_No_Comments);
     isChecked = mGlob.BEZ_KOMENT;
     rb_NoComments.setChecked(isChecked);
@@ -435,6 +455,8 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     rb_Cisza = (RadioButton) findViewById(R.id.rb_Cisza);
     isChecked = mGlob.CISZA;
     rb_Cisza.setChecked(isChecked);
+    /* nagrody - koniec */
+
 
 
     rb_zAssets = (RadioButton) findViewById(R.id.rb_zAssets);

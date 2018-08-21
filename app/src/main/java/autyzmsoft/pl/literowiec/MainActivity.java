@@ -117,12 +117,13 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
     private Button bPomin;                              //na pominiecie/ucieczke z cwiczenia nie konczac go
 
-    public static File   dirObrazkiNaSD;                 //katalogAssets z obrazkami na SD (internal i external)
-    public static ArrayList<File> myObrazkiSD;           //lista obrazkow w SD    //katalogAssets z obrazkami na SD (internal i external)
-    boolean nieGraj = true;
-    //przelacznik(semafar) : grac/nie grac - jesli start apk. to ma nie grac slowa (bo glupio..)
-    public static String katalogAssets = null;           //Katalogu w Assets, w ktorym trzymane beda obrazki
-    public static String listaObrazkowAssets[] = null;   //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
+    public static File         dirObrazkiNaSD;                 //katalog z obrazkami na SD (internal i external)
+    public static String[]     listaObrazkowSD = null;         //lista obrazkow w katalogu na SD (internal i externa)
+
+    public static String   katalogAssets = null;               //Katalogu w Assets, w ktorym trzymane beda obrazki
+    public static String[] listaObrazkowAssets = null;         //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
+
+    boolean nieGraj = true;    //przelacznik(semafar) : grac/nie grac - jesli start apk. to ma nie grac slowa (bo glupio..)
 
     public int     currImage = -1;      //indeks biezacego obrazka
     public String  currWord  = "*";     //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
@@ -276,7 +277,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         });
 
         //Stworzenie statycznej, raz na zawsze listy z Assets:
-        tworzListeFromAssets();
+        tworzListeFromAssets(mGlob.POZIOM);
 
         tworzEwentualnaListeFromKatalog();  //ewentualna lista z SD (jezeli ma byc na starcie)
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
@@ -287,15 +288,48 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     }  //koniec onCreate()
 
-    private void tworzListeFromAssets() {
+    private void tworzListeFromAssets(int poziom) {
         //Pobranie listy obrazkow z Assets (statyczna, raz na zawsze, wiec najlepiej tutaj):
         AssetManager mgr = getAssets();
         try {
-            listaObrazkowAssets = mgr.list(katalogAssets);
+            listaObrazkowAssets =  mgr.list(katalogAssets);  //laduje wszystkie obrazki z Assets
+
+            //Ograniczenie ListaObrazkowAssets do wybranego poziomu (prototyp) :
+            //(tworze tablice robocza, a nastepnie ListaObrazkowAssets wskaze na tę tablicę roboczą)
+            int dlug_min = 1;
+            int dlug_max = MAXL;
+
+            switch (poziom) {
+                case 1 : dlug_min = 1; dlug_max = 4; break;
+                case 2 : dlug_min = 5; dlug_max = 7; break;
+                case 3 : dlug_min = 8; dlug_max = MAXL; break;
+                case 0 : dlug_min = 1; dlug_max = MAXL; break;
+            }
+
+            ArrayList<String> lRob =  new ArrayList<String>();
+            for (String el : listaObrazkowAssets) {
+                String elTmp = getRemovedExtensionName(el);
+                elTmp = usunLastDigitIfAny(elTmp);
+                elTmp = usunLastDigitIfAny(elTmp);
+                if ( (elTmp.length() >= dlug_min) && (elTmp.length() <= dlug_max) ) {
+                    lRob.add(el);
+                }
+            }
+
+            //Przepisanie lRob -> tabRob:
+            String[] tabRob = new String[lRob.size()];
+            int i = 0;
+            for (String s : lRob) {
+                tabRob[i] = s;
+                i++;
+            }
+            //Zwrot wyniku:
+            listaObrazkowAssets = tabRob;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }  //koniec Metody()
 
 
     public void setCurrentImage() {
@@ -311,10 +345,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         try {
             if (mGlob.ZRODLEM_JEST_KATALOG) { //pobranie z Directory
-                nazwaObrazka = myObrazkiSD.get(currImage).toString();
+                nazwaObrazka = listaObrazkowSD[currImage];
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
-                String robAbsolutePath = nazwaObrazka; //dirObrazkiNaSD + "/" + nazwaObrazka;
+                String robAbsolutePath = dirObrazkiNaSD + "/" + nazwaObrazka;
                 bitmap = BitmapFactory.decodeFile(robAbsolutePath, options);
                 //Wykrycie orientacji i ewentualny obrot obrazka:
                 //bitmap = obrocJesliTrzeba(bitmap, robAbsolutePath); - wylaczam, bo chyba(?) nie dziala
@@ -511,7 +545,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         if (!mGlob.ZRODLEM_JEST_KATALOG)
             nazwaPliku = listaObrazkowAssets[currImage];
         else
-            nazwaPliku = myObrazkiSD.get(currImage).getName();
+            nazwaPliku = listaObrazkowSD[currImage];   //.getName();
 
         nazwaPliku = getRemovedExtensionName(nazwaPliku);
         nazwaPliku = usunLastDigitIfAny(nazwaPliku);
@@ -1258,11 +1292,19 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         //Pokazujemy zupelnie nowe cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
         final boolean roznicujObrazki = mGlob.ROZNICUJ_OBRAZKI;
+
+
+/*wylaczam tymczasowo chc jest ok : 2018-08-21
         if (mGlob.ZMIENIONO_ZRODLO) {
             mGlob.ZMIENIONO_ZRODLO = false;      //na przyszlosc...
             tworzEwentualnaListeFromKatalog();   //konieczne, bo zmienilo sie zrodlo obrazkow, byc moze na SD (katalogAssets)
             bDalej.callOnClick();                //dalek jak normalnie...
         }
+*/
+
+//tymczasowo 2018-08-21:
+        tworzListeFromAssets(mGlob.POZIOM);
+        tworzEwentualnaListeFromKatalog();
 
         //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl niewidoczny):
         if (mGlob.BEZ_OBRAZKOW) {
@@ -1285,16 +1327,20 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         if (mGlob.ZRODLEM_JEST_KATALOG ) {
             dirObrazkiNaSD = new File(mGlob.WYBRANY_KATALOG);
-            myObrazkiSD = findObrazki(dirObrazkiNaSD);
+            listaObrazkowSD = findObrazki(dirObrazkiNaSD);
         }
 
     } //koniec Metody()
 
 
-    public static ArrayList<File> findObrazki(File katalog) {
+//    public static ArrayList<File> findObrazki(File katalog) {
+    public static String[] findObrazki(File katalog) {
         /* ******************************************************************************************************************* */
-        /* Zwraca liste obrazkow (plikow graficznych .jpg .bmp .png) z katalogu katalogAssets - uzywana tylko dla przypadku SD karty */
+        /* Zwraca liste-tablice obrazkow (plikow graficznych .jpg .bmp .png) z katalogu katalogAssets - uzywana tylko dla przypadku SD karty */
         /* ******************************************************************************************************************* */
+
+//      Wersja ok, ale na <ArrayList<File>:
+
         ArrayList<File> al = new ArrayList<File>(); //al znaczy "Array List"
         File[] files = katalog.listFiles(); //w files WSZYSTKIE pliki z katalogu (rowniez nieporządane)
         if (files != null) { //lepiej sprawdzic, bo wali sie w petli for na niektorych emulatorach...
@@ -1308,7 +1354,38 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 }
             }
         }
-        return al;
+        //return al;
+
+//Przepisanie na tablice stringow:
+
+        String[] wynikowa = new String[al.size()];
+        int i =0;
+        for (File file : al) {
+            wynikowa[i] = file.getName();
+            i++;
+        }
+
+        return wynikowa;
+
+/*
+        List<String> zawartosc = new ArrayList<String>();
+        File[] files = katalog.listFiles(); //w files WSZYSTKIE pliki z katalogu (rowniez nieporządane)
+        if (files != null) { //lepiej sprawdzic, bo wali sie w petli for na niektorych emulatorach...
+            for (File singleFile : files) {
+                String plikPath = singleFile.getName();
+                if ((plikPath.toUpperCase().endsWith(".JPG"))
+                        || (plikPath.toUpperCase().endsWith(".PNG"))
+                        || (plikPath.toUpperCase().endsWith(".BMP"))
+                        || (plikPath.toUpperCase().endsWith(".WEBP"))
+                        || (plikPath.toUpperCase().endsWith(".JPEG"))) {
+                    zawartosc.add(plikPath);
+                }
+            }
+        }
+
+        return zawartosc;
+*/
+
     }  //koniec Matody()
 
 
@@ -1316,7 +1393,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         int rob;
         int rozmiar_tab;
         if (mGlob.ZRODLEM_JEST_KATALOG)
-            rozmiar_tab = myObrazkiSD.size();
+            rozmiar_tab = listaObrazkowSD.length;
         else
             rozmiar_tab = listaObrazkowAssets.length;
         //Generujemy losowy numer, ale tak, zeby nie wypadl ten sam:

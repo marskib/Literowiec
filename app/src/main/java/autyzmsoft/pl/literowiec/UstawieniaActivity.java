@@ -115,6 +115,16 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     mGlob.BUPLOW_ALL       = isCheckedUpLo;
     mGlob.BAGAIN_ALL       = isCheckedAgain;
 
+    //Przekazanie Poziomu trudnosci:
+    boolean isCheckedLatwe     = rb_Latwe.isChecked();
+    boolean isCheckedSrednie   = rb_Srednie.isChecked();
+    boolean isCheckedTrudne    = rb_Trudne.isChecked();
+    boolean isCheckedWszystkie = rb_Wszystkie.isChecked();
+    if (isCheckedLatwe)     mGlob.POZIOM = 1;
+    if (isCheckedSrednie)   mGlob.POZIOM = 2;
+    if (isCheckedTrudne)    mGlob.POZIOM = 3;
+    if (isCheckedWszystkie) mGlob.POZIOM = 0;
+
 
     //Komentarze/Nagrody:
     boolean isCheckedNoComments  = rb_NoComments.isChecked();
@@ -166,7 +176,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Ponizszy kod istotny przy konczeniu wyboru katalogu zewnetrznego (ale wywola sie tez na onCreate):
     if (mGlob.ZRODLEM_JEST_KATALOG) {
       String strKatalog = mGlob.WYBRANY_KATALOG;
-      int liczbaObrazkow = policzObrazki(strKatalog);
+      int liczbaObrazkow = policzObrazki(strKatalog);  //informacyjnie i po ostrzezenie
       if (liczbaObrazkow>0) {
         if (!mGlob.PELNA_WERSJA) {
           if (liczbaObrazkow>5) {  //werja Demo, a wybrano katalogAssets z wiecej niz 5 obrazkami
@@ -362,7 +372,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     /* zwraca po prostu rozmiar kolekcji                        */
     /* ******************************************************** */
 
-    return MainActivity.findObrazki(new File(strKatalog)).size();
+    return MainActivity.findObrazki(new File(strKatalog)).length;
 
   } //koniec Metody()
 
@@ -473,7 +483,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Wypisanie ewentualnej sciezki i liczby obrazkow:
     sciezka = (TextView) findViewById(R.id.tv_sciezkaKatalog);
     if (mGlob.ZRODLEM_JEST_KATALOG) {
-      int liczba = MainActivity.myObrazkiSD.size();
+      int liczba = MainActivity.listaObrazkowSD.length;
       String strLiczba = Integer.toString(liczba);
       sciezka.setText(mGlob.WYBRANY_KATALOG+"   "+strLiczba+" szt.");
     } else {

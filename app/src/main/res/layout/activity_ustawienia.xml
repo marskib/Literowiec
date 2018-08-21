@@ -261,7 +261,7 @@
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:layout_marginLeft="@dimen/text_margin"
-                  android:checked="true"
+                  android:checked="false"
                   android:text="łatwe (max. 4 litery) "
                   android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
                   android:textStyle="bold"

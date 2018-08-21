@@ -159,7 +159,7 @@ public class ZmienneGlobalne extends Application {
             }
             //gdyby nie zlikwidowano katalogu, ale tylko 'wycieto' obrazki (lub dorzucono > 5) - przelaczenie na Zasoby applikacji:
             else {
-                int lObr = MainActivity.findObrazki(new File(katalog)).size();   //liczba obrazkow
+                int lObr = MainActivity.findObrazki(new File(katalog)).length;   //liczba obrazkow
                 if ((lObr == 0) || (!PELNA_WERSJA && lObr > 5)) {
                     ZRODLEM_JEST_KATALOG = false;
                 }

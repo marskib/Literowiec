@@ -117,8 +117,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
     private Button bPomin;                              //na pominiecie/ucieczke z cwiczenia nie konczac go
 
-    public static File         dirObrazkiNaSD;                 //katalog z obrazkami na SD (internal i external)
-    public static String[]     listaObrazkowSD = null;         //lista obrazkow w katalogu na SD (internal i externa)
+    public static File     katalogSD;                 //katalog z obrazkami na SD (internal i external)
+    public static String[] listaObrazkowSD = null;    //lista obrazkow w katalogu na SD (internal i externa)
 
     public static String   katalogAssets = null;               //Katalogu w Assets, w ktorym trzymane beda obrazki
     public static String[] listaObrazkowAssets = null;         //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
@@ -288,47 +288,50 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     }  //koniec onCreate()
 
-    private void tworzListeFromAssets(int poziom) {
+    private void tworzListeFromAssets() {
         //Pobranie listy obrazkow z Assets (statyczna, raz na zawsze, wiec najlepiej tutaj):
         AssetManager mgr = getAssets();
         try {
             listaObrazkowAssets =  mgr.list(katalogAssets);  //laduje wszystkie obrazki z Assets
-
-            //Ograniczenie ListaObrazkowAssets do wybranego poziomu (prototyp) :
-            //(tworze tablice robocza, a nastepnie ListaObrazkowAssets wskaze na tę tablicę roboczą)
-            int dlug_min = 1;
-            int dlug_max = MAXL;
-
-            switch (poziom) {
-                case 1 : dlug_min = 1; dlug_max = 4; break;
-                case 2 : dlug_min = 5; dlug_max = 7; break;
-                case 3 : dlug_min = 8; dlug_max = MAXL; break;
-                case 0 : dlug_min = 1; dlug_max = MAXL; break;
-            }
-
-            ArrayList<String> lRob =  new ArrayList<String>();
-            for (String el : listaObrazkowAssets) {
-                String elTmp = getRemovedExtensionName(el);
-                elTmp = usunLastDigitIfAny(elTmp);
-                elTmp = usunLastDigitIfAny(elTmp);
-                if ( (elTmp.length() >= dlug_min) && (elTmp.length() <= dlug_max) ) {
-                    lRob.add(el);
-                }
-            }
-
-            //Przepisanie lRob -> tabRob:
-            String[] tabRob = new String[lRob.size()];
-            int i = 0;
-            for (String s : lRob) {
-                tabRob[i] = s;
-                i++;
-            }
-            //Zwrot wyniku:
-            listaObrazkowAssets = tabRob;
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }  //koniec Metody()
+
+    private static String[] listaOgraniczonaDoPoziomuTrudnosci(String[] lista, int poziom) {
+        //Ograniczenie Listy obrazkow (Assets bądź SD) do wybranego poziomu (prototyp) :
+        //(tworze tablice robocza, a nastepnie lista obrazkow wskaze na tę tablicę roboczą)
+
+        int dlug_min = 1;
+        int dlug_max = MAXL;
+
+        switch (poziom) {
+            case 1 : dlug_min = 1; dlug_max = 4; break;
+            case 2 : dlug_min = 5; dlug_max = 7; break;
+            case 3 : dlug_min = 8; dlug_max = MAXL; break;
+            case 0 : dlug_min = 1; dlug_max = MAXL; break;
+        }
+
+        ArrayList<String> lRob =  new ArrayList<String>();  //dzieki temu okresle ile jest wymaganych obrazkow, a tym samym bede mial rozmiar tablicy roboczej
+        for (String el : lista) {
+            String elTmp = getRemovedExtensionName(el);
+            elTmp = usunLastDigitIfAny(elTmp);
+            elTmp = usunLastDigitIfAny(elTmp);
+            if ( (elTmp.length() >= dlug_min) && (elTmp.length() <= dlug_max) ) {
+                lRob.add(el);
+            }
+        }
+
+        //Przepisanie lRob -> tabRob:
+        String[] tabRob = new String[lRob.size()];
+        int i = 0;
+        for (String s : lRob) {
+            tabRob[i] = s;
+            i++;
+        }
+
+        return tabRob;
+
     }  //koniec Metody()
 
 
@@ -348,7 +351,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 nazwaObrazka = listaObrazkowSD[currImage];
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
-                String robAbsolutePath = dirObrazkiNaSD + "/" + nazwaObrazka;
+                String robAbsolutePath = katalogSD + "/" + nazwaObrazka;
                 bitmap = BitmapFactory.decodeFile(robAbsolutePath, options);
                 //Wykrycie orientacji i ewentualny obrot obrazka:
                 //bitmap = obrocJesliTrzeba(bitmap, robAbsolutePath); - wylaczam, bo chyba(?) nie dziala
@@ -427,7 +430,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             rdzenNazwy = Rozdzielacz.usunLastDigitIfAny(rdzenNazwy); //zakladam, ze plik dźwiękowy nie ma cyfry na koncu: pies1.jpg,pies1.jpg,pies2.jpg --> pies.ogg
 
 
-            String sciezka_do_pliku_dzwiekowego = dirObrazkiNaSD + "/" + rdzenNazwy; //tutaj przekazujemy rdzen nazwy, bez rozszerzenia, bo mogą być różne (.mp3, ogg, .wav...)
+            String sciezka_do_pliku_dzwiekowego = katalogSD + "/" + rdzenNazwy; //tutaj przekazujemy rdzen nazwy, bez rozszerzenia, bo mogą być różne (.mp3, ogg, .wav...)
             odegrajZkartySD(sciezka_do_pliku_dzwiekowego, opozniacz);
             */
         }
@@ -1303,8 +1306,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 */
 
 //tymczasowo 2018-08-21:
-        tworzListeFromAssets(mGlob.POZIOM);
+        tworzListeFromAssets();
+        listaObrazkowAssets =  listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
         tworzEwentualnaListeFromKatalog();
+        listaObrazkowSD = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
 
         //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl niewidoczny):
         if (mGlob.BEZ_OBRAZKOW) {
@@ -1326,8 +1331,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     //Tworzenie (ewentualne) listy obrazków z Katalogu:
 
         if (mGlob.ZRODLEM_JEST_KATALOG ) {
-            dirObrazkiNaSD = new File(mGlob.WYBRANY_KATALOG);
-            listaObrazkowSD = findObrazki(dirObrazkiNaSD);
+            katalogSD = new File(mGlob.WYBRANY_KATALOG);
+            listaObrazkowSD = findObrazki(katalogSD);
         }
 
     } //koniec Metody()

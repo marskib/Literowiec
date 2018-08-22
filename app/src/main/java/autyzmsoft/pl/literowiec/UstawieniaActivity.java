@@ -166,12 +166,12 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     /* ******************************************************************************************/
     /* Na ekranie (splashScreenie) pokazywane sa aktualne ustawienia.                           */
     /* Wywolywana (nie bezposrednio, ale jako skutek) na long touch na obrazku - wtedy          */
-    /* przywolywana jest SplashKlasa z pokazanymi ustawieniami - patrz MAinActivity.onLOngClick */
+    /* przywolywana jest UstawieniaActivity z pokazanymi ustawieniami -> MainActivity.onLOngClick */
     /* Wywolywana rowniez przy starcie aplikacji(!)                                             */
     /* **************************************************************************************** */
     super.onResume();
-
-
+    this.ustawKontrolki();
+    mGlob.ZMIENIONO_ZRODLO = false;
 
     //Ponizszy kod istotny przy konczeniu wyboru katalogu zewnetrznego (ale wywola sie tez na onCreate):
     if (mGlob.ZRODLEM_JEST_KATALOG) {
@@ -440,7 +440,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     rb_Srednie.setChecked(isChecked);
 
     rb_Trudne    = (RadioButton) findViewById(R.id.rb_trudne);
-    isChecked    = (mGlob.POZIOM == 2);
+    isChecked    = (mGlob.POZIOM == 3);
     rb_Trudne.setChecked(isChecked);
 
     rb_Wszystkie = (RadioButton) findViewById(R.id.rb_wszystkie);
@@ -511,4 +511,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   } //koniec metody()
 
 
+  public void rbPoziomyOnClick(View view) {
+    mGlob.ZMIENIONO_ZRODLO = true;
+  }
 }

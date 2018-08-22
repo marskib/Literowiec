@@ -123,6 +123,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     public static String   katalogAssets = null;               //Katalogu w Assets, w ktorym trzymane beda obrazki
     public static String[] listaObrazkowAssets = null;         //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
 
+    public static String[] listaOper = null; //listas 'operacyjna', z niej ostateczne pobieranie obrazkow
+
     boolean nieGraj = true;    //przelacznik(semafar) : grac/nie grac - jesli start apk. to ma nie grac slowa (bo glupio..)
 
     public int     currImage = -1;      //indeks biezacego obrazka
@@ -277,9 +279,14 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         });
 
         //Stworzenie statycznej, raz na zawsze listy z Assets:
-        tworzListeFromAssets(mGlob.POZIOM);
+        tworzListeFromAssets();
+        listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
 
-        tworzEwentualnaListeFromKatalog();  //ewentualna lista z SD (jezeli ma byc na starcie)
+        if (mGlob.ZRODLEM_JEST_KATALOG ) {
+            tworzListeFromKatalog();  //ewentualna lista z SD (jezeli ma byc na starcie)
+            listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+        }
+
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
@@ -346,27 +353,28 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         else
             imageView.setVisibility(VISIBLE);
 
+        nazwaObrazka = listaOper[currImage];
         try {
             if (mGlob.ZRODLEM_JEST_KATALOG) { //pobranie z Directory
-                nazwaObrazka = listaObrazkowSD[currImage];
+
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inSampleSize = 2;
                 String robAbsolutePath = katalogSD + "/" + nazwaObrazka;
                 bitmap = BitmapFactory.decodeFile(robAbsolutePath, options);
                 //Wykrycie orientacji i ewentualny obrot obrazka:
                 //bitmap = obrocJesliTrzeba(bitmap, robAbsolutePath); - wylaczam, bo chyba(?) nie dziala
-
-                //bez corner radius:
-                //imageView.setImageBitmap(bitmap);
-
             } else {  //pobranie obrazka z Assets
-                nazwaObrazka = listaObrazkowAssets[currImage];
                 InputStream streamSki = getAssets().open(katalogAssets + "/" + nazwaObrazka);
                 bitmap = BitmapFactory.decodeStream(streamSki);
-                /********* obrazek "klasyczny", bez rounded corners ***********/
-                //Drawable drawable = Drawable.createFromStream(stream, null);
-                //imageView.setImageDrawable(drawable);
-                //******* obrazek "klasyczny" - koniec ******************/
+
+                /********* obrazek "klasyczny", bez rounded corners (wersja poprzednia): ***********
+                a) - z Assets:
+                Drawable drawable = Drawable.createFromStream(stream, null);
+                imageView.setImageDrawable(drawable);
+
+                b) - z SD:
+                imageView.setImageBitmap(bitmap);
+                ******* obrazek "klasyczny" - koniec ******************/
             }
 
             /******* rounded corners 2018.08.03 *************/
@@ -415,24 +423,16 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         }
         //Granie wlasciwe:
 
+        String nazwaObrazka = listaOper[currImage];
+        String rdzenNazwy = usunLastDigitIfAny(getRemovedExtensionName(nazwaObrazka));
         if (!mGlob.ZRODLEM_JEST_KATALOG) {
             //odeggranie z Assets (tam TYLKO ogg):
-            String nazwaObrazka = listaObrazkowAssets[currImage];
-            String rdzenNazwy = usunLastDigitIfAny(getRemovedExtensionName(nazwaObrazka));
             String sciezka_do_pliku_dzwiekowego = "nagrania/" + rdzenNazwy + ".ogg";
             odegrajZAssets(sciezka_do_pliku_dzwiekowego, opozniacz);
         } else {  //pobranie nagrania z directory
             //odegranie z SD (na razie nie zajmujemy sie rozszerzeniem=typ pliku dzwiekowego jest (prawie) dowolny):
-
-            /* ski ski 2018.06.04
-            String nazwaObrazka =  .getAktWybrZasob();  //zawiera rozrzerzenie (.jpg , .bmp , ...)
-            String rdzenNazwy = Rozdzielacz.getRemovedExtensionName(nazwaObrazka);
-            rdzenNazwy = Rozdzielacz.usunLastDigitIfAny(rdzenNazwy); //zakladam, ze plik dźwiękowy nie ma cyfry na koncu: pies1.jpg,pies1.jpg,pies2.jpg --> pies.ogg
-
-
             String sciezka_do_pliku_dzwiekowego = katalogSD + "/" + rdzenNazwy; //tutaj przekazujemy rdzen nazwy, bez rozszerzenia, bo mogą być różne (.mp3, ogg, .wav...)
             odegrajZkartySD(sciezka_do_pliku_dzwiekowego, opozniacz);
-            */
         }
     }  //koniec Metody()
 
@@ -543,12 +543,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         //Nazwe odpowiadajacego pliku oczyszczamy z nalecialosci:
 
-        String nazwaPliku;
-
-        if (!mGlob.ZRODLEM_JEST_KATALOG)
-            nazwaPliku = listaObrazkowAssets[currImage];
-        else
-            nazwaPliku = listaObrazkowSD[currImage];   //.getName();
+        String nazwaPliku = listaOper[currImage];
 
         nazwaPliku = getRemovedExtensionName(nazwaPliku);
         nazwaPliku = usunLastDigitIfAny(nazwaPliku);
@@ -682,7 +677,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     public void bDalejOnClick(View v) {
         //sledzenie:
-        bUpperLower.setText(sizeW+"x"+sizeH);
+        //bUpperLower.setText(sizeW+"x"+sizeH);
 
         blokujKlawiszeDodatkowe();
 
@@ -1300,16 +1295,23 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 /*wylaczam tymczasowo chc jest ok : 2018-08-21
         if (mGlob.ZMIENIONO_ZRODLO) {
             mGlob.ZMIENIONO_ZRODLO = false;      //na przyszlosc...
-            tworzEwentualnaListeFromKatalog();   //konieczne, bo zmienilo sie zrodlo obrazkow, byc moze na SD (katalogAssets)
+            tworzListeFromKatalog();   //konieczne, bo zmienilo sie zrodlo obrazkow, byc moze na SD (katalogAssets)
             bDalej.callOnClick();                //dalek jak normalnie...
         }
 */
 
 //tymczasowo 2018-08-21:
-        tworzListeFromAssets();
-        listaObrazkowAssets =  listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
-        tworzEwentualnaListeFromKatalog();
-        listaObrazkowSD = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+        if (mGlob.ZMIENIONO_ZRODLO) {
+            if (!mGlob.ZRODLEM_JEST_KATALOG) { //nie trzeba tworzyc listy z Assets - jest stworzona raz na zawsze w onCreate()
+                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+            } else {
+                tworzListeFromKatalog();
+                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+            }
+            bDalej.callOnClick();
+        }
+
+
 
         //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl niewidoczny):
         if (mGlob.BEZ_OBRAZKOW) {
@@ -1327,13 +1329,11 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     } //koniec Metody()
 
 
-    private void tworzEwentualnaListeFromKatalog() {
-    //Tworzenie (ewentualne) listy obrazków z Katalogu:
+    private void tworzListeFromKatalog() {
+    //Tworzenie listy obrazków z Katalogu:
 
-        if (mGlob.ZRODLEM_JEST_KATALOG ) {
-            katalogSD = new File(mGlob.WYBRANY_KATALOG);
-            listaObrazkowSD = findObrazki(katalogSD);
-        }
+        katalogSD = new File(mGlob.WYBRANY_KATALOG);
+        listaObrazkowSD = findObrazki(katalogSD);
 
     } //koniec Metody()
 
@@ -1396,11 +1396,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     private int dajLosowyNumerObrazka() {
         int rob;
-        int rozmiar_tab;
-        if (mGlob.ZRODLEM_JEST_KATALOG)
-            rozmiar_tab = listaObrazkowSD.length;
-        else
-            rozmiar_tab = listaObrazkowAssets.length;
+        int rozmiar_tab = listaOper.length;
         //Generujemy losowy numer, ale tak, zeby nie wypadl ten sam:
         if (rozmiar_tab !=1 ) { //przy tylko jednym obrazku kod ponizej jest petla nieskonczona, więc if
             do {
@@ -1411,6 +1407,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             rob = 0; //bo 0-to jest de facto numer obrazka
 
         return rob;  //105-rzeka 33=lalendarz
+
     } //koniec Metody()
 
 

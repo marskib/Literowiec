@@ -281,10 +281,19 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         //Stworzenie statycznej, raz na zawsze listy z Assets:
         tworzListeFromAssets();
         listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+        if (listaOper.length==0) {
+            mGlob.POZIOM = 0;
+            listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+        }
 
+        //ewentualna lista z SD (jezeli ma byc na starcie):
         if (mGlob.ZRODLEM_JEST_KATALOG ) {
-            tworzListeFromKatalog();  //ewentualna lista z SD (jezeli ma byc na starcie)
+            tworzListeFromKatalog();
             listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+            if (listaOper.length==0) {
+                mGlob.POZIOM = 0;
+                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+            }
         }
 
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage

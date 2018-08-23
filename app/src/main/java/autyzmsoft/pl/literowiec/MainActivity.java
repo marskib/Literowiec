@@ -281,6 +281,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         //Stworzenie statycznej, raz na zawsze listy z Assets:
         tworzListeFromAssets();
         listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+        //gdyby byly jakies problemy, to na Zero... :
         if (listaOper.length==0) {
             mGlob.POZIOM = 0;
             listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
@@ -290,6 +291,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         if (mGlob.ZRODLEM_JEST_KATALOG ) {
             tworzListeFromKatalog();
             listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+            //gdyby byly jakies problemy (cos. nie ok. w np. SharedPref), to na Zero...:
             if (listaOper.length==0) {
                 mGlob.POZIOM = 0;
                 listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);

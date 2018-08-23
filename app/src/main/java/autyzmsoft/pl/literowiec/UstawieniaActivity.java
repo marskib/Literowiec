@@ -369,7 +369,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   static int policzObrazki(String strKatalog) {
     /* ******************************************************** */
     /* Liczy obrazki (=pliki .jpg .bmp .png) w zadanym katalogu */
-    /* zwraca po prostu rozmiar kolekcji                        */
+    /* zwraca po prostu rozmiar tablicy                         */
     /* ******************************************************** */
 
     return MainActivity.findObrazki(new File(strKatalog)).length;
@@ -483,10 +483,11 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Wypisanie ewentualnej sciezki i liczby obrazkow:
     sciezka = (TextView) findViewById(R.id.tv_sciezkaKatalog);
     if (mGlob.ZRODLEM_JEST_KATALOG) {
-      int liczba = MainActivity.listaObrazkowSD.length;
+      int liczba = policzObrazki(mGlob.WYBRANY_KATALOG);
       String strLiczba = Integer.toString(liczba);
       sciezka.setText(mGlob.WYBRANY_KATALOG+"   "+strLiczba+" szt.");
-    } else {
+    }
+    else {
       int liczba = MainActivity.listaObrazkowAssets.length;
       String strLiczba = Integer.toString(liczba);
       sciezka.setText(strLiczba+" szt.");

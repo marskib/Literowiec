@@ -2096,12 +2096,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             POZIOM = mGlob.POZIOM;
         }
 
-        /*przepisanie z Nowej na starą*/
-        void przepiszZNowej(KombinacjaOpcji nowa) {
-            this.ZRODLEM_JEST_KATALOG = nowa.ZRODLEM_JEST_KATALOG;
-            this.WYBRANY_KATALOG      = nowa.WYBRANY_KATALOG;
-            this.POZIOM               = nowa.POZIOM;
-        }
+       
 
         /*Sprawdza, czy kombinacje wybranych opcji sa takie same*/
         boolean takaSamaJak(KombinacjaOpcji nowaKombinacja) {

@@ -23,17 +23,14 @@
           android:layout_marginTop="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
           android:background="@drawable/border_skib_maroon"
           android:orientation="vertical"
-          android:padding="@dimen/maly_odstep"
-      >
-          <!--android:layout_below="@id/l_Zobrazowanie"-->
+          android:padding="@dimen/maly_odstep">
 
           <TextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginLeft="@dimen/maly_odstep"
               android:text="Źródło obrazków i nagrań:"
-              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-          />
+              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"/>
 
 
           <RadioGroup
@@ -42,8 +39,7 @@
               android:layout_height="wrap_content"
               android:layout_marginTop="@dimen/text_margin"
               android:gravity="center_horizontal"
-              android:orientation="horizontal"
-          >
+              android:orientation="horizontal">
 
               <RadioButton
                   android:id="@+id/rb_zAssets"
@@ -52,8 +48,7 @@
                   android:checked="true"
                   android:text="zasoby aplikacji   "
                   android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"
-              />
+                  android:textStyle="bold"/>
 
               <RadioButton
                   android:id="@+id/rb_zKatalogu"
@@ -63,8 +58,7 @@
                   android:checked="false"
                   android:text="mój katalog"
                   android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"
-              />
+                  android:textStyle="bold"/>
 
           </RadioGroup>
 
@@ -74,12 +68,10 @@
               android:layout_height="wrap_content"
               android:layout_gravity="center_horizontal"
               android:layout_marginTop="@dimen/text_margin"
-              android:text="Wybrany katalog: "
-          />
+              android:text="Wybrany katalog: "/>
 
       </LinearLayout>
 
-      <!--*****************************-->
 
     <CheckBox
       android:id="@+id/cb_Nazwa"
@@ -264,10 +256,7 @@
                   android:checked="false"
                   android:text="łatwe (max. 4 litery) "
                   android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"
-                  android:onClick="rbPoziomyOnClick"
-
-                />
+                  android:textStyle="bold"/>
 
               <RadioButton
                   android:id="@+id/rb_srednie"
@@ -278,9 +267,7 @@
                   android:checked="false"
                   android:text="średnie (5-7 liter)"
                   android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"
-                  android:onClick="rbPoziomyOnClick"
-                />
+                  android:textStyle="bold"/>
 
               <RadioButton
                   android:id="@+id/rb_trudne"
@@ -291,10 +278,7 @@
                   android:text="trudne (8-12 liter)"
                   android:layout_marginTop="5dp"
                   android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"
-                  android:onClick="rbPoziomyOnClick"
-
-                />
+                  android:textStyle="bold"/>
 
               <RadioButton
                   android:id="@+id/rb_wszystkie"
@@ -306,9 +290,7 @@
                   android:text="Wszystkie"
                   android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
                   android:textStyle="bold"
-                  android:layout_marginBottom="10dp"
-                  android:onClick="rbPoziomyOnClick"
-                />
+                  android:layout_marginBottom="10dp"/>
 
           </RadioGroup>
 

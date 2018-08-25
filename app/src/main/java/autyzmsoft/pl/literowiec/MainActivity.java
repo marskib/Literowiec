@@ -135,6 +135,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     public static boolean PW = true;    //Pierwsze Wejscie do aplikacji
 
+    ZmienneGlobalne mGlob;                          //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
+    KombinacjaOpcji currOptions, newOptions;        //biezace (obowiazujace do chwili wywolania UstawieniaActivity) ustawienia i najnowsze, ustawione w UstawieniaActivity)
+
 
     /* eksperymenty ze status barem - 2018.08.11 */
 /*
@@ -169,8 +172,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     /* eksperymenty ze status barem - 2018.08.11 - KONIEC*/
 
-
-    ZmienneGlobalne mGlob;       //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
 
     /*Ponizej, do konca metody onRequestPermissionResult() kod zapewniajacy dostep do kart SD: */
     final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
@@ -209,6 +210,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         super.onCreate(savedInstanceState);
 
         mGlob = (ZmienneGlobalne) getApplication();
+
+        currOptions = new KombinacjaOpcji();
+        newOptions  = new KombinacjaOpcji();
 
         //Na caly ekran:
         //1.Remove title bar:
@@ -317,8 +321,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     }  //koniec Metody()
 
     private static String[] listaOgraniczonaDoPoziomuTrudnosci(String[] lista, int poziom) {
-        //Ograniczenie Listy obrazkow (Assets bądź SD) do wybranego poziomu (prototyp) :
-        //(tworze tablice robocza, a nastepnie lista obrazkow wskaze na tę tablicę roboczą)
+    /*************************************************************************************/
+    /* Ograniczenie Listy obrazkow (Assets bądź SD) do wybranego poziomu.                */
+    /* (tworze tablice robocza, a nastepnie lista obrazkow wskaze na tę tablicę roboczą) */
+    /*************************************************************************************/
 
         int dlug_min = 1;
         int dlug_max = MAXL;
@@ -1293,36 +1299,14 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     /* *************************************   */
         super.onResume();
 
+
         //Kwestia pierwszego wejscia:
         if (PW) {
             PW = false;
             return;
         }
 
-        //Pokazujemy zupelnie nowe cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
-        final boolean roznicujObrazki = mGlob.ROZNICUJ_OBRAZKI;
-
-
-/*wylaczam tymczasowo chc jest ok : 2018-08-21
-        if (mGlob.ZMIENIONO_ZRODLO) {
-            mGlob.ZMIENIONO_ZRODLO = false;      //na przyszlosc...
-            tworzListeFromKatalog();   //konieczne, bo zmienilo sie zrodlo obrazkow, byc moze na SD (katalogAssets)
-            bDalej.callOnClick();                //dalek jak normalnie...
-        }
-*/
-
-//tymczasowo 2018-08-21:
-        if (mGlob.ZMIENIONO_ZRODLO) {
-            if (!mGlob.ZRODLEM_JEST_KATALOG) { //nie trzeba tworzyc listy z Assets - jest stworzona raz na zawsze w onCreate()
-                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
-            } else {
-                tworzListeFromKatalog();
-                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
-            }
-            bDalej.callOnClick();
-        }
-
-
+        //Pokazujemy cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
 
         //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl niewidoczny):
         if (mGlob.BEZ_OBRAZKOW) {
@@ -1333,11 +1317,34 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             l_imageContainer.setBackgroundColor(Color.TRANSPARENT);
             //l_imageContainer.setBackgroundResource(0); - alternatywa do Color.TRANSPARENT (podobno TRANSPARENT lepszy)
         }
-
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
         pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
 
-    } //koniec Metody()
+
+        //Badamy najistotniejsze opcje; Gdyby zmieniono Katalog lub poziom, to naczytanie na nowo:
+        newOptions.pobierzZeZmiennychGlobalnych();           //jaki byl wynik ostatniej 'wizyty' w UstawieniaActivity
+        if (!newOptions.takaSamaJak(currOptions)) {          //musimy naczytac ponownie, bo zmieniono zrodlo obrazkow (chocby poprzez zmiane poziomu trudnosci)
+            currOptions.pobierzZeZmiennychGlobalnych();      //zapamietanie na przyszlosc
+            if (!mGlob.ZRODLEM_JEST_KATALOG) {
+                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona raz na zawsze w onCreate()
+            } else {
+                tworzListeFromKatalog();
+                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+            }
+            //Gdyby okazalo sie, ze nie ma obrazkow o wybranym poziomie trudnosci, bierzemy wszystkie (list zrodlowych tworzyc w tym punkcie sterowania nie trzeba):
+            if (listaOper.length == 0) {
+                wypiszOstrzezenie("Brak ćwiczeń o wybranym poziomie trudności. Zostaną pokazane wszystkie ćwiczenia.");
+                mGlob.POZIOM = 0;
+                currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily ;omie wyzej...
+                if (!mGlob.ZRODLEM_JEST_KATALOG)
+                    listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets,mGlob.POZIOM);
+                else
+                    listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+            }
+            bDalej.callOnClick();
+        }
+
+    } //koniec onResume()
 
 
     private void tworzListeFromKatalog() {
@@ -2067,6 +2074,47 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
     } //koniec Metody()
+
+
+
+    /*Klasa do sprawdzania czy podczas zmiany ustawien uzytkownik zmienil (klikaniem) zrodlo obrazkow */
+    /* (lub wykonal dzialanie rownowazne zmianie zrodla) */
+    /* dotyczy (na razie) tylko zródła i ścieżki */
+    class KombinacjaOpcji {
+
+        private boolean ZRODLEM_JEST_KATALOG;
+        private String  WYBRANY_KATALOG;
+        private int     POZIOM;
+
+        KombinacjaOpcji() {
+            pobierzZeZmiennychGlobalnych();
+        }
+
+        void pobierzZeZmiennychGlobalnych() {
+            ZRODLEM_JEST_KATALOG = mGlob.ZRODLEM_JEST_KATALOG;
+            WYBRANY_KATALOG = mGlob.WYBRANY_KATALOG;
+            POZIOM = mGlob.POZIOM;
+        }
+
+        /*przepisanie z Nowej na starą*/
+        void przepiszZNowej(KombinacjaOpcji nowa) {
+            this.ZRODLEM_JEST_KATALOG = nowa.ZRODLEM_JEST_KATALOG;
+            this.WYBRANY_KATALOG      = nowa.WYBRANY_KATALOG;
+            this.POZIOM               = nowa.POZIOM;
+        }
+
+        /*Sprawdza, czy kombinacje wybranych opcji sa takie same*/
+        boolean takaSamaJak(KombinacjaOpcji nowaKombinacja) {
+            if (this.ZRODLEM_JEST_KATALOG != nowaKombinacja.ZRODLEM_JEST_KATALOG)
+                return false;
+            if (!this.WYBRANY_KATALOG.equals(nowaKombinacja.WYBRANY_KATALOG))
+                return  false;
+            if (!(this.POZIOM == nowaKombinacja.POZIOM)) {
+                return false;
+            }
+            return true;
+        }
+    } //class wewnetrzna
 
 
 

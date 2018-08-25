@@ -96,12 +96,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Przekazanie ustawien na --> ZmienneGlobalne//
     //*******************************************//
     super.onPause();
-    //Przekazanie poziomu trudnosci:
-
-    /* ski ski 2018.08.14 - na potrzeby kompilacji usuwam...
-    int poziom = Integer.parseInt(tv_Poziom.getText().toString());
-    mGlob.POZIOM = poziom;
-    */
 
     //Przekazanie checkboxow:
     boolean isCheckedPodp  = cb_Podp.isChecked();
@@ -171,7 +165,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     /* **************************************************************************************** */
     super.onResume();
     this.ustawKontrolki();
-    mGlob.ZMIENIONO_ZRODLO = false;
+
 
     //Ponizszy kod istotny przy konczeniu wyboru katalogu zewnetrznego (ale wywola sie tez na onCreate):
     if (mGlob.ZRODLEM_JEST_KATALOG) {
@@ -293,7 +287,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
   private void ostrzegajBrakObrazkow(){
     /* **************************************************************** */
-    /* Wyswietlany, gdy user wybierze katalogAssets nie zawierajacy obrazkow. */
+    /* Wyswietlany, gdy user wybierze katalog nie zawierajacy obrazkow. */
     /* **************************************************************** */
     wypiszOstrzezenie("Brak obrazków w wybranym katalogu.\nZostanie zastosowany wybór\nz zasobów aplikacji.");
   }
@@ -328,16 +322,11 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     if (arg0==rb_zAssets) {
       sciezka.setText(""); //kosmetyka - znika z ekranu
       //jesli kliknieto na "z zasobow aplikacji", to przełączam się na to nowe źródło:
-      if (mGlob.ZRODLEM_JEST_KATALOG) {
-        mGlob.ZRODLEM_JEST_KATALOG = false;
-        mGlob.ZMIENIONO_ZRODLO     = true;
-      }
-
+      mGlob.ZRODLEM_JEST_KATALOG = false;
       //policzenie obrazkow w zasobach aplikacji (zeby uswiadomic usera...):
       int liczba = MainActivity.listaObrazkowAssets.length;
       sciezka.setText(liczba+" szt.");
       toast("Liczba obrazków: "+liczba);
-
       return;
     }
 
@@ -512,7 +501,4 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   } //koniec metody()
 
 
-  public void rbPoziomyOnClick(View view) {
-    mGlob.ZMIENIONO_ZRODLO = true;
-  }
 }

@@ -142,7 +142,6 @@ public class InternalExternalKlasa extends Activity {
             //przekazanie wybranego katalogu (if any) do zm. globalnych:
             mGlob.WYBRANY_KATALOG = filePath;
             mGlob.ZRODLEM_JEST_KATALOG = true;
-            mGlob.ZMIENIONO_ZRODLO = true;
 
             finish();
 

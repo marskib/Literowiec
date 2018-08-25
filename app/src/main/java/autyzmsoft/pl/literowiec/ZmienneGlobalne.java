@@ -34,7 +34,6 @@ public class ZmienneGlobalne extends Application {
     public boolean PELNA_WERSJA;
     public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
     public String  WYBRANY_KATALOG;      //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
-    public boolean ZMIENIONO_ZRODLO;     //jakakolwiek zmiana zrodla obrazkow - Assets/Katalog JAK ROWNIEZ zmiana katalogu
     public boolean DLA_KRZYSKA;          //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
     public boolean ROZNICUJ_OBRAZKI;     //Za każdym razem pokazywany inny obrazek
 
@@ -50,7 +49,6 @@ public class ZmienneGlobalne extends Application {
     public boolean CISZA;               //kompletna Cisza, bez nagrod i bez 'ding,'brrr' po kliknieciu klawisza
 
     public boolean Z_NAZWA;             //czy ma byc nazwa pod obrazkiem
-    public boolean DELAYED;             //czy pokazywać klawisze z wyrazami z opóźnieniem (efekciarstwo ;))
     public boolean ODMOWA_DOST;         //na etapie instalacji/1-go uruchomienia user odmowil dostepu do kart(y); dotyczy androida 6 i więcej
 
 
@@ -106,7 +104,6 @@ public class ZmienneGlobalne extends Application {
         POKAZ_MODAL  = false;
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
-        ZMIENIONO_ZRODLO     = false;
         WYBRANY_KATALOG = "*^5%dummy";       //"nic jeszcze nie wybrano" - lepiej to niz null, bo z null'em problemy...
 
         DLA_KRZYSKA = false;
@@ -129,15 +126,12 @@ public class ZmienneGlobalne extends Application {
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
 
-        POZIOM       = sharedPreferences.getInt("POZIOM", this.POZIOM);
-
         BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT", this.BEZ_KOMENT);
         TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", this.TYLKO_OKLASKI);
         TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS", this.TYLKO_GLOS);
         CISZA         = sharedPreferences.getBoolean("CISZA", this.CISZA);
 
         Z_NAZWA       = sharedPreferences.getBoolean("Z_NAZWA", this.Z_NAZWA);
-        DELAYED       = sharedPreferences.getBoolean("DELAYED", this.DELAYED);
         ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", this.ODMOWA_DOST);
 
         BHINT_ALL     = sharedPreferences.getBoolean("BHINT_ALL",  this.BHINT_ALL);

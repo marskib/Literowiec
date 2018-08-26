@@ -344,6 +344,11 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             if ( (elTmp.length() >= dlug_min) && (elTmp.length() <= dlug_max) ) {
                 lRob.add(el);
             }
+
+           /* //nazwa dluzsza niz 12 (MAXL) znakow - trzeba ja uwzglednic, bo inaczej pozniej exception..
+            else {
+                elTmp = elTmp.substring(0,MAXL)
+            }*/
         }
 
         //Przepisanie lRob -> tabRob:
@@ -1335,9 +1340,16 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             if (listaOper.length == 0) {
                 wypiszOstrzezenie("Brak ćwiczeń o wybranym poziomie trudności. Zostaną pokazane wszystkie ćwiczenia.");
                 mGlob.POZIOM = 0;
-                currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily ;omie wyzej...
+                currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily linie wyzej...
                 if (!mGlob.ZRODLEM_JEST_KATALOG)
                     listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets,mGlob.POZIOM);
+                    //Jesli nadal 0, to znaczy, ze w katalogu same dlugie wyrazy - wymuszamy z zasobow:
+                    if (listaOper.length==0) {
+                        wypiszOstrzezenie("Zbyt długie wyrazy w wybranym katalogu. Zostaną wybrane zasoby aplikacji.");
+                        mGlob.ZRODLEM_JEST_KATALOG = false;
+                        currOptions.pobierzZeZmiennychGlobalnych();
+                        listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+                    }
                 else
                     listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
             }
@@ -2095,8 +2107,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             WYBRANY_KATALOG = mGlob.WYBRANY_KATALOG;
             POZIOM = mGlob.POZIOM;
         }
-
-       
 
         /*Sprawdza, czy kombinacje wybranych opcji sa takie same*/
         boolean takaSamaJak(KombinacjaOpcji nowaKombinacja) {

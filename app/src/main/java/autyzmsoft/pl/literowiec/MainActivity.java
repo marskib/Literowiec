@@ -333,7 +333,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             case 1 : dlug_min = 1; dlug_max = 4; break;
             case 2 : dlug_min = 5; dlug_max = 7; break;
             case 3 : dlug_min = 8; dlug_max = MAXL; break;
-            case 0 : dlug_min = 1; dlug_max = MAXL; break;
+            case 0 : dlug_min = 1; dlug_max = Integer.MAX_VALUE; break; //nawet jesli nazwa dluzsza niz 12 (MAXL) znakow - trzeba ja uwzglednic, bo inaczej pozniej exception.. (ostatecznie i tak przycinam)
         }
 
         ArrayList<String> lRob =  new ArrayList<String>();  //dzieki temu okresle ile jest wymaganych obrazkow, a tym samym bede mial rozmiar tablicy roboczej
@@ -344,11 +344,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             if ( (elTmp.length() >= dlug_min) && (elTmp.length() <= dlug_max) ) {
                 lRob.add(el);
             }
-
-           /* //nazwa dluzsza niz 12 (MAXL) znakow - trzeba ja uwzglednic, bo inaczej pozniej exception..
-            else {
-                elTmp = elTmp.substring(0,MAXL)
-            }*/
         }
 
         //Przepisanie lRob -> tabRob:
@@ -1343,13 +1338,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily linie wyzej...
                 if (!mGlob.ZRODLEM_JEST_KATALOG)
                     listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets,mGlob.POZIOM);
-                    //Jesli nadal 0, to znaczy, ze w katalogu same dlugie wyrazy - wymuszamy z zasobow:
-                    if (listaOper.length==0) {
-                        wypiszOstrzezenie("Zbyt długie wyrazy w wybranym katalogu. Zostaną wybrane zasoby aplikacji.");
-                        mGlob.ZRODLEM_JEST_KATALOG = false;
-                        currOptions.pobierzZeZmiennychGlobalnych();
-                        listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
-                    }
                 else
                     listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
             }

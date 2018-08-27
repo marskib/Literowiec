@@ -4,6 +4,9 @@ import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.*;
+
+
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -330,10 +333,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         int dlug_max = MAXL;
 
         switch (poziom) {
-            case 1 : dlug_min = 1; dlug_max = 4; break;
-            case 2 : dlug_min = 5; dlug_max = 7; break;
-            case 3 : dlug_min = 8; dlug_max = MAXL; break;
-            case 0 : dlug_min = 1; dlug_max = Integer.MAX_VALUE; break; //nawet jesli nazwa dluzsza niz 12 (MAXL) znakow - trzeba ja uwzglednic, bo inaczej pozniej exception.. (ostatecznie i tak przycinam)
+            case LATWE     : dlug_min = 1; dlug_max = 4; break;
+            case SREDNIE   : dlug_min = 5; dlug_max = 7; break;
+            case TRUDNE    : dlug_min = 8; dlug_max = MAXL; break;
+            case WSZYSTKIE : dlug_min = 1; dlug_max = Integer.MAX_VALUE; break; //nazwa dluzsza niz 12 (MAXL) znakow - trzeba ja uwzglednic, bo inaczej pozniej exception.. (potem i tak przytne do 12)
         }
 
         ArrayList<String> lRob =  new ArrayList<String>();  //dzieki temu okresle ile jest wymaganych obrazkow, a tym samym bede mial rozmiar tablicy roboczej
@@ -1319,7 +1322,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         }
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
         pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
-
 
         //Badamy najistotniejsze opcje; Gdyby zmieniono Katalog lub poziom, to naczytanie na nowo:
         newOptions.pobierzZeZmiennychGlobalnych();           //jaki byl wynik ostatniej 'wizyty' w UstawieniaActivity

@@ -5,6 +5,10 @@ package autyzmsoft.pl.literowiec;
  * Zawiera ekran z Ustawieniami. Wywolywana na long toucha na obrazku.
  * Dawniej (w innych apkach) pod nazwą  'SplashKlasa'
  */
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.LATWE;
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.SREDNIE;
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.TRUDNE;
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.WSZYSTKIE;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -114,10 +118,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     boolean isCheckedSrednie   = rb_Srednie.isChecked();
     boolean isCheckedTrudne    = rb_Trudne.isChecked();
     boolean isCheckedWszystkie = rb_Wszystkie.isChecked();
-    if (isCheckedLatwe)     mGlob.POZIOM = 1;
-    if (isCheckedSrednie)   mGlob.POZIOM = 2;
-    if (isCheckedTrudne)    mGlob.POZIOM = 3;
-    if (isCheckedWszystkie) mGlob.POZIOM = 0;
+    if (isCheckedLatwe)     mGlob.POZIOM = LATWE;
+    if (isCheckedSrednie)   mGlob.POZIOM = SREDNIE;
+    if (isCheckedTrudne)    mGlob.POZIOM = TRUDNE;
+    if (isCheckedWszystkie) mGlob.POZIOM = WSZYSTKIE;
 
 
     //Komentarze/Nagrody:
@@ -421,19 +425,19 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
     /* poziomy trudnosci: */
     rb_Latwe     = (RadioButton) findViewById(R.id.rb_latwe);
-    isChecked    = (mGlob.POZIOM == 1);
+    isChecked    = (mGlob.POZIOM == LATWE);
     rb_Latwe.setChecked(isChecked);
 
     rb_Srednie   = (RadioButton) findViewById(R.id.rb_srednie);
-    isChecked    = (mGlob.POZIOM == 2);
+    isChecked    = (mGlob.POZIOM == SREDNIE);
     rb_Srednie.setChecked(isChecked);
 
     rb_Trudne    = (RadioButton) findViewById(R.id.rb_trudne);
-    isChecked    = (mGlob.POZIOM == 3);
+    isChecked    = (mGlob.POZIOM == TRUDNE);
     rb_Trudne.setChecked(isChecked);
 
     rb_Wszystkie = (RadioButton) findViewById(R.id.rb_wszystkie);
-    isChecked    = (mGlob.POZIOM == 0);
+    isChecked    = (mGlob.POZIOM == WSZYSTKIE);
     rb_Wszystkie.setChecked(isChecked);
     /* poziomy trudnosci - koniec */
 

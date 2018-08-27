@@ -31,6 +31,12 @@ import java.io.File;
 
 public class ZmienneGlobalne extends Application {
 
+    //Poziomy trudnosci:
+    public static final int LATWE     = 1;
+    public static final int SREDNIE   = 2;
+    public static final int TRUDNE    = 3;
+    public static final int WSZYSTKIE = 4;
+
     public boolean PELNA_WERSJA;
     public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
     public String  WYBRANY_KATALOG;      //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
@@ -61,8 +67,6 @@ public class ZmienneGlobalne extends Application {
 
 
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
-
-
 
 
 

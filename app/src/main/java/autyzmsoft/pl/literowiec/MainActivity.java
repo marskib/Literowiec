@@ -214,9 +214,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         mGlob = (ZmienneGlobalne) getApplication();
 
-        currOptions = new KombinacjaOpcji();
-        newOptions  = new KombinacjaOpcji();
-
         //Na caly ekran:
         //1.Remove title bar:
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -288,7 +285,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         //Stworzenie statycznej, raz na zawsze listy z Assets:
         tworzListeFromAssets();
         listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
-        //gdyby byly jakies problemy, to na Zero... :
+        //gdyby byly jakies problemy, to na WSZYSTKIE... :
         if (listaOper.length==0) {
             mGlob.POZIOM = WSZYSTKIE;
             listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
@@ -298,12 +295,16 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         if (mGlob.ZRODLEM_JEST_KATALOG ) {
             tworzListeFromKatalog();
             listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
-            //gdyby byly jakies problemy (cos. nie ok. w np. SharedPref), to na Zero...:
+            //gdyby byly jakies problemy (cos. nie ok. w np. SharedPref), to na WSZYSTKIE...:
             if (listaOper.length==0) {
                 mGlob.POZIOM = WSZYSTKIE;
                 listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
             }
         }
+
+        //Zapamietanie ustawien:
+        currOptions = new KombinacjaOpcji();
+        newOptions  = new KombinacjaOpcji();
 
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage

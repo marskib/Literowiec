@@ -31,12 +31,6 @@ import java.io.File;
 
 public class ZmienneGlobalne extends Application {
 
-    //Poziomy trudnosci:
-    public static final int LATWE     = 1;
-    public static final int SREDNIE   = 2;
-    public static final int TRUDNE    = 3;
-    public static final int WSZYSTKIE = 4;
-
     public boolean PELNA_WERSJA;
     public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
     public String  WYBRANY_KATALOG;      //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
@@ -47,7 +41,11 @@ public class ZmienneGlobalne extends Application {
     public boolean BEZ_DZWIEKU;          //nie odgrywać słów
 
     public int POZIOM;                   //poziom trudnosci: 0-wszystkie wyrazy; 1 - wyrazy o max. 4 literach; 2 - wyrazy od 5 do 7 liter; 3 - od 8 do 12 liter
-
+    //Poziomy trudnosci:
+    public static final int LATWE     = 1;
+    public static final int SREDNIE   = 2;
+    public static final int TRUDNE    = 3;
+    public static final int WSZYSTKIE = 0;
 
     public boolean BEZ_KOMENT;          //Bez Komentarza-Nagrody po wybraniu klawisza
     public boolean TYLKO_OKLASKI;       //patrz wyżej
@@ -91,7 +89,7 @@ public class ZmienneGlobalne extends Application {
         BEZ_DZWIEKU  = false;
         Z_NAZWA      = true;
 
-        POZIOM       = 0;
+        POZIOM       = WSZYSTKIE;
 
         BEZ_KOMENT    = false;
         TYLKO_OKLASKI = false;

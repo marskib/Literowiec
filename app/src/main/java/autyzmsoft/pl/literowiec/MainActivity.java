@@ -340,15 +340,28 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             case WSZYSTKIE : dlug_min = 1; dlug_max = Integer.MAX_VALUE; break; //nazwa dluzsza niz 12 (MAXL) znakow - trzeba ja uwzglednic, bo inaczej pozniej exception.. (potem i tak przytne do 12)
         }
 
-        ArrayList<String> lRob =  new ArrayList<String>();  //dzieki temu okresle ile jest wymaganych obrazkow, a tym samym bede mial rozmiar tablicy roboczej
+        //Tworze liste robocza:
+        //dzieki temu okresle ile jest wymaganych obrazkow, a tym samym bede mial rozmiar tablicy roboczej
+        ArrayList<String> lRob =  new ArrayList<String>();
         for (String el : lista) {
             String elTmp = getRemovedExtensionName(el);
-            elTmp = usunLastDigitIfAny(elTmp);
-            elTmp = usunLastDigitIfAny(elTmp);
-            if ( (elTmp.length() >= dlug_min) && (elTmp.length() <= dlug_max) ) {
-                lRob.add(el);
+            int dlug = elTmp.length();
+
+            //Czysta sytuacja - wyraz miesci sie w kryterium:
+            if ( (dlug >= dlug_min) && (dlug <= dlug_max) ) {
+                lRob.add(el); //dodajemy z rozszerzeniem - pelna nazwa pliku!!!
             }
-        }
+            //Sprawdzamy, bo moze byc 'okno1', 'okno2' .... - taki wyraz, chc dluzszy, trzeba wziac, bo last digit bedzie w ptzyszlosci wyciety i zostanie 4-literowe okno, tak jak trzeba...
+            else {
+              if (dlug == dlug_max+1) {
+                int idxEnd = dlug-1;
+                Character lastChar = elTmp.charAt(idxEnd);
+                if (Character.isDigit(lastChar)) {
+                    lRob.add(el);
+                }
+              }
+            }
+        } //for
 
         //Przepisanie lRob -> tabRob:
         String[] tabRob = new String[lRob.size()];
@@ -568,7 +581,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         nazwaPliku = getRemovedExtensionName(nazwaPliku);
         nazwaPliku = usunLastDigitIfAny(nazwaPliku);
-        nazwaPliku = usunLastDigitIfAny(nazwaPliku); //jak by byly 2 cyfry...
 
         //Uwaga - Uwaga : przyciecie do 12 liter !!!!
         currWord  = nazwaPliku.substring(0, Math.min(MAXL,nazwaPliku.length()) );
@@ -1525,8 +1537,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
          * Zakladamy, ze dostajemy nazwe bez rozszerzenia i bez kropki na koncu
          */
         int koniec = name.length()-1;
-        if (name.charAt(koniec)=='1'||name.charAt(koniec)=='2'||name.charAt(koniec)=='3'||name.charAt(koniec)=='4'||name.charAt(koniec)=='5'||
-                name.charAt(koniec)=='6'||name.charAt(koniec)=='7'||name.charAt(koniec)=='8'||name.charAt(koniec)=='9'||name.charAt(koniec)=='0') {
+        if (Character.isDigit(name.charAt(koniec))) {
 
             return name.substring(0,koniec);
         }

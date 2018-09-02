@@ -130,13 +130,15 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     boolean nieGraj = true;    //przelacznik(semafar) : grac/nie grac - jesli start apk. to ma nie grac slowa (bo glupio..)
 
-    public int     currImage = -1;      //indeks biezacego obrazka
-    public String  currWord  = "*";     //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
+    public static int currImage = -1;      //indeks biezacego obrazka
+    public String     currWord  = "*";     //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
 
     Button bDajGestosc; //sledzenie
     public static int density;          //gestosc ekranu - przydatne system-wide
 
     public static boolean PW = true;    //Pierwsze Wejscie do aplikacji
+
+    private Pamietacz mPamietacz;       //do pamietania przydzielonych obrazkow, zeby w miare mozliwosci nie powtarzaly sie
 
     ZmienneGlobalne mGlob;                          //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
     KombinacjaOpcji currOptions, newOptions;        //biezace (obowiazujace do chwili wywolania UstawieniaActivity) ustawienia i najnowsze, ustawione w UstawieniaActivity)
@@ -200,6 +202,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
 
         /* ZEZWOLENIA NA KARTE _ WERSJA na MARSHMALLOW, jezeli dziala na starszej wersji, to ten kod wykona sie jako dummy */
         int jestZezwolenie = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -302,9 +305,12 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             }
         }
 
+        mPamietacz = new Pamietacz(); //do pamietania przydzielonych obrazkow
+
         //Zapamietanie ustawien:
         currOptions = new KombinacjaOpcji();
         newOptions  = new KombinacjaOpcji();
+
 
         dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
         setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
@@ -345,15 +351,17 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         ArrayList<String> lRob =  new ArrayList<String>();
         for (String el : lista) {
             String elTmp = getRemovedExtensionName(el);
+            int dlug0 = elTmp.length();         //uwaga na kot1
+            elTmp = usunLastDigitIfAny(elTmp);  //gdyby byl kot1 to kot1->kot
             int dlug = elTmp.length();
 
             //Czysta sytuacja - wyraz miesci sie w kryterium:
             if ( (dlug >= dlug_min) && (dlug <= dlug_max) ) {
                 lRob.add(el); //dodajemy z rozszerzeniem - pelna nazwa pliku!!!
             }
-            //Sprawdzamy, bo moze byc 'okno1', 'okno2' .... - taki wyraz, chc dluzszy, trzeba wziac, bo last digit bedzie w ptzyszlosci wyciety i zostanie 4-literowe okno, tak jak trzeba...
+            //Sprawdzamy, bo moze byc 'kot1', 'kot2' .... - taki wyraz, chc dluzszy, trzeba wziac, bo last digit bedzie w ptzyszlosci wyciety i zostanie 3-literowe kot, tak jak trzeba...
             else {
-              if (dlug == dlug_max+1) {
+              if (dlug0 == dlug_max+1) {
                 int idxEnd = dlug-1;
                 Character lastChar = elTmp.charAt(idxEnd);
                 if (Character.isDigit(lastChar)) {
@@ -470,7 +478,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         }
     }  //koniec Metody()
 
-    public void odegrajZAssets(final String sciezka_do_pliku_parametr, int delay_milisek) {
+    private void odegrajZAssets(final String sciezka_do_pliku_parametr, int delay_milisek) {
         /* ***************************************************************** */
         // Odegranie dzwieku umieszczonego w Assets (w katalogu 'nagrania'):
         /* ***************************************************************** */
@@ -505,7 +513,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     } //koniec Metody()
 
 
-    public void odegrajZkartySD(final String sciezka_do_pliku_parametr, int delay_milisek) {
+    private void odegrajZkartySD(final String sciezka_do_pliku_parametr, int delay_milisek) {
         /* ************************************** */
         /* Odegranie pliku dzwiekowego z karty SD */
         /* ************************************** */
@@ -1322,6 +1330,11 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             return;
         }
 
+        if (mGlob.PO_DIALOGU_MOD) {
+            mGlob.PO_DIALOGU_MOD = false;
+            odegrajWyraz(200);
+        }
+
         //Pokazujemy cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
 
         //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl niewidoczny):
@@ -1356,6 +1369,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 else
                     listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
             }
+            mPamietacz = new Pamietacz(); //nowa lista, wiec Pamietacz na nowo....
             bDalej.callOnClick();
         }
 
@@ -1428,18 +1442,23 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
 
     private int dajLosowyNumerObrazka() {
-        int rob;
-        int rozmiar_tab = listaOper.length;
-        //Generujemy losowy numer, ale tak, zeby nie wypadl ten sam:
-        if (rozmiar_tab !=1 ) { //przy tylko jednym obrazku kod ponizej jest petla nieskonczona, więc if
-            do {
-                rob = (int) (Math.random() * rozmiar_tab);
-            } while (rob == currImage);
-        }
-        else
-            rob = 0; //bo 0-to jest de facto numer obrazka
 
-        return rob;  //105-rzeka 33=lalendarz
+        if (mGlob.ROZNICUJ_OBRAZKI) {
+            return mPamietacz.dajSwiezyZasob();
+        }
+        //Nie korzystamy z Pamietacza:
+        else {
+            int rob;
+            int rozmiar_tab = listaOper.length;
+            //Generujemy losowy numer, ale tak, zeby nie wypadl ten sam:
+            if (rozmiar_tab != 1) { //przy tylko jednym obrazku kod ponizej jest petla nieskonczona, więc if
+                do {
+                    rob = (int) (Math.random() * rozmiar_tab);
+                } while (rob == currImage);
+            } else
+                rob = 0; //bo 0-to jest de facto numer obrazka
+            return rob;  //105-rzeka 33=lalendarz
+        }
 
     } //koniec Metody()
 
@@ -2007,15 +2026,13 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     @Override
     protected void onDestroy() {
-        /* Zapisanie ustawienia w SharedPreferences na przyszła sesję */
+        /* Zapisanie (niektorych!) ustawienia w SharedPreferences na przyszła sesję */
         super.onDestroy();
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
         SharedPreferences.Editor edit = sharedPreferences.edit();
 
         edit.putInt("POZIOM", mGlob.POZIOM);
-        edit.putBoolean("ROZNICUJ_OBRAZKI", mGlob.ROZNICUJ_OBRAZKI);
 
-        edit.putBoolean("BEZ_OBRAZKOW", mGlob.BEZ_OBRAZKOW);
         edit.putBoolean("BEZ_DZWIEKU", mGlob.BEZ_DZWIEKU);
 
         edit.putBoolean("BEZ_KOMENT", mGlob.BEZ_KOMENT);

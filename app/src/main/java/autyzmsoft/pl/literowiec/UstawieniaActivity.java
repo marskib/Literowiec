@@ -41,6 +41,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   CheckBox cb_Nazwa;
   CheckBox cb_UpLo;
   CheckBox cb_Again;
+  CheckBox cb_RoznObr;
 
   RadioButton rb_NoPictures;
   RadioButton rb_NoSound;
@@ -107,11 +108,13 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     boolean isCheckedNazwa = cb_Nazwa.isChecked();
     boolean isCheckedUpLo  = cb_UpLo.isChecked();
     boolean isCheckedAgain = cb_Again.isChecked();
+    boolean isCheckedRozObr= cb_RoznObr.isChecked();
     mGlob.BHINT_ALL        = isCheckedPodp;
     mGlob.BPOMIN_ALL       = isCheckedPomin;
     mGlob.Z_NAZWA          = isCheckedNazwa;
     mGlob.BUPLOW_ALL       = isCheckedUpLo;
     mGlob.BAGAIN_ALL       = isCheckedAgain;
+    mGlob.ROZNICUJ_OBRAZKI = isCheckedRozObr;
 
     //Przekazanie Poziomu trudnosci:
     boolean isCheckedLatwe     = rb_Latwe.isChecked();
@@ -380,16 +383,12 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Ustawienie kontrolek na layoucie splash.xml na wartosci inicjacyjne ze ZmiennychGlobalnych
     /*******************************************************************************************/
 
-    /* 2018.08.13 - zakomentarzowane zeby przeszla kompilacja
-
-    cb_RoznicujObrazki = (CheckBox) findViewById(R.id.cb_RoznicujObrazki);
-    isChecked = mGlob.ROZNICUJ_OBRAZKI;
-    cb_RoznicujObrazki.setChecked(isChecked);
-
-    */
+    cb_RoznObr = (CheckBox) findViewById(R.id.cb_RoznicujObrazki);
+    boolean isChecked = mGlob.ROZNICUJ_OBRAZKI;
+    cb_RoznObr.setChecked(isChecked);
 
     cb_Podp = (CheckBox) findViewById(R.id.cb_Podp);
-    boolean isChecked = mGlob.BHINT_ALL;
+    isChecked = mGlob.BHINT_ALL;
     cb_Podp.setChecked(isChecked);
 
     cb_Pomin  = (CheckBox) findViewById(R.id.cb_Pomin);

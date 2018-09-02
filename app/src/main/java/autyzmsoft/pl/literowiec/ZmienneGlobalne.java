@@ -66,6 +66,8 @@ public class ZmienneGlobalne extends Application {
 
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
 
+    public boolean PO_DIALOGU_MOD = false;  //na mechanizm zapewniajacy odegranie slowa po zamknieciu DialoguModalnego (patrz DialogModalny.onPause i MainAct.onResume)
+
 
 
 
@@ -82,8 +84,13 @@ public class ZmienneGlobalne extends Application {
 
         nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
 
-        PELNA_WERSJA = true;
-        ROZNICUJ_OBRAZKI = true;
+        PELNA_WERSJA = false;
+
+        //jesli wersja demo, to lepszy efekt, kiedy nie roznicujemy obrazkow (bo jest ich malo...)
+        if (!PELNA_WERSJA)
+            ROZNICUJ_OBRAZKI = false;
+        else
+            ROZNICUJ_OBRAZKI = true;
 
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
@@ -103,7 +110,7 @@ public class ZmienneGlobalne extends Application {
 
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
-        POKAZ_MODAL  = false;
+        POKAZ_MODAL  = true;
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
         WYBRANY_KATALOG = "*^5%dummy";       //"nic jeszcze nie wybrano" - lepiej to niz null, bo z null'em problemy...
@@ -121,8 +128,6 @@ public class ZmienneGlobalne extends Application {
         /* ******************************************************** */
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
-
-        ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI", this.ROZNICUJ_OBRAZKI);
 
         //Ponizej zapewniamy, ze apka obudzi sie zawsze z obrazkiem i dzwiekiem (inaczej user bylby zdezorientowany):
         BEZ_OBRAZKOW = false;

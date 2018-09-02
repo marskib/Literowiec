@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Toast;
 
 
 /**
@@ -16,13 +17,13 @@ import android.view.View;
 
 public class DialogModalny extends Activity {
     
-    ZmienneGlobalne mGlobalne;
+    ZmienneGlobalne mGlob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        mGlobalne = (ZmienneGlobalne) getApplication();
+        mGlob = (ZmienneGlobalne) getApplication();
 
         //setFinishOnTouchOutside (false);  //to make it behave like a modal dialog
 
@@ -52,11 +53,18 @@ public class DialogModalny extends Activity {
          finish();
      }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mGlob.PO_DIALOGU_MOD = true;
+        Toast.makeText(this, "onPause - DialogModalny", Toast.LENGTH_SHORT).show();
+    }
+
 
 
     public void czyscDlaKrzyska() {
     /* Ukrywanie obrazkow i 'śladów' do strony www - przed przekazanie do Krzyska; Potem usunac */
-        if (mGlobalne.DLA_KRZYSKA) {
+        if (mGlob.DLA_KRZYSKA) {
             //ImageView obrazek = (ImageView) findViewById(R.id.imageView1);
             //if (obrazek != null) obrazek.setVisibility(View.INVISIBLE);
             //ski ski ski 2018.06.03 TextView link = (TextView) findViewById(R.id.autyzmsoftpl); //bo na niektorych konfiguracjach nie pokazuje tego linku

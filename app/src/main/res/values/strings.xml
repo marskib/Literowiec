@@ -100,8 +100,7 @@
         <i>
             <b>Rodzina</b>
         </i>
-        \nAplikacja wyświetli zdjęcie, odegra dźwięk, a na jednym z klawiszy umieści nazwę obrazka
-        (czyli wyraz <i>mama</i>).
+        \nAplikacja wyświetli zdjęcie, odegra dźwięk, a obok zdjęcia umieści w sposób losowy litery wchodzące w skład wyrazu <i>mama</i>).
         \n
         W ten sam sposów wrzucamy do katalogu zdjęcia pozostałych członków rodziny.
         \n
@@ -120,7 +119,7 @@
         \n
         \nAplikacja w pełnej wersji pozwala umieścić we włanym katalogu dowolną liczbę zdjęć i
         nagrań.
-        \nW wersji darmowej liczba zdjęć i nagrań jest ograniczona do 5.
+        \nW wersji darmowej liczba zdjęć i nagrań w katalogu jest ograniczona do 3.
         \nW obydwu wersjach można tworzyć i wykorzystywać dowolną liczbę katalogów.
         \nCzynność tworzenia katalogu na urządzeniu i czynność umieszczania w nim obrazków i nagrań
         najwygodniej jest przeprowadzić na komputerze stacjonarnym, do którego podłączamy telefon za

@@ -305,7 +305,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             }
         }
 
-        mPamietacz = new Pamietacz(); //do pamietania przydzielonych obrazkow
+        mPamietacz = new Pamietacz(listaOper); //do pamietania przydzielonych obrazkow
 
         //Zapamietanie ustawien:
         currOptions = new KombinacjaOpcji();
@@ -1369,7 +1369,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 else
                     listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
             }
-            mPamietacz = new Pamietacz(); //nowa lista, wiec Pamietacz na nowo....
+            mPamietacz = new Pamietacz(listaOper); //nowa lista, wiec Pamietacz na nowo....
             bDalej.callOnClick();
         }
 

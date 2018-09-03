@@ -1,7 +1,5 @@
 package autyzmsoft.pl.literowiec;
 
-import static autyzmsoft.pl.literowiec.MainActivity.listaOper;
-
 import java.util.ArrayList;
 
 /**
@@ -13,24 +11,35 @@ import java.util.ArrayList;
 
 public class Pamietacz {
 
-    private ArrayList<Integer> listaZasobow;         //'wewnetrzna' lista jeszcze nie uzytych (=nie wyswietlonych) zasobow
+    private ArrayList<Integer> listaZasobow;         //'wewnetrzna' lista jeszcze nie uzytych (=nie wyswietlonych) zasobow, odpowiednik Zbioru w Pascalu
+    private ArrayList<Integer> listaShadow;          //kiedy glowna lista sie wyczerpie, odtworzymy ją z Shadow
 
     //Numer poprzednio wylosowanego obrazka (przy TEJ SAMEJ listaZasobow; chodzi o to, zeby przy wyczerpaniu sie listy,
     //nie startowal z nowa lista od tego samego obrazka (szczegiolnie widiczne przy krotkich listach):
     private int popObr;
 
-    public Pamietacz() {
+    public Pamietacz(String[] tabZrodlo) {
         listaZasobow = new ArrayList<Integer>();
+        listaShadow  = new ArrayList<Integer>();
         listaZasobow.clear();    //na wszelki wypadek
-        wypelnijListeZasobow();
+        listaShadow.clear();     //na wszelki wypadek
+        wypelnijListeZasobow(tabZrodlo);
         popObr = -1;
     }  //konie Konstruktora
 
-    private void wypelnijListeZasobow() {
-        int rozmiarListy = listaOper.length;
-        for (int i=0; i<rozmiarListy; i++)
+    private void wypelnijListeZasobow(String[] tabZrodlo) {
+        int rozmiarListy = tabZrodlo.length;
+        for (int i=0; i<rozmiarListy; i++) {
             listaZasobow.add(i);
+            listaShadow.add(i);
+        }
     } //koniec Metody()
+
+    private void odtworzListe() {
+        for (int i = 0; i < listaShadow.size(); i++) {
+            listaZasobow.add(listaShadow.get(i));
+        }
+    }
 
 
     public int dajSwiezyZasob() {
@@ -38,9 +47,9 @@ public class Pamietacz {
         int idxWylosowany;
 
         if (listaZasobow.size()==0) {    //'wyczerpano' juz wszystkie obrazki - zaczynamy na nowo...; 'odnawiamy' liste
-            wypelnijListeZasobow();      //lista 'odnowiona'
+            odtworzListe();              //lista 'odnowiona'
             if (listaZasobow.size()==1)
-                    popObr = -1;            //zabezpieczenie przed petla nieskonczona ponizej
+                    popObr = -1;         //zabezpieczenie przed petla nieskonczona ponizej
         }
 
         //Losowanie zasobu:

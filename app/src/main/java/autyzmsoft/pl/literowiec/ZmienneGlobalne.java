@@ -6,6 +6,7 @@ package autyzmsoft.pl.literowiec;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import java.io.File;
 
@@ -35,7 +36,7 @@ public class ZmienneGlobalne extends Application {
     public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
     public String  WYBRANY_KATALOG;      //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
     public boolean DLA_KRZYSKA;          //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
-    public boolean ROZNICUJ_OBRAZKI;     //Za każdym razem pokazywany inny obrazek
+    public boolean ROZNICUJ_OBRAZKI;     //Czy za każdym razem pokazywany inny obrazek
 
     public boolean BEZ_OBRAZKOW;         //nie pokazywac obrazkow
     public boolean BEZ_DZWIEKU;          //nie odgrywać słów
@@ -53,7 +54,7 @@ public class ZmienneGlobalne extends Application {
     public boolean CISZA;               //kompletna Cisza, bez nagrod i bez 'ding,'brrr' po kliknieciu klawisza
 
     public boolean Z_NAZWA;             //czy ma byc nazwa pod obrazkiem
-    public boolean ZE_SPACING;          //czy w ulozonym wyrazie robic duze odstepy miedzy literami
+    public boolean ZE_SPACING;          //czy w ulozonym wyrazie robic duze odstepy miedzy literami (API dependent)
     public boolean ODMOWA_DOST;         //na etapie instalacji/1-go uruchomienia user odmowil dostepu do kart(y); dotyczy androida 6 i więcej
 
 
@@ -96,7 +97,6 @@ public class ZmienneGlobalne extends Application {
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
         Z_NAZWA      = true;
-        ZE_SPACING   = true;
 
         POZIOM       = WSZYSTKIE;
 
@@ -116,6 +116,8 @@ public class ZmienneGlobalne extends Application {
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
         WYBRANY_KATALOG = "*^5%dummy";       //"nic jeszcze nie wybrano" - lepiej to niz null, bo z null'em problemy...
+
+        ZE_SPACING = (Build.VERSION.SDK_INT >= 21);   //bo API dependent
 
         DLA_KRZYSKA = false;
     } //koniec Metody()
@@ -148,6 +150,8 @@ public class ZmienneGlobalne extends Application {
         BPOMIN_ALL    = sharedPreferences.getBoolean("BPOMIN_ALL", this.BPOMIN_ALL);
         BUPLOW_ALL    = sharedPreferences.getBoolean("BUPLOW_ALL", this.BUPLOW_ALL);
         BAGAIN_ALL    = sharedPreferences.getBoolean("BAGAIN_ALL", this.BAGAIN_ALL);
+
+        ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI", this.ROZNICUJ_OBRAZKI);
 
 
         ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", this.ZRODLEM_JEST_KATALOG);

@@ -45,6 +45,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -142,6 +143,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     ZmienneGlobalne mGlob;                          //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
     KombinacjaOpcji currOptions, newOptions;        //biezace (obowiazujace do chwili wywolania UstawieniaActivity) ustawienia i najnowsze, ustawione w UstawieniaActivity)
+
 
 
     /* eksperymenty ze status barem - 2018.08.11 */
@@ -254,6 +256,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         tvInfo2 = (TextView) findViewById(R.id.tvInfo2);
         tvInfo3 = (TextView) findViewById(R.id.tvInfo3);
         bDajGestosc = (Button) findViewById(R.id.bDajGestosc);
+
 
         przypiszLabelsyAndListenery();
 
@@ -759,6 +762,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                     odblokujZablokujKlawiszeDodatkowe(); //pokazanie z opoznieniem, zeby nie klikal za wczesnie, bo 'zawiecha'
                 }
             },2*DELAY_EXERC);
+        }
+        else {
+            bAgain1.setVisibility(INVISIBLE); //bo w pewnych warunkach pozostaje zapalony...
         }
     }  //koniec Metody()
 
@@ -2057,6 +2063,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         edit.putBoolean("BAGAIN_ALL",  mGlob.BAGAIN_ALL);
 
         edit.putBoolean("ODMOWA_DOST", mGlob.ODMOWA_DOST);
+
+        edit.putBoolean("ROZNICUJ_OBRAZKI", mGlob.ROZNICUJ_OBRAZKI);
 
         edit.putBoolean("ZRODLEM_JEST_KATALOG", mGlob.ZRODLEM_JEST_KATALOG);
         edit.putString("WYBRANY_KATALOG", mGlob.WYBRANY_KATALOG);

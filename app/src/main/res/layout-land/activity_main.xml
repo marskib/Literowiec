@@ -205,9 +205,15 @@
       android:paddingTop="0dp"
       android:layout_marginTop="-11dp"
       android:layout_marginLeft="10dp"
+
+      android:paddingStart="-10dp"
+      android:paddingEnd="-10dp"
+
       android:layout_alignParentStart="true"
       android:layout_below="@+id/l_imgContainer"
       android:gravity="center"
+
+      android:background="@drawable/border_probnik"
 
       android:maxLines="1"
       android:visibility="invisible"/>

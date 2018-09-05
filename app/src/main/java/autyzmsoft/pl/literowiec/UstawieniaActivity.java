@@ -15,6 +15,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -88,6 +89,12 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
           Toast.makeText(UstawieniaActivity.this, "Jeszcze nie zaimplementowane", Toast.LENGTH_LONG).show();
         }
       });
+    }
+
+    //Jezeli starsza wersja systemu, to wygaszamy Spacing, bo nie obslugiwany przez API:
+    if (Build.VERSION.SDK_INT < 21) {
+        cb_Spacing.setVisibility(View.GONE);
+        ((TextView) findViewById(R.id.tv_Spacing)).setVisibility(View.GONE);
     }
 
 

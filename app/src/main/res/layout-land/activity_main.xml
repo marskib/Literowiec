@@ -92,6 +92,17 @@
         android:layout_alignParentBottom="true"
         android:visibility="invisible"/>
 
+    <Button
+      android:id="@+id/bHint"
+      android:onClick="bHintOnClick"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_alignParentBottom="true"
+      android:layout_toStartOf="@+id/bPomin"
+      android:visibility="invisible"
+      android:textStyle="bold"
+      android:text="?"/>
+
 
     <!--bDajGestosc: daje gestosc ekranu + inne uslugi-->
     <!--sledzenie - po developmencie wylaczam-->
@@ -416,16 +427,7 @@
         android:layout_marginLeft="50dp"
         android:text="Rozdzielczosc" />
 
-    <Button
-      android:id="@+id/bHint"
-      android:onClick="bHintOnClick"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:layout_toStartOf="@+id/bPomin"
-      android:visibility="invisible"
-      android:textStyle="bold"
-      android:text="?"/>
+
 
 
 </RelativeLayout>

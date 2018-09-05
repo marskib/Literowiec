@@ -875,7 +875,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     //rozpoczynal sie tam, gdzie zaczynal sie wyraz z "macierzysty" (jezeli wyraz<MAXL znakow)
 
         String coPokazac = currWord;
-        restoreLetterSpacing(tvShownWord);
+        restoreApplyLetterSpacing(tvShownWord);
         tvShownWord.setText(coPokazac);
 
         //Jezeli wyraz nie jest zbyt dlugi, to wyraz zacznie sie tam, gdzie zaczynal sie wyraz z Wielimi literami
@@ -1154,7 +1154,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     /* ******************************************************************************************* */
 
         //Przywracamy wielkosc letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
-        restoreLetterSpacing(tvShownWord);
+        restoreApplyLetterSpacing(tvShownWord);
         //Usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w pokazWyraz() ):
         usunGrawitacje();
 
@@ -1208,27 +1208,27 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
 
 
-    private void restoreLetterSpacing(TextView mTV) {
-    //Przywracamy wielkosc letterSpacing
+    private void restoreApplyLetterSpacing(TextView mTV) {
+    //Przywracamy wielkosc letterSpacing (po zmianie wymuszonej przez dlugi wyraz) + ewentualna reakcja na ustawienia globalne
 
         if (Build.VERSION.SDK_INT >= 21) {
             //float lspacing = getResources().getDimension(R.dimen.lspacing_ski); nie dziala, ustawiam na żywca....
             //tvShownWord.setLetterSpacing(lspacing);
-            mTV.setLetterSpacing((float) 0.1);   //UWAGA!!! - na "żywca"... patrz wyżej
+            if (mGlob.ZE_SPACING) {
+                if (mTV.length() >= MAXL && toUp) return; //za dlugich wielkich nie rozszerzamy, bo moga sie nie zmiescic na wielu urzadzeniach...
+                mTV.setLetterSpacing((float) 0.1);   //UWAGA!!! - na "żywca"... patrz wyżej
+                //!!! BARDZO WAZNE: !!!
+                korygujJesliWystaje();
+            }
+            else {
+                mTV.setLetterSpacing((float) 0.0);   //UWAGA!!! - na "żywca"... patrz wyżej
+            }
         }
     }
 
     private void pokazWyraz() {
     //Pokazanie ulozonego wyrazu w Obszarze;
     //Wyraz skladam z tego, co widac na ekranie, nie uzywając currWord (bo duze/male litery)
-
-     /* dialajace do 2018-08-08:
-      StringBuilder sb = new StringBuilder();
-      for (MojTV lb : lbsRob) {
-        sb.append(lb.getText());
-      }
-      tvShownWord.setText(sb);
-      */
 
       tvShownWord.setText(coWidacInObszar());
       tvShownWord.setTextColor(lbs[0].getTextColors()); //kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka
@@ -1348,6 +1348,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         }
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
         pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
+        restoreApplyLetterSpacing(tvShownWord); //reakcja na ewentualna zmiane odstepu miedzy literami w ulozonym wyrazie
 
         //Badamy najistotniejsze opcje; Gdyby zmieniono Katalog lub poziom, to naczytanie na nowo:
         newOptions.pobierzZeZmiennychGlobalnych();           //jaki byl wynik ostatniej 'wizyty' w UstawieniaActivity
@@ -2026,25 +2027,34 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     @Override
     protected void onDestroy() {
-        /* Zapisanie (niektorych!) ustawienia w SharedPreferences na przyszła sesję */
+    /* Zapisanie (niektorych!) ustawienia w SharedPreferences na przyszła sesję */
         super.onDestroy();
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext()); //na zapisanie ustawien na next. sesję
+        ZapishDoSharedPreferences();
+    } //onDestroy
+
+    private void ZapishDoSharedPreferences() {
+    /* Zapisanie (niektorych!) ustawienia w SharedPreferences na przyszła sesję */
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         SharedPreferences.Editor edit = sharedPreferences.edit();
+
+
+        edit.putBoolean("Z_NAZWA",    mGlob.Z_NAZWA);
+        edit.putBoolean("ZE_SPACING", mGlob.ZE_SPACING);
 
         edit.putInt("POZIOM", mGlob.POZIOM);
 
         edit.putBoolean("BEZ_DZWIEKU", mGlob.BEZ_DZWIEKU);
 
-        edit.putBoolean("BEZ_KOMENT", mGlob.BEZ_KOMENT);
+        edit.putBoolean("BEZ_KOMENT",    mGlob.BEZ_KOMENT);
         edit.putBoolean("TYLKO_OKLASKI", mGlob.TYLKO_OKLASKI);
-        edit.putBoolean("TYLKO_GLOS", mGlob.TYLKO_GLOS);
-        edit.putBoolean("CISZA", mGlob.CISZA);
+        edit.putBoolean("TYLKO_GLOS",    mGlob.TYLKO_GLOS);
+        edit.putBoolean("CISZA",         mGlob.CISZA);
 
         edit.putBoolean("BHINT_ALL",   mGlob.BHINT_ALL);
         edit.putBoolean("BPOMIN_ALL",  mGlob.BPOMIN_ALL);
         edit.putBoolean("BUPLOW_ALL",  mGlob.BUPLOW_ALL);
         edit.putBoolean("BAGAIN_ALL",  mGlob.BAGAIN_ALL);
-
 
         edit.putBoolean("ODMOWA_DOST", mGlob.ODMOWA_DOST);
 
@@ -2052,9 +2062,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         edit.putString("WYBRANY_KATALOG", mGlob.WYBRANY_KATALOG);
 
         edit.apply();
-    } //onDestroy
-
-
+    }
 
 
     private Bitmap obrocJesliTrzeba(Bitmap bitmap, String sciezkaDoPliku) {

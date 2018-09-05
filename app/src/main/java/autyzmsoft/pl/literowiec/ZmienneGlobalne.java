@@ -41,7 +41,7 @@ public class ZmienneGlobalne extends Application {
     public boolean BEZ_DZWIEKU;          //nie odgrywać słów
 
     public int POZIOM;                   //poziom trudnosci: 0-wszystkie wyrazy; 1 - wyrazy o max. 4 literach; 2 - wyrazy od 5 do 7 liter; 3 - od 8 do 12 liter
-    //Poziomy trudnosci:
+  //Poziomy trudnosci:
     public static final int LATWE     = 1;
     public static final int SREDNIE   = 2;
     public static final int TRUDNE    = 3;
@@ -53,6 +53,7 @@ public class ZmienneGlobalne extends Application {
     public boolean CISZA;               //kompletna Cisza, bez nagrod i bez 'ding,'brrr' po kliknieciu klawisza
 
     public boolean Z_NAZWA;             //czy ma byc nazwa pod obrazkiem
+    public boolean ZE_SPACING;          //czy w ulozonym wyrazie robic duze odstepy miedzy literami
     public boolean ODMOWA_DOST;         //na etapie instalacji/1-go uruchomienia user odmowil dostepu do kart(y); dotyczy androida 6 i więcej
 
 
@@ -61,7 +62,7 @@ public class ZmienneGlobalne extends Application {
     public boolean BUPLOW_ALL;          //czy bUpperLower dozwolony (allowed)
     public boolean BHINT_ALL;           //czy bHint dozwolony (allowed) -> klawisz [ ? ]
 
-    public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu)
+    public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu, w produkcyjnej na true)
 
 
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
@@ -82,7 +83,7 @@ public class ZmienneGlobalne extends Application {
     //ustawienia poczatkowe aplikacji:
     public void ustawParametryDefault() {
 
-        nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
+        nieGrajJestemW105 = false; //wyrzucić po skonczonym developmencie
 
         PELNA_WERSJA = false;
 
@@ -95,6 +96,7 @@ public class ZmienneGlobalne extends Application {
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
         Z_NAZWA      = true;
+        ZE_SPACING   = true;
 
         POZIOM       = WSZYSTKIE;
 
@@ -103,14 +105,14 @@ public class ZmienneGlobalne extends Application {
         TYLKO_GLOS    = false;
         CISZA         = false;
 
-        BPOMIN_ALL    = true;                //Onomastyka -> ALL = allowed:
+        BPOMIN_ALL    = true;                //Onomastyka -> ALL = allowed
         BAGAIN_ALL    = false;
         BUPLOW_ALL    = false;
         BHINT_ALL     = true;
 
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
-        POKAZ_MODAL  = true;
+        POKAZ_MODAL  = false;
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
         WYBRANY_KATALOG = "*^5%dummy";       //"nic jeszcze nie wybrano" - lepiej to niz null, bo z null'em problemy...
@@ -133,13 +135,14 @@ public class ZmienneGlobalne extends Application {
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
 
-        BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT", this.BEZ_KOMENT);
+        BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT",    this.BEZ_KOMENT);
         TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", this.TYLKO_OKLASKI);
-        TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS", this.TYLKO_GLOS);
-        CISZA         = sharedPreferences.getBoolean("CISZA", this.CISZA);
+        TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS",    this.TYLKO_GLOS);
+        CISZA         = sharedPreferences.getBoolean("CISZA",         this.CISZA);
 
-        Z_NAZWA       = sharedPreferences.getBoolean("Z_NAZWA", this.Z_NAZWA);
-        ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST", this.ODMOWA_DOST);
+        Z_NAZWA       = sharedPreferences.getBoolean("Z_NAZWA",    this.Z_NAZWA);
+        ZE_SPACING    = sharedPreferences.getBoolean("ZE_SPACING", this.ZE_SPACING);
+        ODMOWA_DOST   = sharedPreferences.getBoolean("ODMOWA_DOST",this.ODMOWA_DOST);
 
         BHINT_ALL     = sharedPreferences.getBoolean("BHINT_ALL",  this.BHINT_ALL);
         BPOMIN_ALL    = sharedPreferences.getBoolean("BPOMIN_ALL", this.BPOMIN_ALL);
@@ -158,10 +161,10 @@ public class ZmienneGlobalne extends Application {
             if (!file.exists()) {
                 ZRODLEM_JEST_KATALOG = false;
             }
-            //gdyby nie zlikwidowano katalogu, ale tylko 'wycieto' obrazki (lub dorzucono > 5) - przelaczenie na Zasoby applikacji:
+            //gdyby nie zlikwidowano katalogu, ale tylko 'wycieto' obrazki (lub dorzucono > 3) - przelaczenie na Zasoby applikacji:
             else {
                 int lObr = MainActivity.findObrazki(new File(katalog)).length;   //liczba obrazkow
-                if ((lObr == 0) || (!PELNA_WERSJA && lObr > 5)) {
+                if ((lObr == 0) || (!PELNA_WERSJA && lObr > 3)) {
                     ZRODLEM_JEST_KATALOG = false;
                 }
                 else {

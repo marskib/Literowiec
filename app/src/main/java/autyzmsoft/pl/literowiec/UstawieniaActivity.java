@@ -41,6 +41,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   CheckBox cb_Nazwa;
   CheckBox cb_UpLo;
   CheckBox cb_Again;
+  CheckBox cb_Spacing;
   CheckBox cb_RoznObr;
 
   RadioButton rb_NoPictures;
@@ -103,18 +104,20 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     super.onPause();
 
     //Przekazanie checkboxow:
-    boolean isCheckedPodp  = cb_Podp.isChecked();
-    boolean isCheckedPomin = cb_Pomin.isChecked();
-    boolean isCheckedNazwa = cb_Nazwa.isChecked();
-    boolean isCheckedUpLo  = cb_UpLo.isChecked();
-    boolean isCheckedAgain = cb_Again.isChecked();
-    boolean isCheckedRozObr= cb_RoznObr.isChecked();
+    boolean isCheckedPodp    = cb_Podp.isChecked();
+    boolean isCheckedPomin   = cb_Pomin.isChecked();
+    boolean isCheckedNazwa   = cb_Nazwa.isChecked();
+    boolean isCheckedUpLo    = cb_UpLo.isChecked();
+    boolean isCheckedAgain   = cb_Again.isChecked();
+    boolean isCheckedRozObr  = cb_RoznObr.isChecked();
+    boolean isCheckedSpacing = cb_Spacing.isChecked();
     mGlob.BHINT_ALL        = isCheckedPodp;
     mGlob.BPOMIN_ALL       = isCheckedPomin;
     mGlob.Z_NAZWA          = isCheckedNazwa;
     mGlob.BUPLOW_ALL       = isCheckedUpLo;
     mGlob.BAGAIN_ALL       = isCheckedAgain;
     mGlob.ROZNICUJ_OBRAZKI = isCheckedRozObr;
+    mGlob.ZE_SPACING       = isCheckedSpacing;
 
     //Przekazanie Poziomu trudnosci:
     boolean isCheckedLatwe     = rb_Latwe.isChecked();
@@ -386,6 +389,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     cb_RoznObr = (CheckBox) findViewById(R.id.cb_RoznicujObrazki);
     boolean isChecked = mGlob.ROZNICUJ_OBRAZKI;
     cb_RoznObr.setChecked(isChecked);
+
+    cb_Spacing = (CheckBox) findViewById(R.id.cb_Spacing);
+    isChecked  = mGlob.ZE_SPACING;
+    cb_Spacing.setChecked(isChecked);
 
     cb_Podp = (CheckBox) findViewById(R.id.cb_Podp);
     isChecked = mGlob.BHINT_ALL;

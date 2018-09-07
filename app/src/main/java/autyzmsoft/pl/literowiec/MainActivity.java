@@ -4,8 +4,10 @@ import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-import static autyzmsoft.pl.literowiec.ZmienneGlobalne.*;
-
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.LATWE;
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.SREDNIE;
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.TRUDNE;
+import static autyzmsoft.pl.literowiec.ZmienneGlobalne.WSZYSTKIE;
 
 import android.Manifest;
 import android.app.Activity;
@@ -45,7 +47,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -1171,13 +1172,13 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         lPar.leftMargin = leftMost;
 
         //ski ski + 2018.09.06 - kod poniżej zapewnia, ze tvShownWord zostanie pokazane "równo" z ulozonymi literami, nie będzie "podskoku"
-        //trudno wyelimimnowac ten 'podskok' w xml, ale kod ponizej wydaje sie troche 'nadmiarowy' i niepewny (lbs[0])
+        //Trudno wyelimimnowac ten 'podskok' w xml, ale kod ponizej wydaje sie troche 'nadmiarowy' i niepewny (lbs[0])
         //Sprawdzic na tablecie Marcina - tm widac wysokie 'skoki' ;)
-//        int h = lbs[0].getHeight(); //wys=sokosc litery (? czy abu na pewno -> wielka vs. mala)
-//        int lSrWz = (int) lObszar.getHeight()/2;  //linia srodkowa wzgledna (w przestrzeni lObszar)
-//        ////int lSrWz = ((int) ((yLd-yLg)/2.0));
-//        lPar.topMargin = lSrWz - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
-//        //ski ski -
+        int h = lbs[0].getHeight(); //wys=sokosc litery (? czy aby na pewno -> wielka vs. mala)
+        int lSrWz = (int) lObszar.getHeight()/2;  //linia Srodkowa Wzgledna (w przestrzeni lObszar)
+        ////rownowazne getHeightt90 -> int lSrWz = ((int) ((yLd-yLg)/2.0));
+        lPar.topMargin = lSrWz - (int) (h/2.0) -8;  //odejmowanie zeby srodek etykiety wypadl na lTrim; -8 bo 'y' jest ucinane od dolu...
+//        //ski ski - koniec
 
         tvShownWord.setLayoutParams(lPar);
 

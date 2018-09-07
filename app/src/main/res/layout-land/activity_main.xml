@@ -167,13 +167,12 @@
 
       android:padding="@dimen/padding_ski"
 
-
             android:maxLines="1"/>
     </LinearLayout>
 
     <!--Miesce na obrazek:
     realizuję wewnątrz layoutu, bo w przypadku wylaczenia zobrazowania obrazkow
-    nie ma na czym kliknac, zeby wrococ do Ustawien (niewidoczny obrazek nie reaguje na [long]onClick'i...
+    nie ma na czym kliknac, zeby wrococ do Ustawien (niewidoczny obrazek nie reaguje na long]onClick'i...
     -->
     <RelativeLayout
         android:id="@+id/l_imgContainer"
@@ -216,9 +215,6 @@
       android:layout_alignParentStart="true"
       android:layout_below="@+id/l_imgContainer"
       android:gravity="center"
-
-      android:background="@drawable/border_probnik"
-
       android:maxLines="1"
       android:visibility="invisible"/>
 

@@ -1169,6 +1169,16 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
         int leftMost = dajLeftmostX();
         lPar.leftMargin = leftMost;
+
+        //ski ski + 2018.09.06 - kod poniżej zapewnia, ze tvShownWord zostanie pokazane "równo" z ulozonymi literami, nie będzie "podskoku"
+        //trudno wyelimimnowac ten 'podskok' w xml, ale kod ponizej wydaje sie troche 'nadmiarowy' i niepewny (lbs[0])
+        //Sprawdzic na tablecie Marcina - tm widac wysokie 'skoki' ;)
+//        int h = lbs[0].getHeight(); //wys=sokosc litery (? czy abu na pewno -> wielka vs. mala)
+//        int lSrWz = (int) lObszar.getHeight()/2;  //linia srodkowa wzgledna (w przestrzeni lObszar)
+//        ////int lSrWz = ((int) ((yLd-yLg)/2.0));
+//        lPar.topMargin = lSrWz - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
+//        //ski ski -
+
         tvShownWord.setLayoutParams(lPar);
 
         if (toUp) ewentualnieSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
@@ -1247,7 +1257,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
 
     private void addGravityToParent() {
-    //Dodanie grawitacji sciagajacej do prawego boku do LObszar;
+    //Dodanie grawitacji sciagajacej do prawego boku do lObszar;
     //Dzieki temu, ze mamy gwarancje, jezeli wyraz wystaje za lObszar, to zostanie "cofnięty"
     //i pokazany w całości w lObszar.
 

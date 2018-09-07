@@ -151,8 +151,8 @@
 
 
         <!--Na wyswietlenie zwycieskiego wyrazu:-->
-        <!--na otoczenie yrazu-sledzenie:    android:background="@drawable/border_probnik"-->
-        <TextView
+        <!--na otoczenie wyrazu-sledzenie:    android:background="@drawable/border_probnik"-->
+        d<TextView
             android:id="@+id/tvShownWord"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -164,6 +164,10 @@
             android:textStyle="bold"
             android:letterSpacing="@dimen/lspacing_ski"
             android:visibility="invisible"
+
+      android:padding="@dimen/padding_ski"
+
+
             android:maxLines="1"/>
     </LinearLayout>
 

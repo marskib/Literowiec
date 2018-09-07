@@ -84,7 +84,7 @@ public class ZmienneGlobalne extends Application {
     //ustawienia poczatkowe aplikacji:
     public void ustawParametryDefault() {
 
-        nieGrajJestemW105 = false; //wyrzucić po skonczonym developmencie
+        nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
 
         PELNA_WERSJA = false;
 

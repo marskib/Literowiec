@@ -12,6 +12,7 @@ import static autyzmsoft.pl.literowiec.ZmienneGlobalne.WSZYSTKIE;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +30,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -206,7 +208,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
-
         /* ZEZWOLENIA NA KARTE _ WERSJA na MARSHMALLOW, jezeli dziala na starszej wersji, to ten kod wykona sie jako dummy */
         int jestZezwolenie = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         if (jestZezwolenie != PackageManager.PERMISSION_GRANTED) {
@@ -218,8 +219,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         super.onCreate(savedInstanceState);
 
-        mGlob = (ZmienneGlobalne) getApplication();
-
         //Na caly ekran:
         //1.Remove title bar:
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -227,14 +226,47 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //3.Set content view AFTER ABOVE sequence (to avoid crash):
 
-     /*   proby blokady status bara:
-        View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
-        ActionBar actionBar = getActionBar();
-        actionBar.hide();*/
-
         setContentView(R.layout.activity_main);
+
+
+//ski ski 2018.09.10   ****proby z 'progress' barem:
+
+        final Handler hRefresh = new Handler(){
+
+            @Override
+            public void handleMessage(Message msg) {
+                switch(msg.what){
+                    case 1000:
+                        //Refreshing UI:
+                        break;
+                }
+            }
+        };
+
+         final ProgressDialog mProgressDlg = ProgressDialog.show(this, "App_Name", "Loading data...",
+         true, false);
+         new Thread(new Runnable(){
+         public void run() {
+         //Loading Data:
+
+             //ladowanieDanych();
+
+             try {
+                 Thread.sleep(5000);
+             } catch (InterruptedException e) {
+                 e.printStackTrace();
+             }
+
+             mProgressDlg.dismiss();
+        hRefresh.sendEmptyMessage(1000);
+    }
+}).start();
+
+/****************** ski ski koniec PRogres 'bara' ************************/
+
+
+
+        mGlob = (ZmienneGlobalne) getApplication();
 
         rootLayout = (ViewGroup) findViewById(R.id.view_root);
 
@@ -323,6 +355,12 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         pokazModal();                       //startowe okienko modalne z logo i objasnieniami 'klikologii'
 
     }  //koniec onCreate()
+
+
+    private void ladowanieDanych() {
+    } //koniec metody ladowanieDanych()
+
+
 
     private void tworzListeFromAssets() {
         //Pobranie listy obrazkow z Assets (statyczna, raz na zawsze, wiec najlepiej tutaj):
@@ -1175,9 +1213,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         //Trudno wyelimimnowac ten 'podskok' w xml, ale kod ponizej wydaje sie troche 'nadmiarowy' i niepewny (lbs[0])
         //Sprawdzic na tablecie Marcina - tm widac wysokie 'skoki' ;)
         int h = lbs[0].getHeight(); //wys=sokosc litery (? czy aby na pewno -> wielka vs. mala)
-        int lSrWz = (int) lObszar.getHeight()/2;  //linia Srodkowa Wzgledna (w przestrzeni lObszar)
+        int lSrWz = (int) lObszar.getHeight()/2;  //linia Srodkowa Wzgledna (w przestrzeni wspolrzednych lObszar)
         ////rownowazne getHeightt90 -> int lSrWz = ((int) ((yLd-yLg)/2.0));
-        lPar.topMargin = lSrWz - (int) (h/2.0) -8;  //odejmowanie zeby srodek etykiety wypadl na lTrim; -8 bo 'y' jest ucinane od dolu...
+        lPar.topMargin = lSrWz - (int) (h/2.0) -10;  //odejmowanie zeby srodek etykiety wypadl na lTrim; -10 bo 'y' jest ucinane od dolu...
 //        //ski ski - koniec
 
         tvShownWord.setLayoutParams(lPar);

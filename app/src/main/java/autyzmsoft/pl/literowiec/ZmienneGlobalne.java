@@ -84,7 +84,7 @@ public class ZmienneGlobalne extends Application {
     //ustawienia poczatkowe aplikacji:
     public void ustawParametryDefault() {
 
-        nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
+        nieGrajJestemW105 = false; //wyrzucić po skonczonym developmencie
 
         PELNA_WERSJA = false;
 
@@ -112,7 +112,7 @@ public class ZmienneGlobalne extends Application {
 
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
-        POKAZ_MODAL  = false;
+        POKAZ_MODAL  = true;
 
         ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
         WYBRANY_KATALOG = "*^5%dummy";       //"nic jeszcze nie wybrano" - lepiej to niz null, bo z null'em problemy...

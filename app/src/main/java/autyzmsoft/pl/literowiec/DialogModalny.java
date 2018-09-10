@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.Toast;
 
 
 /**
@@ -39,6 +38,12 @@ public class DialogModalny extends Activity {
 
         czyscDlaKrzyska(); //jezeli wysylam do Testerow, to zacieram namiary na moje www
 
+        //Tytul na gorze (nie trzeba ustawiac w manifescie(!)):
+        String tytul = "LITEROWIEC - układanie z liter. ";
+        if (mGlob.PELNA_WERSJA) tytul = tytul + "Wersja pełna.";
+        else tytul = tytul + "Wersja darmowa.";
+        this.setTitle(tytul);
+
     }  //koniec Metody()
 
 
@@ -55,9 +60,12 @@ public class DialogModalny extends Activity {
 
     @Override
     protected void onPause() {
+    /* ****************************************************** */
+    /* MainActivity bedzie wiedziala, ze trzeba odegrac wyraz */
+    /* ****************************************************** */
         super.onPause();
         mGlob.PO_DIALOGU_MOD = true;
-        Toast.makeText(this, "onPause - DialogModalny", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "onPause - DialogModalny", Toast.LENGTH_SHORT).show();
     }
 
 

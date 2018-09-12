@@ -1119,7 +1119,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                                 Zwyciestwo();
                             } else {
                                 //Toast.makeText(MainActivity.this, "Żle.....", Toast.LENGTH_SHORT).show();
-                                odegrajZAssets("nagrania/komentarze/zle.mp3",50);
+                                if (!mGlob.CISZA)
+                                  odegrajZAssets("nagrania/komentarze/zle.mp3",50);
                             }
 
                         }
@@ -1169,8 +1170,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     /* Dzialania po Zwyciestwie = poprawnym polozeniu ostatniej litery: */
     /* Porzadkowanie Obszaru, blokowanie klawiszy, dzwieki              */
     /* **************************************************************** */
-        odegrajZAssets("nagrania/komentarze/ding.mp3",10);
-        odegrajZAssets("nagrania/komentarze/oklaski.ogg",400);
+        if (!mGlob.CISZA) odegrajZAssets("nagrania/komentarze/ding.mp3",10);
+        dajNagrode(); //nagroda dzwiekowa (ewentualna)
         //
         //Zeby w (krotkim) czasie DELAY_ORDER nie mogl naciskac - bo problemy(!) :
         blokujKlawiszeDodatkowe();
@@ -1183,6 +1184,20 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 uporzadkujObszar();
                  } }, DELAY_ORDER);
     }  //koniec Metody()
+
+    private void dajNagrode() {
+    //nagroda dzwiekowa (ewentualna)
+        if (mGlob.CISZA) return;
+        if (mGlob.BEZ_KOMENT) return;
+        if (mGlob.TYLKO_OKLASKI) {
+            odegrajZAssets("nagrania/komentarze/oklaski.ogg", 400);
+            return;
+        }
+        if (mGlob.TYLKO_GLOS) {
+            odegrajZAssets("nagrania/komentarze/pozytywy/male/brawo-brawo-2.ogg", 400);
+            return;
+        }
+    } //koniec Metody()
 
     private int dajLeftmostX() {
     //Daje wspolrzedną X najbardziej na lewo polozonej przez usera etykiety z Obszaru; pomocnicza

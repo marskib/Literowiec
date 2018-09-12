@@ -4,11 +4,11 @@
     <string name="title_activity_ustawienia">UstawieniaActivity</string>
 
     <string name="ostrzegaj_demo"><b>Informacja.</b>\n
-        Używasz aplikacji w wersji Demonstracyjnej.
+        Używasz aplikacji w wersji Darmowej.
         \n\n
-        W wersji Demonstracyjnej, w katalogu zewnętrznym (zasoby tworzone przez Użytkownika) może znajdować się maksymalnie <b>5</b> obrazków.
+        W wersji Darmowej, w katalogu zewnętrznym (zasoby tworzone przez Użytkownika) mogą znajdować się maksymalnie <b>3</b> obrazki.
         \n\n
-        Jeżeli wskazany przez Ciebie katalog będzie zawierał więcej niż 5 obrazków, nie zostanie on użyty przez aplikację.
+        Jeżeli wskazany przez Ciebie katalog będzie zawierał więcej niż 3 obrazki, nie zostanie on użyty przez aplikację.
         \n\n
         Pełna wersja może obsłużyć katalogi z dowolną liczbą obrazków.
         \n\n
@@ -139,11 +139,10 @@
         ustawieniami
         \n<b>Krótkie dotknięcie na obrazku lub w pustym miejscu po obrazku</b> - ponowne odegranie
         dźwięku
-        \n<b>Krótkie dotknięcie na czerwonym napisie pod obrazkiem</b> - zmiana wielkie/małe litery
         \n
         \n
         <b>Ekran z ustawieniami:</b>
-        \nMożemy wyłączyć/włączyć głos, obraz, podpowiedzi, ustalać formę nagrody dźwiękowej, możemy
+        \nMożemy wyłączyć/włączyć głos, obraz, podpowiedzi, ustalać formę nagrody dźwiękowej, poziom trudności, możemy
         wybrać źródło z którego mają być pobierane obrazki - własny katalog/zasoby aplikacji.
         \n
         \n

@@ -190,8 +190,8 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
       int liczbaObrazkow = policzObrazki(strKatalog);  //informacyjnie i po ostrzezenie
       if (liczbaObrazkow>0) {
         if (!mGlob.PELNA_WERSJA) {
-          if (liczbaObrazkow>5) {  //werja Demo, a wybrano katalogAssets z wiecej niz 5 obrazkami
-            ostrzegajPowyzej5();
+          if (liczbaObrazkow>3) {  //werja Demo, a wybrano katalogAssets z wiecej niz 5 obrazkami
+            ostrzegajPowyzej3();
             //przywrócenie wyboru 'domyslnego' - z zasobów aplikacji:
             onClick(rb_zAssets);
             rb_zAssets.setChecked(true);
@@ -310,11 +310,11 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   }
 
 
-  private void ostrzegajPowyzej5() {
+  private void ostrzegajPowyzej3() {
     /* ************************************************************************************ */
     /* Wyswietlany, gdy user wybierze katalogAssets z wiecej niz 5 obrazkami, a wersja jest Demo. */
     /* ************************************************************************************ */
-    wypiszOstrzezenie("Uwaga - używasz wersji Demonstracyjnej.\nWybrano katalogAssets zawierający więcej niż 5 obrazków.\nZostanie przywrócony wybór\nz zasobów aplikacji.");
+    wypiszOstrzezenie("Uwaga - używasz wersji Demonstracyjnej.\nWybrano katalogAssets zawierający więcej niż 3 obrazków.\nZostanie przywrócony wybór\nz zasobów aplikacji.");
   }
 
 

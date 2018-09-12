@@ -165,7 +165,7 @@
             android:letterSpacing="@dimen/lspacing_ski"
             android:visibility="invisible"
 
-      android:padding="@dimen/padding_ski"
+            android:padding="@dimen/padding_ski"
 
             android:maxLines="1"/>
     </LinearLayout>

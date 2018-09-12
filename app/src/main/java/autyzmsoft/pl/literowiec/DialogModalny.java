@@ -32,14 +32,20 @@ public class DialogModalny extends Activity {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int szer = displaymetrics.widthPixels;
+        int wys  = displaymetrics.heightPixels;
         View layoutSki = findViewById(R.id.sv_DialogModalny);
-        layoutSki.getLayoutParams().width = (int) (szer*0.85f);
+        layoutSki.getLayoutParams().width  = (int) (szer*0.95f); //(szer*0.85f);
+
+        //zeby zmiescil sie w pionie na b. malych ekranach
+        if (wys<400)
+          layoutSki.getLayoutParams().height = (int) (wys*0.99f);
+
         layoutSki.requestLayout(); //teraz nastepuje zaaplikowanie zmian
 
         czyscDlaKrzyska(); //jezeli wysylam do Testerow, to zacieram namiary na moje www
 
         //Tytul na gorze (nie trzeba ustawiac w manifescie(!)):
-        String tytul = "LITEROWIEC - układanie z liter. ";
+        String tytul = "LITEROWIEC - ułóż wyraz z liter. ";
         if (mGlob.PELNA_WERSJA) tytul = tytul + "Wersja pełna.";
         else tytul = tytul + "Wersja darmowa.";
         this.setTitle(tytul);

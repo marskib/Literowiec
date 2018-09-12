@@ -260,7 +260,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 //    }
 //}).start();
 
-/****************** ski ski koniec PRogres 'bara' ************************/
+/****************** ski ski koniec prob z PRogres 'barem' ************************/
 
 
 
@@ -757,8 +757,14 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
 
     public void bDalejOnClick(View v) {
+    /* ***************************** */
+    /* Przejscie do nowego cwiczenia */
+    /* ***************************** */
         //sledzenie:
         //bUpperLower.setText(sizeW+"x"+sizeH);
+
+        //Usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w korygujJesliWystaje() ):
+        usunGrawitacje();
 
         blokujKlawiszeDodatkowe();
 
@@ -780,6 +786,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     public void bAgainOnClick(View v) {
     //bAgain -  kl. pod Obszarem
     //bAgain1 - kl. pod bDalej
+
+        //Usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w korygujJesliWystaje() ):
+        usunGrawitacje();
 
         blokujKlawiszeDodatkowe();
 
@@ -897,10 +906,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         tvShownWord.post(new Runnable() {
             @Override
             public void run() {
-                int rightT = tvShownWord.getRight();
-                int rightL = lObszar.getRight();
+                int rightT = tvShownWord.getRight();  //T - od 'textV..'
+                int rightL = lObszar.getRight();      //L - od 'lOb...'
 
-                bDajGestosc.setText("TV : "+Integer.toString(rightT)+" Ol :"+Integer.toString(rightL)); //sledzenie
+                //bDajGestosc.setText("TV : "+Integer.toString(rightT)+" Ol :"+Integer.toString(rightL)); //sledzenie
 
                 if (rightT >= rightL) {
                     addGravityToParent();
@@ -1198,8 +1207,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         //Przywracamy wielkosc letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
         restoreApplyLetterSpacing(tvShownWord);
-        //Usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w pokazWyraz() ):
-        usunGrawitacje();
 
         //Wyswietlenie wyrazu rozpoczynam od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
         LinearLayout.LayoutParams lPar;
@@ -1207,14 +1214,15 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         int leftMost = dajLeftmostX();
         lPar.leftMargin = leftMost;
 
-        //ski ski + 2018.09.06 - kod poniżej zapewnia, ze tvShownWord zostanie pokazane "równo" z ulozonymi literami, nie będzie "podskoku"
+        //ski ski ++
+        // 2018.09.06 - kod poniżej zapewnia, ze tvShownWord zostanie pokazane "równo" z ulozonymi literami, nie będzie "podskoku"
         //Trudno wyelimimnowac ten 'podskok' w xml, ale kod ponizej wydaje sie troche 'nadmiarowy' i niepewny (lbs[0])
         //Sprawdzic na tablecie Marcina - tam widac wysokie 'skoki' ;)
         int h = lbs[0].getHeight(); //wys=sokosc litery (? czy aby na pewno -> wielka vs. mala)
         int lSrWz = (int) lObszar.getHeight()/2;  //linia Srodkowa Wzgledna (w przestrzeni wspolrzednych lObszar)
         ////rownowazne getHeightt90 -> int lSrWz = ((int) ((yLd-yLg)/2.0));
         lPar.topMargin = lSrWz - (int) (h/2.0) -5;  //odejmowanie zeby srodek etykiety wypadl na lTrim; -5 bo 'y' jest ucinane od dolu...
-        //ski ski - koniec
+        //ski ski --
 
         tvShownWord.setLayoutParams(lPar);
 
@@ -1281,7 +1289,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     private void pokazWyraz() {
     //Pokazanie ulozonego wyrazu w Obszarze;
-    //Wyraz skladam z tego, co widac na ekranie, nie uzywając currWord (bo duze/male litery)
+    //Wyraz skladam z tego, co widac na ekranie, nie uzywając currWord (bo problemy z duze/male litery)
 
       tvShownWord.setText(coWidacInObszar());
       tvShownWord.setTextColor(lbs[0].getTextColors()); //kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka

@@ -145,6 +145,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     ZmienneGlobalne mGlob;                          //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
     KombinacjaOpcji currOptions, newOptions;        //biezace (obowiazujace do chwili wywolania UstawieniaActivity) ustawienia i najnowsze, ustawione w UstawieniaActivity)
 
+    Animation animShake;  //potrzasanie litera[mi] - definuje 'wysoko' - wydajnosc
+
 
 
     /* eksperymenty ze status barem - 2018.08.11 */
@@ -290,6 +292,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
 
         przypiszLabelsyAndListenery();
+
+        //animacja na potrzasanie litera[mi]:
+        animShake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shaking);
 
         //Poprawienie wydajnosci? (zeby w onTouch nie tworzyc stale obiektow) L01 - placeholder
         lParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
@@ -1117,14 +1122,26 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                         if (policzInAreasy() == currWord.length()) {
                             if (poprawnieUlozono()) {
                                 Zwyciestwo();
-                            } else {
-                                //Toast.makeText(MainActivity.this, "Żle.....", Toast.LENGTH_SHORT).show();
-                                if (!mGlob.CISZA)
-                                  odegrajZAssets("nagrania/komentarze/zle.mp3",50);
+                            } else { //ostatnia litere polozone zle; 'brrr...' na klawiszu... + 'shaking' animacja :
+
+                                //Potrzasniecie blednie ulozonymi literami:
+                                Handler mHandel = new Handler();
+                                mHandel.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        for (MojTV lb : lbs) {
+                                            if (lb.isInArea())
+                                                lb.startAnimation(animShake);
+                                        }
+                                    }
+                                },150);
+
+                                if (mGlob.CISZA) return true;
+                                odegrajZAssets("nagrania/komentarze/zle.mp3",20);
+                                if (mGlob.BEZ_KOMENT) return true;
+                                odegrajZAssets("nagrania/komentarze/negatywy/male/nie-e2.m4a", 320);  //"y-y" męski glos dezaprobaty
                             }
-
                         }
-
                     }
                     //3.Jesli srodek litery zostala wyciagnieta za bande - dosuwam z powrotem:
                     if (xLit < xLl) {   //dosuniecie w prawo
@@ -1186,18 +1203,57 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     }  //koniec Metody()
 
     private void dajNagrode() {
-    //nagroda dzwiekowa (ewentualna)
+    /* ****************************** */
+    /* nagroda dzwiekowa (ewentualna) */
+    /* ****************************** */
         if (mGlob.CISZA) return;
         if (mGlob.BEZ_KOMENT) return;
         if (mGlob.TYLKO_OKLASKI) {
             odegrajZAssets("nagrania/komentarze/oklaski.ogg", 400);
             return;
         }
-        if (mGlob.TYLKO_GLOS) {
-            odegrajZAssets("nagrania/komentarze/pozytywy/male/brawo-brawo-2.ogg", 400);
-            return;
-        }
+
+        //Teraz mamy pewnosc, ze glos [+oklaski], losujemy plik z mową:
+        String komcie_path = "nagrania/komentarze/pozytywy/female";
+        //facet, czy kobieta:
+        Random rand = new Random();
+        int n = rand.nextInt(4); // Gives n such that 0 <= n < 4
+        if (n == 3) komcie_path = "nagrania/komentarze/pozytywy/male"; //kobiecy glos 3 razy czesciej
+        //teraz konkretny (losowy) plik:
+        String doZagrania = dajLosowyPlik(komcie_path);
+
+        odegrajZAssets(komcie_path + "/" + doZagrania, 400);    //pochwala glosowa
+
+        if (mGlob.TYLKO_GLOS) return;
+
+        //teraz oklaski (bo to jeszcze pozostalo):
+        odegrajZAssets("nagrania/komentarze/oklaski.ogg", 2900); //oklaski
+
     } //koniec Metody()
+
+    private String dajLosowyPlik(String aktywa) {
+        //Zwraca losowy plik z podanego katalogu w Assets; używana do generowania losowej pochwały/nagany
+
+        String[] listaKomciow = null;
+        AssetManager mgr = getAssets();
+        try {
+            listaKomciow = mgr.list(aktywa);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        int licznosc = listaKomciow.length;
+        int rnd = (int) (Math.random() * licznosc);
+        int i = -1;
+        String plik = null;
+        for (String file : listaKomciow) {
+            i++;
+            if (i == rnd) {
+                plik = file;
+                break;
+            }
+        }
+        return plik;
+    } //koniec metody()
 
     private int dajLeftmostX() {
     //Daje wspolrzedną X najbardziej na lewo polozonej przez usera etykiety z Obszaru; pomocnicza

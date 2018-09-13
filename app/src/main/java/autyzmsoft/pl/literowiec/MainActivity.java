@@ -145,7 +145,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     ZmienneGlobalne mGlob;                          //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
     KombinacjaOpcji currOptions, newOptions;        //biezace (obowiazujace do chwili wywolania UstawieniaActivity) ustawienia i najnowsze, ustawione w UstawieniaActivity)
 
-    Animation animShake;  //potrzasanie litera[mi] - definuje 'wysoko' - wydajnosc
+    Animation animShakeShort, animShakeLong;  //potrzasanie litera[mi] - definuje 'wysoko' - wydajnosc
 
 
 
@@ -293,8 +293,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         przypiszLabelsyAndListenery();
 
-        //animacja na potrzasanie litera[mi]:
-        animShake = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shaking);
+        //animacj3 na potrzasanie litera[mi]:
+        animShakeShort = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shaking_short);
+        animShakeLong  = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shaking_long);
 
         //Poprawienie wydajnosci? (zeby w onTouch nie tworzyc stale obiektow) L01 - placeholder
         lParams = (RelativeLayout.LayoutParams) L01.getLayoutParams();
@@ -1121,8 +1122,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                         ((MojTV) view).setInArea(true);
                         if (policzInAreasy() == currWord.length()) {
                             if (poprawnieUlozono()) {
+                                view.startAnimation(animShakeLong);  //ostatnio polozona litera podskoczy z 'radosci' - efekciarstwo
                                 Zwyciestwo();
-                            } else { //ostatnia litere polozone zle; 'brrr...' na klawiszu... + 'shaking' animacja :
+                            } else { //ostatnia litere polozone źle; ewentualne 'brrr...' na klawiszu + 'shaking_short' animacja :
 
                                 //Potrzasniecie blednie ulozonymi literami:
                                 Handler mHandel = new Handler();
@@ -1131,7 +1133,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                                     public void run() {
                                         for (MojTV lb : lbs) {
                                             if (lb.isInArea())
-                                                lb.startAnimation(animShake);
+                                                lb.startAnimation(animShakeShort);
                                         }
                                     }
                                 },150);
@@ -1168,7 +1170,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                     }
 
                     //sledzenie:
-                    tvInfo2.setText("xLit="+Integer.toString(xLit)+" yLit="+Integer.toString(yLit));
+                    //tvInfo2.setText("xLit="+Integer.toString(xLit)+" yLit="+Integer.toString(yLit));
                     break;
                 /*
                 case MotionEvent.ACTION_POINTER_DOWN:
@@ -1615,7 +1617,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         //ustawienie tablicy do operowania na ww. etykietach:
         lbs = new MojTV[] {L00, L01, L02, L03, L04, L05, L06, L07, L08, L09, L10, L11};
 
-        //podpiecie listenerow po labelsy:
+        //podpiecie listenerow pod labelsy:
         for (MojTV lb : lbs) {
             lb.setOnTouchListener(new ChoiceTouchListener());
         }

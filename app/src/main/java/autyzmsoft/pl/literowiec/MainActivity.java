@@ -1188,7 +1188,6 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             if (mGlob.BEZ_KOMENT)
                 return;
             odegrajZAssets("nagrania/komentarze/negatywy/male/nie-e2.m4a", 320);  //"y-y" męski glos dezaprobaty
-            return;
         }
     } //koniec Metody()
 

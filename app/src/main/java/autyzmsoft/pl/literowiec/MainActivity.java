@@ -1124,25 +1124,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                             if (poprawnieUlozono()) {
                                 view.startAnimation(animShakeLong);  //ostatnio polozona litera podskoczy z 'radosci' - efekciarstwo
                                 Zwyciestwo();
-                            } else { //ostatnia litere polozone źle; ewentualne 'brrr...' na klawiszu + 'shaking_short' animacja :
-
-                                //Potrzasniecie blednie ulozonymi literami:
-                                Handler mHandel = new Handler();
-                                mHandel.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        for (MojTV lb : lbs) {
-                                            if (lb.isInArea())
-                                                lb.startAnimation(animShakeShort);
-                                        }
-                                    }
-                                },150);
-
-                                if (mGlob.CISZA) return true;
-                                odegrajZAssets("nagrania/komentarze/zle.mp3",20);
-                                if (mGlob.BEZ_KOMENT) return true;
-                                odegrajZAssets("nagrania/komentarze/negatywy/male/nie-e2.m4a", 320);  //"y-y" męski glos dezaprobaty
                             }
+                            else
+                              reakcjaNaBledneUlozenie();
                         }
                     }
                     //3.Jesli srodek litery zostala wyciagnieta za bande - dosuwam z powrotem:
@@ -1182,6 +1166,30 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             rootLayout.invalidate();
             return true;
         }
+
+        private void reakcjaNaBledneUlozenie() {
+        /* Ostatnią wolną litere polozone źle; ewentualne 'brrr...' na klawiszu + 'shaking_short' animacja */
+
+            //Potrzasniecie blednie ulozonymi literami:
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    for (MojTV lb : lbs) {
+                        if (lb.isInArea())
+                            lb.startAnimation(animShakeShort);
+                    }
+                }
+            },150);
+
+            if (mGlob.CISZA)
+                return;
+            odegrajZAssets("nagrania/komentarze/zle.mp3",20);
+            if (mGlob.BEZ_KOMENT)
+                return;
+            odegrajZAssets("nagrania/komentarze/negatywy/male/nie-e2.m4a", 320);  //"y-y" męski glos dezaprobaty
+            return;
+        }
     } //koniec Metody()
 
     private void Zwyciestwo() {
@@ -1215,7 +1223,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             return;
         }
 
-        //Teraz mamy pewnosc, ze glos [+oklaski], losujemy plik z mową:
+        //Teraz mamy pewnosc, ze to Glos [+Oklaski], losujemy plik z mową:
         String komcie_path = "nagrania/komentarze/pozytywy/female";
         //facet, czy kobieta:
         Random rand = new Random();
@@ -1228,7 +1236,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         if (mGlob.TYLKO_GLOS) return;
 
-        //teraz oklaski (bo to jeszcze pozostalo):
+        //teraz Oklaski (bo to jeszcze pozostalo):
         odegrajZAssets("nagrania/komentarze/oklaski.ogg", 2900); //oklaski
 
     } //koniec Metody()
@@ -1294,7 +1302,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         int h = lbs[0].getHeight(); //wys=sokosc litery (? czy aby na pewno -> wielka vs. mala)
         int lSrWz = (int) lObszar.getHeight()/2;  //linia Srodkowa Wzgledna (w przestrzeni wspolrzednych lObszar)
         ////rownowazne getHeightt90 -> int lSrWz = ((int) ((yLd-yLg)/2.0));
-        lPar.topMargin = lSrWz - (int) (h/2.0) -5;  //odejmowanie zeby srodek etykiety wypadl na lTrim; -5 bo 'y' jest ucinane od dolu...
+        lPar.topMargin = lSrWz - (int) (h/2.0) -6;  //odejmowanie zeby srodek etykiety wypadl na lTrim; -6 bo 'y' jest ucinane od dolu...
         //ski ski --
 
         tvShownWord.setLayoutParams(lPar);
@@ -2180,6 +2188,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         edit.putBoolean("BEZ_DZWIEKU", mGlob.BEZ_DZWIEKU);
 
+        edit.putBoolean("GLOS_OKLASKI",  mGlob.GLOS_OKLASKI);
         edit.putBoolean("BEZ_KOMENT",    mGlob.BEZ_KOMENT);
         edit.putBoolean("TYLKO_OKLASKI", mGlob.TYLKO_OKLASKI);
         edit.putBoolean("TYLKO_GLOS",    mGlob.TYLKO_GLOS);

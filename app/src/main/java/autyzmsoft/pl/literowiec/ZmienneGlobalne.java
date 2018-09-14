@@ -42,15 +42,17 @@ public class ZmienneGlobalne extends Application {
     public boolean BEZ_DZWIEKU;          //nie odgrywać słów
 
     public int POZIOM;                   //poziom trudnosci: 0-wszystkie wyrazy; 1 - wyrazy o max. 4 literach; 2 - wyrazy od 5 do 7 liter; 3 - od 8 do 12 liter
-  //Poziomy trudnosci:
+    //Poziomy trudnosci:
     public static final int LATWE     = 1;
     public static final int SREDNIE   = 2;
     public static final int TRUDNE    = 3;
     public static final int WSZYSTKIE = 0;
 
-    public boolean BEZ_KOMENT;          //Bez Komentarza-Nagrody po wybraniu klawisza
-    public boolean TYLKO_OKLASKI;       //patrz wyżej
+    //Formy nagradzania:
+    public boolean GLOS_OKLASKI;        //pochwala glosem a nastepnie oklaski
     public boolean TYLKO_GLOS;          //patrz wyżej
+    public boolean TYLKO_OKLASKI;       //patrz wyżej
+    public boolean BEZ_KOMENT;          //Bez Komentarza-Nagrody po wybraniu klawisza
     public boolean CISZA;               //kompletna Cisza, bez nagrod i bez 'ding,'brrr' po kliknieciu klawisza
 
     public boolean Z_NAZWA;             //czy ma byc nazwa pod obrazkiem
@@ -100,6 +102,7 @@ public class ZmienneGlobalne extends Application {
 
         POZIOM       = WSZYSTKIE;
 
+        GLOS_OKLASKI  = true;
         BEZ_KOMENT    = false;
         TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
@@ -137,6 +140,7 @@ public class ZmienneGlobalne extends Application {
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
 
+        GLOS_OKLASKI  = sharedPreferences.getBoolean("GLOS_OKLASKI",  this.GLOS_OKLASKI);
         BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT",    this.BEZ_KOMENT);
         TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", this.TYLKO_OKLASKI);
         TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS",    this.TYLKO_GLOS);

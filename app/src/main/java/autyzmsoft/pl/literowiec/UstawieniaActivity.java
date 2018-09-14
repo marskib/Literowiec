@@ -54,6 +54,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   RadioButton rb_Trudne;
   RadioButton rb_Wszystkie;
 
+  RadioButton rb_GlosOklaski;
   RadioButton rb_NoComments;
   RadioButton rb_TylkoOklaski;
   RadioButton rb_TylkoGlos;
@@ -139,11 +140,13 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
     //Komentarze/Nagrody:
     boolean isCheckedNoComments  = rb_NoComments.isChecked();
+    boolean isCheckedGlosOkl     = rb_GlosOklaski.isChecked();
     boolean isCheckedTylOkl      = rb_TylkoOklaski.isChecked();
     boolean isCheckedTylGlos     = rb_TylkoGlos.isChecked();
     boolean isCheckedCisza       = rb_Cisza.isChecked();
     mGlob.BEZ_KOMENT    = isCheckedNoComments;
     mGlob.TYLKO_OKLASKI = isCheckedTylOkl;
+    mGlob.GLOS_OKLASKI  = isCheckedGlosOkl;
     mGlob.TYLKO_GLOS    = isCheckedTylGlos;
     mGlob.CISZA         = isCheckedCisza;
 
@@ -246,29 +249,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
     mGlob.ustawParametryDefault();
     this.ustawKontrolki();
-
-/*
-    cb_Podp.setChecked(false);
-    cb_Pomin.setChecked(false);
-    cb_Nazwa.setChecked(false);
-    cb_UpLo.setChecked(true);
-    cb_Again.setChecked(false);
-
-    rb_NoPictures.setChecked(false);
-    rb_NoSound.setChecked(false);
-    rb_TylkoOklaski.setChecked(false);
-    rb_TylkoGlos.setChecked(false);
-    rb_NoComments.setChecked(false);
-
-    //inicjacja, bo tego nie ma w skladowych klasy:
-    RadioButton rb_SoundPicture = (RadioButton) findViewById(R.id.rb_SoundPicture);
-    rb_SoundPicture.setChecked(true);
-    //inicjacja, bo tego nie ma w skladowych klasy:
-    RadioButton rb_GlosOklaski = (RadioButton) findViewById(R.id.rb_GlosOklaski);
-    rb_GlosOklaski.setChecked(true);
-
-    mGlob.POZIOM = 4;
-    */
 
   }
 
@@ -456,6 +436,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
 
     /* nagrody: */
+    rb_GlosOklaski = (RadioButton) findViewById(R.id.rb_GlosOklaski);
+    isChecked = mGlob.GLOS_OKLASKI;
+    rb_GlosOklaski.setChecked(isChecked);
+
     rb_NoComments = (RadioButton) findViewById(R.id.rb_No_Comments);
     isChecked = mGlob.BEZ_KOMENT;
     rb_NoComments.setChecked(isChecked);
@@ -474,7 +458,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     /* nagrody - koniec */
 
 
-
+    /* żródło: */
     rb_zAssets = (RadioButton) findViewById(R.id.rb_zAssets);
     isChecked  = !mGlob.ZRODLEM_JEST_KATALOG;
     rb_zAssets.setChecked(isChecked);

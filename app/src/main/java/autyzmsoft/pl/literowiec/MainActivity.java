@@ -668,7 +668,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
    /* Rozrzucenie currWord po tablicy lbs (= po Ekranie)              */
    //Wyswietla tez nazwe pod obrazkiem
 
-       bDajGestosc.setText("TV :   Ol: "); //sledzenie
+       //bDajGestosc.setText("TV :   Ol: "); //sledzenie
 
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
@@ -1120,7 +1120,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
                         //Bylo 'trimowanie' a wiec na pewno jestesmy w Obszarze- dajemy znac i badanie ewentualnego ZWYCIESTWA :
                         ((MojTV) view).setInArea(true);
-                        if (policzInAreasy() == currWord.length()) {
+
+                        if (policzInAreasy() == currWord.length()) {  //wszystkie litery wyrazu znalazly sie w Obszarze
                             if (poprawnieUlozono()) {
                                 view.startAnimation(animShakeLong);  //ostatnio polozona litera podskoczy z 'radosci' - efekciarstwo
                                 Zwyciestwo();
@@ -1128,6 +1129,16 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                             else
                               reakcjaNaBledneUlozenie();
                         }
+                        //Wyraz jeszcze nie dokonczony, badamy, czy poprawna kolejnosc liter:
+                        else {
+                            String whatSeen = coWidacInObszar();
+                            String mCurrWord = currWord;
+                            if (toUp)
+                              mCurrWord = currWord.toUpperCase(Locale.getDefault());
+                            if (!mCurrWord.startsWith(whatSeen))
+                              reakcjaNaBledneUlozenie();
+                        }
+
                     }
                     //3.Jesli srodek litery zostala wyciagnieta za bande - dosuwam z powrotem:
                     if (xLit < xLl) {   //dosuniecie w prawo
@@ -1434,7 +1445,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         String coUlozyl = coWidacInObszar();
 
-        //Uwaga - nie nalezy podnosic do upperCase obydwu stron - problemy (Mikolaj-Mikolaj):
+        //Uwaga - nie nalezy podnosic do upperCase obydwu stron "równania" i porownywac bez warunku 'if' (jak ponizej) --> problemy (Mikolaj-Mikolaj):
         if (!toUp) {
             return coUlozyl.equals(currWord);
         }

@@ -18,6 +18,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -1135,8 +1136,11 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                             String mCurrWord = currWord;
                             if (toUp)
                               mCurrWord = currWord.toUpperCase(Locale.getDefault());
+
                             if (!mCurrWord.startsWith(whatSeen))
                               reakcjaNaBledneUlozenie();
+                            else
+                              view.startAnimation(animShakeLong);
                         }
 
                     }
@@ -1303,6 +1307,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         LinearLayout.LayoutParams lPar;
         lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
         int leftMost = dajLeftmostX();
+        //Gdyby mialo wypasc troche przed poczatkiem lObszar'u:
+        if (leftMost+lbs[0].getPaddingLeft() <= xLl)
+            leftMost = xLl;
+
         lPar.leftMargin = leftMost;
 
         //ski ski ++
@@ -1383,7 +1391,18 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     //Wyraz skladam z tego, co widac na ekranie, nie uzywając currWord (bo problemy z duze/male litery)
 
       tvShownWord.setText(coWidacInObszar());
-      tvShownWord.setTextColor(lbs[0].getTextColors()); //kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka
+
+      //Kolor biore z etykiet, bo fabryczny jest troche za jasny... kosmetyka
+      ColorStateList kolor = null;
+      for (MojTV lb : lbs) {
+        if (lb.isInArea()) {
+          kolor = lb.getTextColors();
+          break;
+        }
+      }
+
+      tvShownWord.setTextColor(kolor);
+
       tvShownWord.setVisibility(VISIBLE);
 
       //!!! BARDZO WAZNE: !!!
@@ -1561,7 +1580,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         }
         //return al;
 
-//Przepisanie na tablice stringow:
+        //Przepisanie na tablice stringow:
 
         String[] wynikowa = new String[al.size()];
         int i =0;
@@ -2069,7 +2088,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
         //Wszystkie z Obszaru odzwierciedlam w tRob:
-        int licznik = 0;                             //po wyjsciu z petli bedzie zawieral liczbe liter w Obszarze
+        int licznik = 0;                               //po wyjsciu z petli bedzie zawieral liczbe liter w Obszarze
         for (MojTV lb : lbs) {
             if (lb.isInArea()) {
                 tRob[licznik] = lb;
@@ -2092,7 +2111,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                     bylSort = true;
                 }
             }
-        }  //while
+        }  //wile
 
         //Wypakowanie do Stringa i zwrot na zewnatrz:
         StringBuilder sb = new StringBuilder();

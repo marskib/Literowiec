@@ -10,6 +10,8 @@ import static autyzmsoft.pl.literowiec.ZmienneGlobalne.TRUDNE;
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.WSZYSTKIE;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -31,6 +33,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -41,6 +45,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -804,10 +809,18 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         rozrzucWyraz();
 
         tvShownWord.setVisibility(INVISIBLE);
-        bDalej.setVisibility(INVISIBLE); //gdyby byl widoczny
 
-        if (v==bAgain1) {   //pod klawiszem bDalej
-            bAgain1.setVisibility(INVISIBLE);
+        //Wygaszenie klawiszy bAgain1 i bFalej (jezeli mozliwe, z efektem ;) ):
+        if (v==bAgain1) {   //bAgain1 jest pod klawiszem bDalej
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
+                  getAnimatorSkib(bAgain1).start();
+                  getAnimatorSkib(bDalej).start();
+            }
+            else {
+                bAgain1.setVisibility(INVISIBLE);
+                bDalej.setVisibility(INVISIBLE); //gdyby byl widoczny
+            }
+
             Handler mHandl = new Handler();
             mHandl.postDelayed(new Runnable() {
                 @Override
@@ -820,6 +833,25 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             bAgain1.setVisibility(INVISIBLE); //bo w pewnych warunkach pozostaje zapalony...
         }
     }  //koniec Metody()
+
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @NonNull
+    private Animator getAnimatorSkib(final Button btn) {
+    //Tworzy animacje 'zanikajacy klawisz'; 'bajer... na pdst. Android Big Nerd Ranch str. 150
+        int cx = btn.getWidth()/2;
+        int cy = btn.getHeight()/2;
+        float radius = btn.getWidth();
+        Animator anim = ViewAnimationUtils.createCircularReveal(btn, cx,cy, radius, 0);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                btn.setVisibility(INVISIBLE);
+            }
+        });
+        return anim;
+    } //koniec Metody()
 
     private void blokujKlawiszeDodatkowe() {
         bPomin.setEnabled(false);

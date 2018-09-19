@@ -788,8 +788,14 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         tvShownWord.setVisibility(INVISIBLE);
 
-        bDalej.setVisibility(INVISIBLE);
-        bAgain1.setVisibility(INVISIBLE);
+        //Wygaszenie bDalej i bAgain1:
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
+            getAnimatorSkib(bAgain1).start();
+            getAnimatorSkib(bDalej).start();
+        } else {
+            bDalej.setVisibility(INVISIBLE);
+            bAgain1.setVisibility(INVISIBLE);
+        }
 
     } //koniecMetody()
 
@@ -837,7 +843,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @NonNull
-    private Animator getAnimatorSkib(final Button btn) {
+    private Animator getAnimatorSkib(final View btn) {
     //Tworzy animacje 'zanikajacy klawisz'; 'bajer... na pdst. Android Big Nerd Ranch str. 150
         int cx = btn.getWidth()/2;
         int cy = btn.getHeight()/2;

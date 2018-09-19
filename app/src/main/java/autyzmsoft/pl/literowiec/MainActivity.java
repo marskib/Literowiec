@@ -783,15 +783,28 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         resetujLabelsy();
         ustawLadnieEtykiety();
         dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz currWord = nazwa obrazka bez nalecialosci)
-        setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
-        rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currWord
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
+            getAnimatorSkib(imageView,300).start();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
+                    rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego pr888888888888888888888zez currWord
+                }
+            },500);
+        } else {
+             setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
+             rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego pr888888888888888888888zez currWord
+        }
 
         tvShownWord.setVisibility(INVISIBLE);
 
         //Wygaszenie bDalej i bAgain1:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
-            getAnimatorSkib(bAgain1).start();
-            getAnimatorSkib(bDalej).start();
+            getAnimatorSkib(bAgain1,500).start();
+            getAnimatorSkib(bDalej,500).start();
         } else {
             bDalej.setVisibility(INVISIBLE);
             bAgain1.setVisibility(INVISIBLE);
@@ -819,8 +832,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         //Wygaszenie klawiszy bAgain1 i bFalej (jezeli mozliwe, z efektem ;) ):
         if (v==bAgain1) {   //bAgain1 jest pod klawiszem bDalej
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
-                  getAnimatorSkib(bAgain1).start();
-                  getAnimatorSkib(bDalej).start();
+                  getAnimatorSkib(bAgain1,500).start();
+                  getAnimatorSkib(bDalej,500).start();
             }
             else {
                 bAgain1.setVisibility(INVISIBLE);
@@ -843,17 +856,18 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @NonNull
-    private Animator getAnimatorSkib(final View btn) {
+    private Animator getAnimatorSkib(final View v, long duration) {
     //Tworzy animacje 'zanikajacy klawisz'; 'bajer... na pdst. Android Big Nerd Ranch str. 150
-        int cx = btn.getWidth()/2;
-        int cy = btn.getHeight()/2;
-        float radius = btn.getWidth();
-        Animator anim = ViewAnimationUtils.createCircularReveal(btn, cx,cy, radius, 0);
+        int cx = v.getWidth()/2;
+        int cy = v.getHeight()/2;
+        float radius = v.getWidth();
+        Animator anim = ViewAnimationUtils.createCircularReveal(v, cx,cy, radius, 0);
+        anim.setDuration(duration);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                btn.setVisibility(INVISIBLE);
+                v.setVisibility(INVISIBLE);
             }
         });
         return anim;

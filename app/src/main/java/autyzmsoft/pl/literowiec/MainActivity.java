@@ -72,7 +72,8 @@ import java.util.Random;
 //Prowadzenie litery po ekranie Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
 //YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
 
-public class MainActivity extends Activity implements View.OnLongClickListener {
+public class
+MainActivity extends Activity implements View.OnLongClickListener {
 
     public static final int MAXL = 12;          //maxymalna dopuszczalna liczba liter w wyrazie
 
@@ -786,6 +787,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
             getAnimatorSkib(imageView,300).start();
+            getAnimatorSkib(tvNazwa,  300).start();
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 @Override

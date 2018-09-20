@@ -1191,9 +1191,9 @@ MainActivity extends Activity implements View.OnLongClickListener {
                             if (toUp)
                               mCurrWord = currWord.toUpperCase(Locale.getDefault());
 
-                            if (!mCurrWord.startsWith(whatSeen))
+                            if (!mCurrWord.contains(whatSeen))
                               reakcjaNaBledneUlozenie();
-                            else
+                            else //polozona (poprawnie) litera 'bujnie' się :
                               view.startAnimation(animShakeLong);
                         }
 
@@ -1237,7 +1237,10 @@ MainActivity extends Activity implements View.OnLongClickListener {
         }
 
         private void reakcjaNaBledneUlozenie() {
-        /* Ostatnią wolną litere polozone źle; ewentualne 'brrr...' na klawiszu + 'shaking_short' animacja */
+        /* ************************************************************** */
+        /* Zalozenie wejsciowe: Ulozony ciag iter jest bledny:            */
+        /* Ewentualne 'brrr...' + animacja 'shaking_short' na calym ciagu */
+        /* ************************************************************** */
 
             //Potrzasniecie blednie ulozonymi literami:
             Handler handler = new Handler();
@@ -1253,10 +1256,16 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
             if (mGlob.CISZA)
                 return;
-            odegrajZAssets("nagrania/komentarze/zle.mp3",20);
+
+            odegrajZAssets("nagrania/komentarze/brrr.mp3",20); //dzwiek 'brrrrr'
+
             if (mGlob.BEZ_KOMENT)
                 return;
-            odegrajZAssets("nagrania/komentarze/negatywy/male/nie-e2.m4a", 320);  //"y-y" męski glos dezaprobaty
+
+            if (policzInAreasy()==currWord.length()) { //jezeli wszystkie litery polozone, ale źle (patrz zalozenie wejsciowe), to glos dezaprobaty:
+                odegrajZAssets("nagrania/komentarze/negatywy/male/nie-e2.m4a",
+                        320);  //"y-y" męski glos dezaprobaty
+            }
         }
     } //koniec Metody()
 

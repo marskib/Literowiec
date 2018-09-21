@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 
 /**
@@ -79,10 +81,10 @@ public class DialogModalny extends Activity {
     public void czyscDlaKrzyska() {
     /* Ukrywanie obrazkow i 'śladów' do strony www - przed przekazanie do Krzyska; Potem usunac */
         if (mGlob.DLA_KRZYSKA) {
-            //ImageView obrazek = (ImageView) findViewById(R.id.imageView1);
-            //if (obrazek != null) obrazek.setVisibility(View.INVISIBLE);
-            //ski ski ski 2018.06.03 TextView link = (TextView) findViewById(R.id.autyzmsoftpl); //bo na niektorych konfiguracjach nie pokazuje tego linku
-            //j.w. if (link != null) link.setVisibility(View.INVISIBLE);
+            ImageView obrazek = (ImageView) findViewById(R.id.imageView1);
+            if (obrazek != null) obrazek.setVisibility(View.INVISIBLE);
+            TextView link = (TextView) findViewById(R.id.autyzmsoftpl); //bo na niektorych konfiguracjach nie pokazuje tego linku
+            if (link != null) link.setVisibility(View.INVISIBLE);
         }
     } //koniec Metody
 

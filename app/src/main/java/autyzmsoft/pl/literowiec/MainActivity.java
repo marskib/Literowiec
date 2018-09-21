@@ -1195,7 +1195,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
                               reakcjaNaBledneUlozenie();
                             else {//polozona (poprawnie) litera 'bujnie' się :
                                 if (!mGlob.CISZA)
-                                    odegrajZAssets("nagrania/komentarze/plusk.m4a",0);
+                                    odegrajZAssets("nagrania/komentarze/plusk_curbed.ogg",0);
                                 view.startAnimation(animShakeLong);
                             }
                         }

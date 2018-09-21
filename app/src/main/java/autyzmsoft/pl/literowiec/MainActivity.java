@@ -1193,8 +1193,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
                             if (!mCurrWord.contains(whatSeen))
                               reakcjaNaBledneUlozenie();
-                            else //polozona (poprawnie) litera 'bujnie' się :
-                              view.startAnimation(animShakeLong);
+                            else {//polozona (poprawnie) litera 'bujnie' się :
+                                if (!mGlob.CISZA)
+                                    odegrajZAssets("nagrania/komentarze/plusk.m4a",0);
+                                view.startAnimation(animShakeLong);
+                            }
                         }
 
                     }
@@ -1234,7 +1237,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             }
             rootLayout.invalidate();
             return true;
-        }
+        } //koniec Metody()
 
         private void reakcjaNaBledneUlozenie() {
         /* ************************************************************** */
@@ -2174,7 +2177,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
                     bylSort = true;
                 }
             }
-        }  //wile
+        }  //while
 
         //Wypakowanie do Stringa i zwrot na zewnatrz:
         StringBuilder sb = new StringBuilder();

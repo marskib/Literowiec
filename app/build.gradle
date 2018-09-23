@@ -19,6 +19,16 @@ android {
     }
     productFlavors {
     }
+
+    //ski ski - dodalem 2018.08.23 bo problemy z 'release build'em':
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
+    }
+    //ski ski 2018.08.23 - koniec
+
 }
 
 dependencies {

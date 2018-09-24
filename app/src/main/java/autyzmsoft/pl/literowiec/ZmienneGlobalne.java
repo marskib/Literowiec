@@ -86,15 +86,11 @@ public class ZmienneGlobalne extends Application {
     //ustawienia poczatkowe aplikacji:
     public void ustawParametryDefault() {
 
-        nieGrajJestemW105 = false; //wyrzucić po skonczonym developmencie
+        nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
 
-        PELNA_WERSJA = true;
+        PELNA_WERSJA = false;
 
-        //jesli wersja demo, to lepszy efekt, kiedy nie roznicujemy obrazkow (bo jest ich malo...)
-        if (!PELNA_WERSJA)
-            ROZNICUJ_OBRAZKI = false;
-        else
-            ROZNICUJ_OBRAZKI = true;
+        ROZNICUJ_OBRAZKI = true;
 
         BEZ_OBRAZKOW = false;
         BEZ_DZWIEKU  = false;
@@ -109,8 +105,8 @@ public class ZmienneGlobalne extends Application {
         CISZA         = false;
 
         BPOMIN_ALL    = true;                //Onomastyka -> ALL = allowed
-        BAGAIN_ALL    = false;
-        BUPLOW_ALL    = false;
+        BAGAIN_ALL    = true;
+        BUPLOW_ALL    = true;
         BHINT_ALL     = true;
 
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...

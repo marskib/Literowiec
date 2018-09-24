@@ -686,6 +686,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "wwwwwwwwwwww";
+       //currWord   = "WWWWWWWWWWWW";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "tikjńfźlóśżk";
        //currWord   = "mikrofalówka";
@@ -706,6 +707,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
        //currWord   = "buty";
        //currWord   = "W";
        //currWord   = "ze spacjom";
+       //currWord   = "0123456789AB";
 
 
       //Pobieramy wyraz do rozrzucenia:
@@ -831,28 +833,17 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         tvShownWord.setVisibility(INVISIBLE);
 
-        //Wygaszenie klawiszy bAgain1 i bFalej (jezeli mozliwe, z efektem ;) ):
-        if (v==bAgain1) {   //bAgain1 jest pod klawiszem bDalej
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
-                  getAnimatorSkib(bAgain1,500).start();
-                  getAnimatorSkib(bDalej,500).start();
-            }
-            else {
-                bAgain1.setVisibility(INVISIBLE);
-                bDalej.setVisibility(INVISIBLE); //gdyby byl widoczny
-            }
-
-            Handler mHandl = new Handler();
-            mHandl.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    odblokujZablokujKlawiszeDodatkowe(); //pokazanie z opoznieniem, zeby nie klikal za wczesnie, bo 'zawiecha'
-                }
-            },2*DELAY_EXERC);
+        //Wygaszenie klawiszy bAgain1 i bDalej (jezeli mozliwe, z efektem ;) ):
+        //(bAgain 'zalatwiany' przez blokujKlawiszeDodatkowe() powyżej)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
+            getAnimatorSkib(bAgain1,500).start();
+            getAnimatorSkib(bDalej, 500).start();
         }
         else {
-            bAgain1.setVisibility(INVISIBLE); //bo w pewnych warunkach pozostaje zapalony...
+            bAgain1.setVisibility(INVISIBLE);
+            bDalej.setVisibility(INVISIBLE); //gdyby byl widoczny
         }
+
     }  //koniec Metody()
 
 
@@ -1478,9 +1469,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
     private void addGravityToParent() {
-    //Dodanie grawitacji sciagajacej do prawego boku do lObszar;
-    //Dzieki temu, ze mamy gwarancje, jezeli wyraz wystaje za lObszar, to zostanie "cofnięty"
-    //i pokazany w całości w lObszar.
+    /* **************************************************************************************** */
+    /* Dodanie grawitacji sciagajacej do prawego boku do lObszar;                               */
+    /* Dzieki temu, ze mamy gwarancje, jezeli wyraz wystaje za lObszar, to zostanie "cofnięty"  */
+    /* i pokazany w całości w lObszar.                                                          */
+    /* **************************************************************************************** */
 
         RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
 
@@ -1893,7 +1886,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             @Override
             public void run() { //czekanie aż policzy/usadowi się L02
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + (int) (0.80*poprawka);
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
                 int marginesTop = 1*odstepWpionie - L00.getHeight() /2 - poprPion;
                 lParX.topMargin = marginesTop;
@@ -1930,7 +1923,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             @Override
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + poprawka;
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + (int) (0.90*poprawka);;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
                 int marginesTop = 2*odstepWpionie - L00.getHeight() /2;
                 lParX.topMargin = marginesTop;
@@ -1993,7 +1986,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             @Override
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + (int) (0.80*poprawka);
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
                 int marginesTop = 3*odstepWpionie - L00.getHeight() /2 + poprPion;
                 lParX.topMargin = marginesTop;
@@ -2041,6 +2034,29 @@ MainActivity extends Activity implements View.OnLongClickListener {
         }
 
     }  //koniec Metody()
+
+
+    private void jbcCofnijWlewo(View odnosnik, final View cofany) {
+
+        odnosnik.post(new Runnable() {
+            @Override
+            public void run() { //czekanie aż policzy/usadowi się Ln
+
+
+                int rightC = cofany.getRight();       //C - od 'cofany...'
+                int rightL = lObszar.getRight();      //L - od 'lOb...'
+                int wystaje = rightL-rightC;
+
+
+                if (wystaje>0) {
+                    RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) cofany.getLayoutParams();
+                    lParX.leftMargin = cofany.getLeft()-10*wystaje;//xLp - wystaje;  //((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka - 100;
+                    cofany.setLayoutParams(lParX);
+                }
+            }
+        });
+
+    } //koniec Metody()
 
     private void ustawWymiaryKlawiszy() {
     //Wymiarowuje klawisze bDalej, bPomin, bAgain, bHint, bUpperLOwer

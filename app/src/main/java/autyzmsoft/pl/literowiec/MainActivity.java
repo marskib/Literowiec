@@ -2265,12 +2265,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
         obiekt.startAnimation(anim);
 
         //Przywrocenie pierwotnego koloru klawiszowi po skonczonej animacji:
-        final Button finalB = obiekt;
+        final Button finalBtn = obiekt;
         Handler h = new Handler();
         h.postDelayed(new Runnable() {
             @Override
             public void run() {
-                finalB.setTextColor(savedColor);
+                finalBtn.setTextColor(savedColor);
             }
         },duration*(ileRazy+2)+offset);  //wyr. arytm. - doswiadczalnie....
 

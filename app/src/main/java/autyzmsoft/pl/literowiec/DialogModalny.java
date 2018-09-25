@@ -1,9 +1,13 @@
 package autyzmsoft.pl.literowiec;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +23,7 @@ import android.widget.TextView;
 public class DialogModalny extends Activity {
     
     ZmienneGlobalne mGlob;
+    private TextView tvSettInfo;  //tym bedziemy 'mrugac', zeby unaocznic userowi
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,15 @@ public class DialogModalny extends Activity {
         if (mGlob.PELNA_WERSJA) tytul = tytul + "Wersja pełna.";
         else tytul = tytul + "Wersja darmowa.";
         this.setTitle(tytul);
+
+        //Mrugamy textem objasniajacym sposob wejscia do Ustawien (zeby uwidocznic userowi):
+        tvSettInfo =(TextView) findViewById(R.id.tvSettInfo);
+        tvSettInfo.postDelayed(new Runnable() {
+          @Override
+          public void run() {
+            makeMeBlink(tvSettInfo,500,10,10, Color.GREEN);
+          }
+        },1000);
 
     }  //koniec Metody()
 
@@ -87,5 +101,44 @@ public class DialogModalny extends Activity {
             if (link != null) link.setVisibility(View.INVISIBLE);
         }
     } //koniec Metody
+
+
+
+  /**
+   * Make a View Blink for a desired duration
+   *
+   * @param obiekt   textView we blink
+   * @param duration for how long in ms will it blink
+   * @param offset   start offset of the animation
+   * @param ileRazy  ile razy ma mrugnac
+   * @param kolor    jakim kolorem ma mrugac
+   * zrodlo: https://gist.github.com/cesarferreira/4fcae632b18904035d3b
+   */
+  private static void makeMeBlink(TextView obiekt, int duration, int offset, int ileRazy, int kolor) {
+
+    final int savedColor = obiekt.getCurrentTextColor();
+
+    obiekt.setTextColor(kolor);
+    Animation anim = new AlphaAnimation(0.0f, 1.0f);
+    anim.setDuration(duration);
+    anim.setStartOffset(offset);
+    anim.setRepeatMode(Animation.REVERSE);
+    //anim.setRepeatCount(Animation.INFINITE);
+    anim.setRepeatCount(ileRazy);
+    obiekt.startAnimation(anim);
+
+    //Przywrocenie pierwotnego koloru klawiszowi po skonczonej animacji:
+    final TextView finalTV = obiekt;
+    Handler h = new Handler();
+    h.postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        finalTV.setTextColor(savedColor);
+      }
+    },duration*(ileRazy+2)+offset);  //wyr. arytm. - doswiadczalnie....
+
+
+  } //koniec Metody()
+
 
 }

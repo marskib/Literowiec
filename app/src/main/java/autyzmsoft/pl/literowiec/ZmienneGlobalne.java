@@ -118,7 +118,7 @@ public class ZmienneGlobalne extends Application {
 
         ZE_SPACING = (Build.VERSION.SDK_INT >= 21);   //bo API dependent
 
-        DLA_KRZYSKA = true;
+        DLA_KRZYSKA = false;
     } //koniec Metody()
 
 

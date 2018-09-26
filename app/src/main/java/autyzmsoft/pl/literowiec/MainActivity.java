@@ -686,7 +686,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "wwwwwwwwwwww";
-       //currWord   = "WWWWWWWWWWWW";
+       currWord   = "WWWWWWWWWWWW";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "tikjńfźlóśżk";
        //currWord   = "mikrofalówka";
@@ -1886,7 +1886,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             @Override
             public void run() { //czekanie aż policzy/usadowi się L02
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + (int) (0.80*poprawka);
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;//(int) (0.80*poprawka);
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
                 int marginesTop = 1*odstepWpionie - L00.getHeight() /2 - poprPion;
                 lParX.topMargin = marginesTop;
@@ -1923,7 +1923,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             @Override
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + (int) (0.90*poprawka);;
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + poprawka;//(int) (0.90*poprawka);;
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
                 int marginesTop = 2*odstepWpionie - L00.getHeight() /2;
                 lParX.topMargin = marginesTop;
@@ -1986,7 +1986,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             @Override
             public void run() {
                 RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
-                lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + (int) (0.80*poprawka);
+                lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;//(int) (0.80*poprawka);
                 //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
                 int marginesTop = 3*odstepWpionie - L00.getHeight() /2 + poprPion;
                 lParX.topMargin = marginesTop;
@@ -2033,43 +2033,27 @@ MainActivity extends Activity implements View.OnLongClickListener {
             });
         }  //for
 
-        //ski ski: 2018-09-26
-        for (final MojTV lb : lbs) {
-            //tylko 3-cia kolumna:
-            if (lb==lbs[3] || lb==lbs[7] || lb==lbs[11] ) {
-                final int lewy = xLp-1*lb.getWidth();
-                lb.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        RelativeLayout.LayoutParams lParY = (RelativeLayout.LayoutParams) lb.getLayoutParams();
-                        lParY.leftMargin = lewy;
-                        lb.setLayoutParams(lParY);
-                    }
-                });
-
-            }
-        }
-
+        //cofniecie w lewo skrajnych etykiet, bo na niektorych urzadz. wylaza...:
+        cofnijWlewo();
 
     }  //koniec Metody()
 
 
-    private void jbcCofnijWlewo(View odnosnik, final View cofany) {
+    private void cofnijWlewo() {
+    /* Cofa w lewo skrajne etykiety 1-go i 3-go rtzedu, bo na niektórych urządzeniach wystają za bandę */
 
-        odnosnik.post(new Runnable() {
+        lbs[11].post(new Runnable() {
             @Override
-            public void run() { //czekanie aż policzy/usadowi się Ln
-
-
-                int rightC = cofany.getRight();       //C - od 'cofany...'
-                int rightL = lObszar.getRight();      //L - od 'lOb...'
-                int wystaje = rightL-rightC;
-
-
-                if (wystaje>0) {
-                    RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) cofany.getLayoutParams();
-                    lParX.leftMargin = cofany.getLeft()-10*wystaje;//xLp - wystaje;  //((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka - 100;
-                    cofany.setLayoutParams(lParX);
+            public void run() {
+                for (MojTV lb : lbs) {
+                    //tylko 3-cia kolumna:
+                    if (lb==lbs[3] || /*lb==lbs[7] ||*/ lb==lbs[11] ) {
+                        int lewy = xLp - (int) (1.55*lbs[0].getWidth());
+                        RelativeLayout.LayoutParams lParY = (RelativeLayout.LayoutParams) lb
+                            .getLayoutParams();
+                        lParY.leftMargin = lewy;
+                        lb.setLayoutParams(lParY);
+                    }
                 }
             }
         });

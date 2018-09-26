@@ -64,9 +64,16 @@ public class ZmienneGlobalne extends Application {
     public boolean BAGAIN_ALL;          //czy bAgain dozwolony (allowed)
     public boolean BUPLOW_ALL;          //czy bUpperLower dozwolony (allowed)
     public boolean BHINT_ALL;           //czy bHint dozwolony (allowed) -> klawisz [ ? ]
+    
+    //Efekciarstwo (patrz odpowiedni layout w ustawienia.xml); onomasrtyla EF=EFFECT :
+    public boolean IMG_TURN_EF;         //czy obrazek obraca sie po poprawnym ulozeniu
+    public boolean WORD_SHAKE_EF;       //czy potrzasnac wyrazem (lub jego fragmentem) gdy niepoprawna kolejnosc
+    public boolean LETTER_HOPP_EF;      //czy poprawnie polozona litera 'podskakuje' z radosci
+    public boolean SND_ERROR_EF;        //czy dzwiek 'brr' gdy zle polozona litera )rowniez ostatnia)
+    public boolean SND_OK_EF;           //czy dzwiek PLUSK, gdy litera polozona poprawnie (nie dotyczy ostatniej)
+    public boolean SND_VICTORY_EF;      //czy dzwiek 'ding' gdy poprawnie ulozono wyraz (przy ostatniej poprawnej literze)
 
     public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu, w produkcyjnej na true)
-
 
     public boolean nieGrajJestemW105;  //robocza na czas developmentu
 
@@ -86,7 +93,7 @@ public class ZmienneGlobalne extends Application {
     //ustawienia poczatkowe aplikacji:
     public void ustawParametryDefault() {
 
-        nieGrajJestemW105 = true; //wyrzucić po skonczonym developmencie
+        nieGrajJestemW105 = false; //wyrzucić po skonczonym developmencie
 
         PELNA_WERSJA = false;
 
@@ -102,12 +109,19 @@ public class ZmienneGlobalne extends Application {
         BEZ_KOMENT    = false;
         TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
-        CISZA         = false;
 
         BPOMIN_ALL    = true;                //Onomastyka -> ALL = allowed
         BAGAIN_ALL    = true;
         BUPLOW_ALL    = true;
         BHINT_ALL     = true;
+
+        //Efekciarstwo:
+        IMG_TURN_EF     = false;
+        WORD_SHAKE_EF   = true;
+        LETTER_HOPP_EF  = true;
+        SND_ERROR_EF    = true;
+        SND_OK_EF       = true;
+        SND_VICTORY_EF  = true;
 
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
@@ -150,6 +164,13 @@ public class ZmienneGlobalne extends Application {
         BPOMIN_ALL    = sharedPreferences.getBoolean("BPOMIN_ALL", this.BPOMIN_ALL);
         BUPLOW_ALL    = sharedPreferences.getBoolean("BUPLOW_ALL", this.BUPLOW_ALL);
         BAGAIN_ALL    = sharedPreferences.getBoolean("BAGAIN_ALL", this.BAGAIN_ALL);
+
+        IMG_TURN_EF     = sharedPreferences.getBoolean("IMG_TURN_EF",   this.IMG_TURN_EF);
+        WORD_SHAKE_EF   = sharedPreferences.getBoolean("WORD_SHAKE_EF", this.WORD_SHAKE_EF);
+        LETTER_HOPP_EF  = sharedPreferences.getBoolean("LETTER_HOPP_EF",this.LETTER_HOPP_EF);
+        SND_ERROR_EF    = sharedPreferences.getBoolean("SND_ERROR_EF",  this.SND_ERROR_EF);
+        SND_OK_EF       = sharedPreferences.getBoolean("SND_OK_EF",     this.SND_OK_EF);
+        SND_VICTORY_EF  = sharedPreferences.getBoolean("SND_VICTORY_EF",this.SND_VICTORY_EF);
 
         ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI", this.ROZNICUJ_OBRAZKI);
 

@@ -58,7 +58,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   RadioButton rb_NoComments;
   RadioButton rb_TylkoOklaski;
   RadioButton rb_TylkoGlos;
-  RadioButton rb_Cisza;
   TextView sciezka; //informacyjny teksci pokazujacy biezacy katalogAssets i/lub liczbe obrazkow
   
   ZmienneGlobalne mGlob;
@@ -143,12 +142,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     boolean isCheckedGlosOkl     = rb_GlosOklaski.isChecked();
     boolean isCheckedTylOkl      = rb_TylkoOklaski.isChecked();
     boolean isCheckedTylGlos     = rb_TylkoGlos.isChecked();
-    boolean isCheckedCisza       = rb_Cisza.isChecked();
     mGlob.BEZ_KOMENT    = isCheckedNoComments;
     mGlob.TYLKO_OKLASKI = isCheckedTylOkl;
     mGlob.GLOS_OKLASKI  = isCheckedGlosOkl;
     mGlob.TYLKO_GLOS    = isCheckedTylGlos;
-    mGlob.CISZA         = isCheckedCisza;
 
 
     //Kwestia bez obrazków/bez dźwieku - tutaj trzeba uważać, żeby nie wyszło coś bez sensu i nie bylo crashu:
@@ -451,10 +448,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     rb_TylkoGlos = (RadioButton) findViewById(R.id.rb_TylkoGlos);
     isChecked = mGlob.TYLKO_GLOS;
     rb_TylkoGlos.setChecked(isChecked);
-
-    rb_Cisza = (RadioButton) findViewById(R.id.rb_Cisza);
-    isChecked = mGlob.CISZA;
-    rb_Cisza.setChecked(isChecked);
     /* nagrody - koniec */
 
 

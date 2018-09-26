@@ -300,7 +300,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         przypiszLabelsyAndListenery();
 
-        //animacj3 na potrzasanie litera[mi]:
+        //animacja na potrzasanie litera[mi]:
         animShakeShort = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shaking_short);
         animShakeLong  = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shaking_long);
 
@@ -478,12 +478,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
             imageView.setImageDrawable(dr);
             /******* rounded corners koniec *************/
 
-            //Pokazania obrazka z 'efektem' (efekciarstwo):
+            //Pokazania obrazka z 'efektem' :
             if (!mGlob.BEZ_OBRAZKOW) { //trzeba sprawdzic warunek, bo animacja pokazalaby obrazek na chwile...
                 Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
                 imageView.startAnimation(a);
             }
-
             //Ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
             if (mGlob.Z_NAZWA) {
                 pokazUkryjNazwe();
@@ -681,12 +680,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
        //currWord = "cytryna";
        //currWord = "************";
        //currWord   = "abcdefghijkl";
-       currWord   = "pomarańczowy";
+       //currWord   = "pomarańczowy";
        //currWord   = "niedźwiedzie";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
        //currWord   = "wwwwwwwwwwww";
-       currWord   = "WWWWWWWWWWWW";
+       //currWord   = "WWWWWWWWWWWW";
        //currWord   = "mmmmmmmmmmmm";
        //currWord   = "tikjńfźlóśżk";
        //currWord   = "mikrofalówka";
@@ -1402,15 +1401,16 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         //Animacja w 'nagrode':
         if (!mGlob.BEZ_OBRAZKOW) {
-            Handler mHandl1 = new Handler();
-            mHandl1.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.obrot);
-                    //Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.puls);
-                    imageView.startAnimation(a);
-                }
-            }, DELAY_ORDER + DELAY_ORDER / 2);
+            if (mGlob.IMG_TURN_EF) {
+                Handler mHandl1 = new Handler();
+                mHandl1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Animation a = AnimationUtils.loadAnimation(MainActivity.this, R.anim.obrot);
+                        imageView.startAnimation(a);
+                    }
+                }, DELAY_ORDER + DELAY_ORDER / 2);
+            }
         }
 
     } //koniec Metody()
@@ -2040,17 +2040,16 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
     private void cofnijWlewo() {
-    /* Cofa w lewo skrajne etykiety 1-go i 3-go rtzedu, bo na niektórych urządzeniach wystają za bandę */
+    /* Cofa w lewo skrajne etykiety 1-go i 3-go rzedu, bo na niektórych urządzeniach wystają za bandę */
 
-        lbs[11].post(new Runnable() {
+        lbs[11].post(new Runnable() { //lbs[11] bo czekam, az wszystko zostanie ulozone (doswiadczlnie)
             @Override
             public void run() {
                 for (MojTV lb : lbs) {
-                    //tylko 3-cia kolumna:
-                    if (lb==lbs[3] || /*lb==lbs[7] ||*/ lb==lbs[11] ) {
-                        int lewy = xLp - (int) (1.55*lbs[0].getWidth());
-                        RelativeLayout.LayoutParams lParY = (RelativeLayout.LayoutParams) lb
-                            .getLayoutParams();
+                    //tylko 3-cia kolumna, 1-szy i 3-ci rzad:
+                    if (lb==lbs[3] || lb==lbs[11]) {
+                        int lewy = xLp - (int) (1.55*lbs[0].getWidth());  //lbs[0] bo potrzebne cos 'statycznego' - doswiadczalnie)
+                        RelativeLayout.LayoutParams lParY = (RelativeLayout.LayoutParams) lb.getLayoutParams();
                         lParY.leftMargin = lewy;
                         lb.setLayoutParams(lParY);
                     }
@@ -2311,6 +2310,13 @@ MainActivity extends Activity implements View.OnLongClickListener {
         edit.putBoolean("BPOMIN_ALL",  mGlob.BPOMIN_ALL);
         edit.putBoolean("BUPLOW_ALL",  mGlob.BUPLOW_ALL);
         edit.putBoolean("BAGAIN_ALL",  mGlob.BAGAIN_ALL);
+
+        edit.putBoolean("IMG_TURN_EF",    mGlob.IMG_TURN_EF);
+        edit.putBoolean("WORD_SHAKE_EF",  mGlob.WORD_SHAKE_EF);
+        edit.putBoolean("LETTER_HOPP_EF", mGlob.LETTER_HOPP_EF);
+        edit.putBoolean("SND_ERROR_EF",   mGlob.SND_ERROR_EF);
+        edit.putBoolean("SND_OK_EF",      mGlob.SND_OK_EF);
+        edit.putBoolean("SND_VICTORY_EF", mGlob.SND_VICTORY_EF);
 
         edit.putBoolean("ODMOWA_DOST", mGlob.ODMOWA_DOST);
 

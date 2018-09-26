@@ -681,7 +681,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
        //currWord = "cytryna";
        //currWord = "************";
        //currWord   = "abcdefghijkl";
-       //currWord   = "pomarańczowy";
+       currWord   = "pomarańczowy";
        //currWord   = "niedźwiedzie";
        //currWord   = "rękawiczki";
        //currWord   = "jękywiłzkóśp";
@@ -2031,7 +2031,25 @@ MainActivity extends Activity implements View.OnLongClickListener {
                     lb.setLayoutParams(lParX);
                 }
             });
+        }  //for
+
+        //ski ski: 2018-09-26
+        for (final MojTV lb : lbs) {
+            //tylko 3-cia kolumna:
+            if (lb==lbs[3] || lb==lbs[7] || lb==lbs[11] ) {
+                final int lewy = xLp-1*lb.getWidth();
+                lb.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        RelativeLayout.LayoutParams lParY = (RelativeLayout.LayoutParams) lb.getLayoutParams();
+                        lParY.leftMargin = lewy;
+                        lb.setLayoutParams(lParY);
+                    }
+                });
+
+            }
         }
+
 
     }  //koniec Metody()
 

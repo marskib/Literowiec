@@ -58,6 +58,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   RadioButton rb_NoComments;
   RadioButton rb_TylkoOklaski;
   RadioButton rb_TylkoGlos;
+  CheckBox    cb_Dezap;
 
   CheckBox cb_ImgTurnEf;
   CheckBox cb_WordShakeEf;
@@ -149,10 +150,12 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     boolean isCheckedGlosOkl     = rb_GlosOklaski.isChecked();
     boolean isCheckedTylOkl      = rb_TylkoOklaski.isChecked();
     boolean isCheckedTylGlos     = rb_TylkoGlos.isChecked();
+    boolean isCheckedDezap       = cb_Dezap.isChecked();
     mGlob.BEZ_KOMENT    = isCheckedNoComments;
     mGlob.TYLKO_OKLASKI = isCheckedTylOkl;
     mGlob.GLOS_OKLASKI  = isCheckedGlosOkl;
     mGlob.TYLKO_GLOS    = isCheckedTylGlos;
+    mGlob.DEZAP         = isCheckedDezap;
 
     //Efekciarstwo:
     boolean isCheckedImgTurnEf   = cb_ImgTurnEf.isChecked();
@@ -469,6 +472,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     rb_TylkoGlos = (RadioButton) findViewById(R.id.rb_TylkoGlos);
     isChecked = mGlob.TYLKO_GLOS;
     rb_TylkoGlos.setChecked(isChecked);
+
+    cb_Dezap = (CheckBox) findViewById(R.id.cb_Dezap);
+    isChecked = mGlob.DEZAP;
+    cb_Dezap.setChecked(isChecked);
     /* nagrody - koniec */
 
     /* efekciarstwo: */

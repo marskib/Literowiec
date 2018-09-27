@@ -81,6 +81,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
     public static final long DELAY_ORDER = 600; //opoznienie uporządkowania Obszaru po Zwyciestwie
 
+    //Pliki dzwiekowe komentarzy-nagrod:
+    private static final String DEZAP_SND = "nagrania/komentarze/negatywy/male/nie-e2.m4a"; //dzwiek dezaprobaty, gdy bledny caly wyraz
+    private static final String PLUSK_SND = "nagrania/komentarze/plusk_curbed.ogg";         //dzwiek poprawnie polozonej litery
+    private static final String BRR_SND   = "nagrania/komentarze/brrr.mp3";                 //dzwiek blednie polozonej litery i/lub calego wyrazu
+    private static final String DING_SND  = "nagrania/komentarze/ding.mp3";                 //dzwiek poprawnie ulozonego wyrazu
+
 
     Intent intModalDialog;  //Na okienko dialogu 'modalnego' orzy starcie aplikacji
     Intent intUstawienia;   //Na przywolanie ekranu z ustawieniami
@@ -119,7 +125,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
     private RelativeLayout.LayoutParams lParams, layoutParams;
 
-    public  boolean toUp = false; //czy jestesmy w trybie duzych/malych liter
+    public  boolean inUp = false; //czy jestesmy w trybie duzych/malych liter
     private Button bUpperLower;   //wielkie/male litery
     private Button bHint;         //klawisz podpowiedzi
     private Button bAgain;        //wymieszanie liter; klawisz pod Obszarem
@@ -662,7 +668,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
     if (!mGlob.Z_NAZWA) return;
 
     tvNazwa.setText(currWord);
-      if (toUp) {
+      if (inUp) {
           tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(Locale.getDefault()));
       }
       tvNazwa.setVisibility(VISIBLE);
@@ -742,7 +748,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
                    //podpiecie animacji:
                    lbs[k].startAnimation(a);
                }
-               if (toUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
+               if (inUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
                    podniesLabels();
            }  //run()
       }, DELAY_EXERC);
@@ -884,10 +890,10 @@ MainActivity extends Activity implements View.OnLongClickListener {
     public void bUpperLowerOnClick(View v) {
     //Zmiana male/duze litery (w obie strony)
 
-        toUp = !toUp;
+        inUp = !inUp;
 
         //Kosmetyka - zmiana symbolu na buttonie:
-        if (!toUp)
+        if (!inUp)
             ((Button) v).setText("-----");
         else
             ((Button) v).setText("|");
@@ -895,12 +901,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         //1.Wyraz juz ulozony:
         if (tvShownWord.getVisibility()== VISIBLE) {
-            if (toUp) podniesWyraz();
+            if (inUp) podniesWyraz();
             else restoreOriginalWyraz();
         }
         //2.Wyraz jeszcze nie ulozony:
         else {
-            if (toUp) podniesLabels();
+            if (inUp) podniesLabels();
             else restoreOriginalLabels();
         }
 
@@ -1179,13 +1185,13 @@ MainActivity extends Activity implements View.OnLongClickListener {
                         else {
                             String whatSeen = coWidacInObszar();
                             String mCurrWord = currWord;
-                            if (toUp)
+                            if (inUp)
                               mCurrWord = currWord.toUpperCase(Locale.getDefault());
 
                             if (!mCurrWord.contains(whatSeen))
                               reakcjaNaBledneUlozenie();
                             else {//polozona (poprawnie) litera 'bujnie' się; odegrany zostanie 'plusk' :
-                                if (mGlob.SND_LETTER_OK_EF) odegrajZAssets("nagrania/komentarze/plusk_curbed.ogg",0);
+                                if (mGlob.SND_LETTER_OK_EF) odegrajZAssets(PLUSK_SND,0);
                                 if (mGlob.LETTER_HOPP_EF) view.startAnimation(animShakeLong);
                             }
                         }
@@ -1250,14 +1256,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
             }
 
             if (mGlob.SND_ERROR_EF)
-                odegrajZAssets("nagrania/komentarze/brrr.mp3",20); //dzwiek 'brrrrr'
-
-            if (mGlob.BEZ_KOMENT)
-                return;
+                odegrajZAssets(BRR_SND,20); //dzwiek 'brrrrr'
 
             if (policzInAreasy()==currWord.length()) { //jezeli wszystkie litery polozone, ale źle (patrz zalozenie wejsciowe), to glos dezaprobaty:
-                odegrajZAssets("nagrania/komentarze/negatywy/male/nie-e2.m4a",
-                        320);  //"y-y" męski glos dezaprobaty
+                if (mGlob.DEZAP)
+                    odegrajZAssets(DEZAP_SND,320);  //"y-y" męski glos dezaprobaty
             }
         }
     } //koniec Metody()
@@ -1268,7 +1271,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
     /* Porzadkowanie Obszaru, blokowanie klawiszy, dzwieki              */
     /* **************************************************************** */
         if (mGlob.SND_VICTORY_EF)
-            odegrajZAssets("nagrania/komentarze/ding.mp3",10);
+            odegrajZAssets(DING_SND,10);
         //
         dajNagrode(); //nagroda dzwiekowa (ewentualna)
         //
@@ -1382,7 +1385,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         tvShownWord.setLayoutParams(lPar);
 
-        if (toUp) ewentualnieSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
+        if (inUp) ewentualnieSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
 
         pokazWyraz();                     //w Obszarze pokazany zostaje ulozony wyraz (umieszczaam w tvSHownWord; + ewentualna korekcja polozenia)
 
@@ -1433,7 +1436,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             //float lspacing = getResources().getDimension(R.dimen.lspacing_ski); nie dziala, ustawiam na żywca....
             //tvShownWord.setLetterSpacing(lspacing);
             if (mGlob.ZE_SPACING) {
-                if (mTV.length() >= MAXL && toUp) return; //za dlugich wielkich nie rozszerzamy, bo moga sie nie zmiescic na wielu urzadzeniach...
+                if (mTV.length() >= MAXL && inUp) return; //za dlugich wielkich nie rozszerzamy, bo moga sie nie zmiescic na wielu urzadzeniach...
                 mTV.setLetterSpacing((float) 0.1);   //UWAGA!!! - na "żywca"... patrz wyżej
                 //!!! BARDZO WAZNE: !!!
                 korygujJesliWystaje();
@@ -1525,7 +1528,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         String coUlozyl = coWidacInObszar();
 
         //Uwaga - nie nalezy podnosic do upperCase obydwu stron "równania" i porownywac bez warunku 'if' (jak ponizej) --> problemy (Mikolaj-Mikolaj):
-        if (!toUp) {
+        if (!inUp) {
             return coUlozyl.equals(currWord);
         }
         else {
@@ -2305,6 +2308,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         edit.putBoolean("BEZ_KOMENT",    mGlob.BEZ_KOMENT);
         edit.putBoolean("TYLKO_OKLASKI", mGlob.TYLKO_OKLASKI);
         edit.putBoolean("TYLKO_GLOS",    mGlob.TYLKO_GLOS);
+        edit.putBoolean("DEZAP",         mGlob.DEZAP);
 
         edit.putBoolean("BHINT_ALL",   mGlob.BHINT_ALL);
         edit.putBoolean("BPOMIN_ALL",  mGlob.BPOMIN_ALL);

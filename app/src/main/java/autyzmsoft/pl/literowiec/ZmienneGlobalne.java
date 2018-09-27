@@ -32,7 +32,7 @@ import java.io.File;
 
 public class ZmienneGlobalne extends Application {
 
-    public final boolean nieGrajJestemW105 = true;  //robocza na czas developmentu
+    public final boolean nieGrajJestemW105 = false;  //robocza na czas developmentu
     public final boolean DLA_KRZYSKA = false;       //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
 
 
@@ -57,6 +57,7 @@ public class ZmienneGlobalne extends Application {
     public boolean TYLKO_GLOS;          //patrz wyżej
     public boolean TYLKO_OKLASKI;       //patrz wyżej
     public boolean BEZ_KOMENT;          //Bez Komentarza-Nagrody po wybraniu klawisza
+    public boolean DEZAP;               //dezaprobata 'nie-e.m4a.' jesli zle ulozono wyraz
 
     public boolean Z_NAZWA;             //czy ma byc nazwa pod obrazkiem
     public boolean ZE_SPACING;          //czy w ulozonym wyrazie robic duze odstepy miedzy literami (API dependent)
@@ -105,13 +106,14 @@ public class ZmienneGlobalne extends Application {
         POZIOM       = WSZYSTKIE;
 
         //Komentarze-Nagrody:
-        GLOS_OKLASKI  = true;
+        GLOS_OKLASKI  = false;
         BEZ_KOMENT    = false;
-        TYLKO_OKLASKI = false;
+        TYLKO_OKLASKI = true;
         TYLKO_GLOS    = false;
+        DEZAP         = true;
 
         //Klawisze dodatkowe:
-        BPOMIN_ALL    = true;                //Onomastyka -> ALL = allowed
+        BPOMIN_ALL    = true;             //Onomastyka -> ALL = allowed
         BAGAIN_ALL    = true;
         BUPLOW_ALL    = true;
         BHINT_ALL     = true;
@@ -120,11 +122,11 @@ public class ZmienneGlobalne extends Application {
         IMG_TURN_EF     = true;            //Onomastyka -> EF = EFFECT
         WORD_SHAKE_EF   = true;
         LETTER_HOPP_EF  = true;
-        SND_ERROR_EF    = true;             //Onomastyka -> SND = sound
+        SND_ERROR_EF    = true;            //Onomastyka -> SND = sound
         SND_LETTER_OK_EF= true;
         SND_VICTORY_EF  = true;
 
-        ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
+        ODMOWA_DOST  = false;              //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
         POKAZ_MODAL  = true;
 
@@ -154,6 +156,7 @@ public class ZmienneGlobalne extends Application {
         BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT",    this.BEZ_KOMENT);
         TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", this.TYLKO_OKLASKI);
         TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS",    this.TYLKO_GLOS);
+        DEZAP         = sharedPreferences.getBoolean("DEZAP",         this.DEZAP);
 
         Z_NAZWA       = sharedPreferences.getBoolean("Z_NAZWA",    this.Z_NAZWA);
         ZE_SPACING    = sharedPreferences.getBoolean("ZE_SPACING", this.ZE_SPACING);

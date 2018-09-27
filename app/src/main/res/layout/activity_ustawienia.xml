@@ -43,7 +43,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginLeft="@dimen/maly_odstep"
-              android:text="Źródło obrazków i nagrań:"
+              android:text="Źródło obrazków i nagrań"
               android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"/>
 
 
@@ -200,7 +200,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginLeft="@dimen/maly_odstep"
-              android:text="Zobrazowanie i dźwięk:"
+              android:text="Zobrazowanie i dźwięk"
               android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
           />
 
@@ -274,7 +274,7 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_marginLeft="@dimen/maly_odstep"
-              android:text="Poziom trudności:"
+              android:text="Poziom trudności"
               android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
           />
 
@@ -350,7 +350,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/maly_odstep"
-        android:text="Komentarze-Nagrody: "
+        android:text="Komentarze-Nagrody "
         android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
         />
 
@@ -434,7 +434,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/maly_odstep"
-        android:text="Efekciarstwo:"
+        android:text="Efekciarstwo"
         android:layout_marginBottom="@dimen/text_margin"
         android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
         />
@@ -442,32 +442,32 @@
 
 
         <CheckBox
-          android:id="@+id/cb_ObrotObrazka"
+          android:id="@+id/cb_ImgTurnEf"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:layout_marginTop="@dimen/text_margin"
           android:layout_marginLeft="@dimen/text_margin"
           android:paddingRight="20dp"
           android:checked="true"
-          android:text=" Zakręć obrazkiem po porawnym ułożeniu"
+          android:text=" Zakręć obrazkiem po poprawnym ułożeniu"
           android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
           android:textStyle="bold"
           />
 
         <CheckBox
-          android:id="@+id/cb_ShakeOnError"
+          android:id="@+id/cb_WordShakeEf"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:layout_marginTop="@dimen/text_margin"
           android:layout_marginLeft="@dimen/text_margin"
           android:checked="true"
-          android:text=" Potrzaśnij wyrazem, gdy błąd"
+          android:text=" Potrzaśnij literami, gdy błąd"
           android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
           android:textStyle="bold"
           />
 
         <CheckBox
-            android:id="@+id/cb_HopLetter"
+            android:id="@+id/cb_LetterHoppEf"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/text_margin"
@@ -480,7 +480,7 @@
 
 
         <CheckBox
-          android:id="@+id/cb_ErrorSound"
+          android:id="@+id/cb_SndErrEf"
           android:layout_width="wrap_content"
           android:layout_height="match_parent"
           android:layout_marginTop="@dimen/text_margin"
@@ -492,7 +492,7 @@
           />
 
         <CheckBox
-            android:id="@+id/cb_PluskSound"
+            android:id="@+id/cb_SndOKEf"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/text_margin"
@@ -504,13 +504,13 @@
         />
 
         <CheckBox
-            android:id="@+id/cb_WinnerSound"
+            android:id="@+id/cb_SndVictEf"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/text_margin"
             android:layout_marginLeft="@dimen/text_margin"
             android:checked="true"
-            android:text=" Dźwięk, gdy ułożono wyraz"
+            android:text=" Dźwięk, gdy poprawny cały wyraz"
             android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
             android:textStyle="bold"
         />

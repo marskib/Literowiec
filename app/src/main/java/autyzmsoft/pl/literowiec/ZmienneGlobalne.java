@@ -32,10 +32,14 @@ import java.io.File;
 
 public class ZmienneGlobalne extends Application {
 
+    public final boolean nieGrajJestemW105 = true;  //robocza na czas developmentu
+    public final boolean DLA_KRZYSKA = false;       //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
+
+
     public boolean PELNA_WERSJA;
     public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
     public String  WYBRANY_KATALOG;      //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
-    public boolean DLA_KRZYSKA;          //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
+
     public boolean ROZNICUJ_OBRAZKI;     //Czy za każdym razem pokazywany inny obrazek
 
     public boolean BEZ_OBRAZKOW;         //nie pokazywac obrazkow
@@ -53,7 +57,6 @@ public class ZmienneGlobalne extends Application {
     public boolean TYLKO_GLOS;          //patrz wyżej
     public boolean TYLKO_OKLASKI;       //patrz wyżej
     public boolean BEZ_KOMENT;          //Bez Komentarza-Nagrody po wybraniu klawisza
-    public boolean CISZA;               //kompletna Cisza, bez nagrod i bez 'ding,'brrr' po kliknieciu klawisza
 
     public boolean Z_NAZWA;             //czy ma byc nazwa pod obrazkiem
     public boolean ZE_SPACING;          //czy w ulozonym wyrazie robic duze odstepy miedzy literami (API dependent)
@@ -70,12 +73,10 @@ public class ZmienneGlobalne extends Application {
     public boolean WORD_SHAKE_EF;       //czy potrzasnac wyrazem (lub jego fragmentem) gdy niepoprawna kolejnosc
     public boolean LETTER_HOPP_EF;      //czy poprawnie polozona litera 'podskakuje' z radosci
     public boolean SND_ERROR_EF;        //czy dzwiek 'brr' gdy zle polozona litera )rowniez ostatnia)
-    public boolean SND_OK_EF;           //czy dzwiek PLUSK, gdy litera polozona poprawnie (nie dotyczy ostatniej)
+    public boolean SND_LETTER_OK_EF;    //czy dzwiek PLUSK, gdy litera polozona poprawnie (nie dotyczy ostatniej)
     public boolean SND_VICTORY_EF;      //czy dzwiek 'ding' gdy poprawnie ulozono wyraz (przy ostatniej poprawnej literze)
 
     public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu, w produkcyjnej na true)
-
-    public boolean nieGrajJestemW105;  //robocza na czas developmentu
 
     public boolean PO_DIALOGU_MOD = false;  //na mechanizm zapewniajacy odegranie slowa po zamknieciu DialoguModalnego (patrz DialogModalny.onPause i MainAct.onResume)
 
@@ -93,8 +94,6 @@ public class ZmienneGlobalne extends Application {
     //ustawienia poczatkowe aplikacji:
     public void ustawParametryDefault() {
 
-        nieGrajJestemW105 = false; //wyrzucić po skonczonym developmencie
-
         PELNA_WERSJA = false;
 
         ROZNICUJ_OBRAZKI = true;
@@ -105,22 +104,24 @@ public class ZmienneGlobalne extends Application {
 
         POZIOM       = WSZYSTKIE;
 
+        //Komentarze-Nagrody:
         GLOS_OKLASKI  = true;
         BEZ_KOMENT    = false;
         TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
 
+        //Klawisze dodatkowe:
         BPOMIN_ALL    = true;                //Onomastyka -> ALL = allowed
         BAGAIN_ALL    = true;
         BUPLOW_ALL    = true;
         BHINT_ALL     = true;
 
         //Efekciarstwo:
-        IMG_TURN_EF     = false;
+        IMG_TURN_EF     = true;            //Onomastyka -> EF = EFFECT
         WORD_SHAKE_EF   = true;
         LETTER_HOPP_EF  = true;
-        SND_ERROR_EF    = true;
-        SND_OK_EF       = true;
+        SND_ERROR_EF    = true;             //Onomastyka -> SND = sound
+        SND_LETTER_OK_EF= true;
         SND_VICTORY_EF  = true;
 
         ODMOWA_DOST  = false;                //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
@@ -132,7 +133,6 @@ public class ZmienneGlobalne extends Application {
 
         ZE_SPACING = (Build.VERSION.SDK_INT >= 21);   //bo API dependent
 
-        DLA_KRZYSKA = false;
     } //koniec Metody()
 
 
@@ -154,7 +154,6 @@ public class ZmienneGlobalne extends Application {
         BEZ_KOMENT    = sharedPreferences.getBoolean("BEZ_KOMENT",    this.BEZ_KOMENT);
         TYLKO_OKLASKI = sharedPreferences.getBoolean("TYLKO_OKLASKI", this.TYLKO_OKLASKI);
         TYLKO_GLOS    = sharedPreferences.getBoolean("TYLKO_GLOS",    this.TYLKO_GLOS);
-        CISZA         = sharedPreferences.getBoolean("CISZA",         this.CISZA);
 
         Z_NAZWA       = sharedPreferences.getBoolean("Z_NAZWA",    this.Z_NAZWA);
         ZE_SPACING    = sharedPreferences.getBoolean("ZE_SPACING", this.ZE_SPACING);
@@ -169,7 +168,7 @@ public class ZmienneGlobalne extends Application {
         WORD_SHAKE_EF   = sharedPreferences.getBoolean("WORD_SHAKE_EF", this.WORD_SHAKE_EF);
         LETTER_HOPP_EF  = sharedPreferences.getBoolean("LETTER_HOPP_EF",this.LETTER_HOPP_EF);
         SND_ERROR_EF    = sharedPreferences.getBoolean("SND_ERROR_EF",  this.SND_ERROR_EF);
-        SND_OK_EF       = sharedPreferences.getBoolean("SND_OK_EF",     this.SND_OK_EF);
+        SND_LETTER_OK_EF= sharedPreferences.getBoolean("SND_OK_EF",     this.SND_LETTER_OK_EF);
         SND_VICTORY_EF  = sharedPreferences.getBoolean("SND_VICTORY_EF",this.SND_VICTORY_EF);
 
         ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI", this.ROZNICUJ_OBRAZKI);

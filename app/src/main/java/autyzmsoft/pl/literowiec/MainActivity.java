@@ -152,7 +152,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
     ZmienneGlobalne mGlob;                          //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
     KombinacjaOpcji currOptions, newOptions;        //biezace (obowiazujace do chwili wywolania UstawieniaActivity) ustawienia i najnowsze, ustawione w UstawieniaActivity)
 
-    Animation animShakeShort, animShakeLong;  //potrzasanie litera[mi] - definuje 'wysoko' - wydajnosc
+    Animation animShakeShort, animShakeLong;        //potrzasanie litera[mi] - bledny ciag->short, litera ok->long ; definuję 'wysoko' - wydajnosc
 
 
 
@@ -1168,7 +1168,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
                         if (policzInAreasy() == currWord.length()) {  //wszystkie litery wyrazu znalazly sie w Obszarze
                             if (poprawnieUlozono()) {
-                                view.startAnimation(animShakeLong);  //ostatnio polozona litera podskoczy z 'radosci' - efekciarstwo
+                                if (mGlob.LETTER_HOPP_EF)  //ostatnio polozona litera podskoczy z 'radosci' - efekciarstwo:
+                                    view.startAnimation(animShakeLong);
                                 Zwyciestwo();
                             }
                             else
@@ -1183,10 +1184,9 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
                             if (!mCurrWord.contains(whatSeen))
                               reakcjaNaBledneUlozenie();
-                            else {//polozona (poprawnie) litera 'bujnie' się :
-                                if (!mGlob.CISZA)
-                                    odegrajZAssets("nagrania/komentarze/plusk_curbed.ogg",0);
-                                view.startAnimation(animShakeLong);
+                            else {//polozona (poprawnie) litera 'bujnie' się; odegrany zostanie 'plusk' :
+                                if (mGlob.SND_LETTER_OK_EF) odegrajZAssets("nagrania/komentarze/plusk_curbed.ogg",0);
+                                if (mGlob.LETTER_HOPP_EF) view.startAnimation(animShakeLong);
                             }
                         }
 
@@ -1236,21 +1236,21 @@ MainActivity extends Activity implements View.OnLongClickListener {
         /* ************************************************************** */
 
             //Potrzasniecie blednie ulozonymi literami:
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    for (MojTV lb : lbs) {
-                        if (lb.isInArea())
-                            lb.startAnimation(animShakeShort);
+            if (mGlob.WORD_SHAKE_EF) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        for (MojTV lb : lbs) {
+                            if (lb.isInArea())
+                                lb.startAnimation(animShakeShort);
+                        }
                     }
-                }
-            },150);
+                }, 150);
+            }
 
-            if (mGlob.CISZA)
-                return;
-
-            odegrajZAssets("nagrania/komentarze/brrr.mp3",20); //dzwiek 'brrrrr'
+            if (mGlob.SND_ERROR_EF)
+                odegrajZAssets("nagrania/komentarze/brrr.mp3",20); //dzwiek 'brrrrr'
 
             if (mGlob.BEZ_KOMENT)
                 return;
@@ -1267,7 +1267,9 @@ MainActivity extends Activity implements View.OnLongClickListener {
     /* Dzialania po Zwyciestwie = poprawnym polozeniu ostatniej litery: */
     /* Porzadkowanie Obszaru, blokowanie klawiszy, dzwieki              */
     /* **************************************************************** */
-        if (!mGlob.CISZA) odegrajZAssets("nagrania/komentarze/ding.mp3",10);
+        if (mGlob.SND_VICTORY_EF)
+            odegrajZAssets("nagrania/komentarze/ding.mp3",10);
+        //
         dajNagrode(); //nagroda dzwiekowa (ewentualna)
         //
         //Zeby w (krotkim) czasie DELAY_ORDER nie mogl naciskac - bo problemy(!) :
@@ -1286,7 +1288,6 @@ MainActivity extends Activity implements View.OnLongClickListener {
     /* ****************************** */
     /* nagroda dzwiekowa (ewentualna) */
     /* ****************************** */
-        if (mGlob.CISZA) return;
         if (mGlob.BEZ_KOMENT) return;
         if (mGlob.TYLKO_OKLASKI) {
             odegrajZAssets("nagrania/komentarze/oklaski.ogg", 400);
@@ -2304,7 +2305,6 @@ MainActivity extends Activity implements View.OnLongClickListener {
         edit.putBoolean("BEZ_KOMENT",    mGlob.BEZ_KOMENT);
         edit.putBoolean("TYLKO_OKLASKI", mGlob.TYLKO_OKLASKI);
         edit.putBoolean("TYLKO_GLOS",    mGlob.TYLKO_GLOS);
-        edit.putBoolean("CISZA",         mGlob.CISZA);
 
         edit.putBoolean("BHINT_ALL",   mGlob.BHINT_ALL);
         edit.putBoolean("BPOMIN_ALL",  mGlob.BPOMIN_ALL);
@@ -2315,7 +2315,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         edit.putBoolean("WORD_SHAKE_EF",  mGlob.WORD_SHAKE_EF);
         edit.putBoolean("LETTER_HOPP_EF", mGlob.LETTER_HOPP_EF);
         edit.putBoolean("SND_ERROR_EF",   mGlob.SND_ERROR_EF);
-        edit.putBoolean("SND_OK_EF",      mGlob.SND_OK_EF);
+        edit.putBoolean("SND_OK_EF",      mGlob.SND_LETTER_OK_EF);
         edit.putBoolean("SND_VICTORY_EF", mGlob.SND_VICTORY_EF);
 
         edit.putBoolean("ODMOWA_DOST", mGlob.ODMOWA_DOST);

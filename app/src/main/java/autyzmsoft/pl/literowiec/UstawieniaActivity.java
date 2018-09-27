@@ -58,6 +58,15 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   RadioButton rb_NoComments;
   RadioButton rb_TylkoOklaski;
   RadioButton rb_TylkoGlos;
+
+  CheckBox cb_ImgTurnEf;
+  CheckBox cb_WordShakeEf;
+  CheckBox cb_LetterHoppEf;
+  CheckBox cb_SndErrEf;
+  CheckBox cb_SndOKEf;
+  CheckBox cb_SndVictEf;
+
+
   TextView sciezka; //informacyjny teksci pokazujacy biezacy katalogAssets i/lub liczbe obrazkow
   
   ZmienneGlobalne mGlob;
@@ -74,9 +83,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Uwaga - wywoluje sie rowniez po wejsciu z MainActivity przez LongClick na obrazku(!)
     //na caly ekran:
     requestWindowFeature(Window.FEATURE_NO_TITLE);
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-        WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
     setContentView(R.layout.activity_ustawienia);
 
@@ -146,6 +153,20 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     mGlob.TYLKO_OKLASKI = isCheckedTylOkl;
     mGlob.GLOS_OKLASKI  = isCheckedGlosOkl;
     mGlob.TYLKO_GLOS    = isCheckedTylGlos;
+
+    //Efekciarstwo:
+    boolean isCheckedImgTurnEf   = cb_ImgTurnEf.isChecked();
+    boolean isCheckedWordShakeEf = cb_WordShakeEf.isChecked();
+    boolean isCheckedLetterHopp  = cb_LetterHoppEf.isChecked();
+    boolean isCheckedSndErrEf    = cb_SndErrEf.isChecked();
+    boolean isCheckedSndOKEf     = cb_SndOKEf.isChecked();
+    boolean isCheckedSndVictEf   = cb_SndVictEf.isChecked();
+    mGlob.IMG_TURN_EF     = isCheckedImgTurnEf;
+    mGlob.WORD_SHAKE_EF   = isCheckedWordShakeEf;
+    mGlob.LETTER_HOPP_EF  = isCheckedLetterHopp;
+    mGlob.SND_ERROR_EF    = isCheckedSndErrEf;
+    mGlob.SND_LETTER_OK_EF= isCheckedSndOKEf;
+    mGlob.SND_VICTORY_EF  = isCheckedSndVictEf;
 
 
     //Kwestia bez obrazków/bez dźwieku - tutaj trzeba uważać, żeby nie wyszło coś bez sensu i nie bylo crashu:
@@ -449,6 +470,32 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     isChecked = mGlob.TYLKO_GLOS;
     rb_TylkoGlos.setChecked(isChecked);
     /* nagrody - koniec */
+
+    /* efekciarstwo: */
+    cb_ImgTurnEf = (CheckBox) findViewById(R.id.cb_ImgTurnEf);
+    isChecked    = mGlob.IMG_TURN_EF;
+    cb_ImgTurnEf.setChecked(isChecked);
+
+    cb_WordShakeEf  = (CheckBox) findViewById(R.id.cb_WordShakeEf);
+    isChecked = mGlob.WORD_SHAKE_EF;
+    cb_WordShakeEf.setChecked(isChecked);
+
+    cb_LetterHoppEf = (CheckBox) findViewById(R.id.cb_LetterHoppEf);
+    isChecked       = mGlob.LETTER_HOPP_EF;
+    cb_LetterHoppEf.setChecked(isChecked);
+
+    cb_SndErrEf = (CheckBox) findViewById(R.id.cb_SndErrEf);
+    isChecked   = mGlob.SND_ERROR_EF;
+    cb_SndErrEf.setChecked(isChecked);
+
+    cb_SndOKEf = (CheckBox) findViewById(R.id.cb_SndOKEf);
+    isChecked  = mGlob.SND_LETTER_OK_EF;
+    cb_SndOKEf.setChecked(isChecked);
+
+    cb_SndVictEf = (CheckBox) findViewById(R.id.cb_SndVictEf);
+    isChecked    = mGlob.SND_VICTORY_EF;
+    cb_SndVictEf.setChecked(isChecked);
+    /* efekciarstwo - koniec */
 
 
     /* żródło: */

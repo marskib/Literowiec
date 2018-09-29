@@ -892,6 +892,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         inUp = !inUp;
 
+        odegrajZAssets(PLUSK_SND,0);
+
         //Kosmetyka - zmiana symbolu na buttonie:
         if (!inUp)
             ((Button) v).setText("-----");

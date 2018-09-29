@@ -6,9 +6,9 @@
     <string name="ostrzegaj_demo"><b>Informacja.</b>\n
         Używasz aplikacji w wersji Darmowej.
         \n\n
-        W wersji Darmowej, w katalogu zewnętrznym (zasoby tworzone przez Użytkownika) mogą znajdować się maksymalnie <b>3</b> obrazki.
+        W wersji Darmowej, w katalogu zewnętrznym (zasoby tworzone przez Użytkownika) mogą znajdować się maksymalnie <b>2</b> obrazki.
         \n\n
-        Jeżeli wskazany przez Ciebie katalog będzie zawierał więcej niż 3 obrazki, nie zostanie on użyty przez aplikację.
+        Jeżeli wskazany przez Ciebie katalog będzie zawierał więcej niż 2 obrazki, nie zostanie on użyty przez aplikację.
         \n\n
         Pełna wersja może obsłużyć katalogi z dowolną liczbą obrazków.
         \n\n
@@ -119,7 +119,7 @@
         \n
         \nAplikacja w pełnej wersji pozwala umieścić we włanym katalogu dowolną liczbę zdjęć i
         nagrań.
-        \nW wersji darmowej liczba zdjęć i nagrań w katalogu jest ograniczona do 3.
+        \nW wersji darmowej liczba zdjęć i nagrań w katalogu jest ograniczona do 2.
         \nW obydwu wersjach można tworzyć i wykorzystywać dowolną liczbę katalogów.
         \nCzynność tworzenia katalogu na urządzeniu i czynność umieszczania w nim obrazków i nagrań
         najwygodniej jest przeprowadzić na komputerze stacjonarnym, do którego podłączamy telefon za

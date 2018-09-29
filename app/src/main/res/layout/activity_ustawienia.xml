@@ -5,6 +5,9 @@
   android:layout_height="match_parent"
   android:scrollbars="vertical"
   android:fadeScrollbars="false"
+
+                                            android:background="#BEBEBE"
+
   tools:context="autyzmsoft.pl.literowiec.UstawieniaActivity">
 
   <RelativeLayout

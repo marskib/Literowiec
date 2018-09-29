@@ -40,7 +40,7 @@ public class WersjaDemoOstrzez  extends Activity implements View.OnClickListener
         finish();  //zeby activity ponizej nie przeslamnialo, a WersjaDemoOstrzez nie zostawala na ekranie (najpier finis(), potem kodu ciag dalszy...)
         Intent intent2 = new Intent(this, InternalExternalKlasa.class);
         this.startActivity(intent2);
-        return; //pro froma ;)
+        return; //pro forma ;)
     }
 }
 

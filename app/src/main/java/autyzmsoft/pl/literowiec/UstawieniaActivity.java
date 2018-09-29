@@ -1,10 +1,5 @@
 package autyzmsoft.pl.literowiec;
 
-
-/**
- * Zawiera ekran z Ustawieniami. Wywolywana na long toucha na obrazku.
- * Dawniej (w innych apkach) pod nazwą  'SplashKlasa'
- */
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.LATWE;
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.SREDNIE;
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.TRUDNE;
@@ -28,6 +23,10 @@ import android.widget.Toast;
 
 import java.io.File;
 
+/**
+ * Zawiera ekran z Ustawieniami. Wywolywana na long toucha na obrazku.
+ * Dawniej (w innych apkach) pod nazwą  'SplashKlasa'
+ */
 
 
 public class UstawieniaActivity extends Activity implements View.OnClickListener{
@@ -214,7 +213,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
       int liczbaObrazkow = policzObrazki(strKatalog);  //informacyjnie i po ostrzezenie
       if (liczbaObrazkow>0) {
         if (!mGlob.PELNA_WERSJA) {
-          if (liczbaObrazkow>3) {  //werja Demo, a wybrano katalogAssets z wiecej niz 5 obrazkami
+          if (liczbaObrazkow > mGlob.MAX_OBR_LIMIT) {  //werja Demo, a wybrano katalog z wiecej niz 5 obrazkami
             ostrzegajPowyzej3();
             //przywrócenie wyboru 'domyslnego' - z zasobów aplikacji:
             onClick(rb_zAssets);
@@ -312,10 +311,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
 
   private void ostrzegajPowyzej3() {
-    /* ************************************************************************************ */
+    /* ****************************************************************************************** */
     /* Wyswietlany, gdy user wybierze katalogAssets z wiecej niz 5 obrazkami, a wersja jest Demo. */
-    /* ************************************************************************************ */
-    wypiszOstrzezenie("Uwaga - używasz wersji Demonstracyjnej.\nWybrano katalogAssets zawierający więcej niż 3 obrazków.\nZostanie przywrócony wybór\nz zasobów aplikacji.");
+    /* ****************************************************************************************** */
+    wypiszOstrzezenie("Uwaga - używasz wersji Demonstracyjnej.\nWybrano katalog zawierający więcej niż "+mGlob.MAX_OBR_LIMIT+" obrazki.\nZostanie przywrócony wybór\nz zasobów aplikacji.");
   }
 
 

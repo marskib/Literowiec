@@ -4,12 +4,15 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
+        <!--android:icon="@mipmap/ic_launcher"-->
+        <!--android:roundIcon="@mipmap/ic_launcher_round"-->
+
     <application
         android:name=".ZmienneGlobalne"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:icon="@drawable/autyzmsoft"
+        android:roundIcon="@drawable/autyzmsoft"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity

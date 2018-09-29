@@ -32,11 +32,14 @@ import java.io.File;
 
 public class ZmienneGlobalne extends Application {
 
+
+    public final boolean PELNA_WERSJA = true;        //czy Pelna czy Darmowa wersja aplikacji
+    public final int     MAX_OBR_LIMIT = 2;          //maksymalna liczba obrazkow w katalogu, gdy wersja DARMOWA
     public final boolean nieGrajJestemW105 = false;  //robocza na czas developmentu
-    public final boolean DLA_KRZYSKA = false;       //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
+    public final boolean DLA_KRZYSKA = false;        //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
 
 
-    public boolean PELNA_WERSJA;
+
     public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
     public String  WYBRANY_KATALOG;      //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
 
@@ -95,8 +98,6 @@ public class ZmienneGlobalne extends Application {
     //ustawienia poczatkowe aplikacji:
     public void ustawParametryDefault() {
 
-        PELNA_WERSJA = false;
-
         ROZNICUJ_OBRAZKI = true;
 
         BEZ_OBRAZKOW = false;
@@ -106,9 +107,9 @@ public class ZmienneGlobalne extends Application {
         POZIOM       = WSZYSTKIE;
 
         //Komentarze-Nagrody:
-        GLOS_OKLASKI  = false;
+        GLOS_OKLASKI  = true;
         BEZ_KOMENT    = false;
-        TYLKO_OKLASKI = true;
+        TYLKO_OKLASKI = false;
         TYLKO_GLOS    = false;
         DEZAP         = true;
 

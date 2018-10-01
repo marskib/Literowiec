@@ -371,6 +371,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         pokazModal();                       //startowe okienko modalne z logo i objasnieniami 'klikologii'
 
+        bDajGestosc.setVisibility(VISIBLE);
+
     }  //koniec onCreate()
 
 
@@ -682,6 +684,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
        //bDajGestosc.setText("TV :   Ol: "); //sledzenie
 
+       currWord = "SPODNIE";
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
        //currWord = "************";
@@ -1102,6 +1105,17 @@ MainActivity extends Activity implements View.OnLongClickListener {
             default:
                 Toast.makeText(this, "nie znalazłem...", Toast.LENGTH_SHORT).show();
         }
+
+        //208.10.01 - przesuwanie w lewo
+        MojTV mojTV = dajLeftmostLabel();
+        int x = mojTV.getLeft();
+        x = (int) (x/2);
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) {
+                lb.setLeft(lb.getLeft()-x);
+            }
+        }
+
     } //koniec Metody()
 
 
@@ -1352,7 +1366,21 @@ MainActivity extends Activity implements View.OnLongClickListener {
         return min;
     }
 
+    private MojTV dajLeftmostLabel() {
+    //Daje wskaznik na najbardziej na lewo polozonej przez usera etykiety z Obszaru; pomocnicza
 
+
+        int min = Integer.MAX_VALUE;
+        MojTV leftMostLAbel = null;
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) {
+                if (lb.getLeft() < min)
+                    min = lb.getLeft();
+                    leftMostLAbel = lb;
+            }
+        }
+        return leftMostLAbel;
+    }
 
     private void uporzadkujObszar() {
     /* ******************************************************************************************* */

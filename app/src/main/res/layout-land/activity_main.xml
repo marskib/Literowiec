@@ -119,6 +119,18 @@
       android:text="Gestosc"
       />
 
+    <Button
+        android:id="@+id/bShiftLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="bShiftLeftOnClick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="visible"
+        android:textStyle="bold"
+        android:text="&lt;&lt;x"
+    />
+
 
     <!--bDajWielkosc: wielkosc ekranu - Sledzenie-->
     <!--wylaczam po developmencie-->
@@ -129,9 +141,7 @@
       android:layout_alignParentBottom="true"
       android:layout_toEndOf="@+id/tvInfo3"
       android:onClick="bDajWielkoscEkranuOnClick"
-
       android:visibility="invisible"
-
       android:text="Ekran"
       />
 

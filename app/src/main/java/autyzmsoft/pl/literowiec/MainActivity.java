@@ -130,6 +130,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
     private Button bHint;         //klawisz podpowiedzi
     private Button bAgain;        //wymieszanie liter; klawisz pod Obszarem
     private Button bAgain1;       //wymieszanie liter; klawisz podbDalej
+    private Button bShiftLeft;    //na przesuwanie w Lewo etykiet z Obszaru (zeby zrobic miejsce z prawej na dalsze ukladanie)
 
     private LinearLayout lObszar;
     private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
@@ -292,6 +293,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         bPomin  = (Button) findViewById(R.id.bPomin);
         bAgain  = (Button) findViewById(R.id.bAgain);
         bAgain1 = (Button) findViewById(R.id.bAgain1);
+        bShiftLeft  = (Button) findViewById(R.id.bShiftLeft);
         tvShownWord = (TextView) findViewById(R.id.tvShownWord);
         bUpperLower =(Button) findViewById(R.id.bUpperLower);
         bHint = (Button) findViewById(R.id.bHint);
@@ -370,8 +372,6 @@ MainActivity extends Activity implements View.OnLongClickListener {
         rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
 
         pokazModal();                       //startowe okienko modalne z logo i objasnieniami 'klikologii'
-
-        bDajGestosc.setVisibility(VISIBLE);
 
     }  //koniec onCreate()
 
@@ -684,7 +684,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
        //bDajGestosc.setText("TV :   Ol: "); //sledzenie
 
-       currWord = "SPODNIE";
+       //currWord = "SPODNIE";
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
        //currWord = "************";
@@ -1106,16 +1106,6 @@ MainActivity extends Activity implements View.OnLongClickListener {
                 Toast.makeText(this, "nie znalazłem...", Toast.LENGTH_SHORT).show();
         }
 
-        //208.10.01 - przesuwanie w lewo
-        MojTV mojTV = dajLeftmostLabel();
-        int x = mojTV.getLeft();
-        x = (int) (x/2);
-        for (MojTV lb : lbs) {
-            if (lb.isInArea()) {
-                lb.setLeft(lb.getLeft()-x);
-            }
-        }
-
     } //koniec Metody()
 
 
@@ -1130,6 +1120,26 @@ MainActivity extends Activity implements View.OnLongClickListener {
         startActivity(intUstawienia);
         return true;
     } //koniec Metody()
+
+
+    public void bShiftLeftOnClick(View view) {
+     /* ********************************************************************************************************* */
+     /* Wszystkie etykiety z Obszaru zostają przesuniete w lewo, zeby zrobic wiecej miejsca z prawej na układanie */
+     /* ********************************************************************************************************* */
+        MojTV mojTV = dajLeftmostInArea();  //skrajna lewa
+        if (!(mojTV == null)) {             //jesli Obszar nie pusty
+            int x = mojTV.getLeft();
+            x = (int) (x / 2);              //przesuwam w lewo o polowe dystansu skrajnej lewej od poczatku Obszaru
+            for (MojTV lb : lbs) {
+                if (lb.isInArea()) {
+                    //lb.setLeft(lb.getLeft()-x); - to nie jest dobre, nie ma czegos w rodzaju 'commit'owania'...
+                    RelativeLayout.LayoutParams lPar =  (RelativeLayout.LayoutParams) lb.getLayoutParams();
+                    lPar.leftMargin -= x;
+                    lb.setLayoutParams(lPar);       //"commit" na View, bedzie siedzial 'twardo'
+                }
+            }
+        }
+    }  //koniec Metody()
 
 
     private final class ChoiceTouchListener implements OnTouchListener {
@@ -1366,20 +1376,20 @@ MainActivity extends Activity implements View.OnLongClickListener {
         return min;
     }
 
-    private MojTV dajLeftmostLabel() {
-    //Daje wskaznik na najbardziej na lewo polozonej przez usera etykiety z Obszaru; pomocnicza
-
+    private MojTV dajLeftmostInArea() {
+    //Daje wskaznik do najbardziej na lewo polozonej przez usera etykiety z Obszaru; pomocnicza
 
         int min = Integer.MAX_VALUE;
-        MojTV leftMostLAbel = null;
+        MojTV leftMostLabel = null;
         for (MojTV lb : lbs) {
             if (lb.isInArea()) {
-                if (lb.getLeft() < min)
+                if (lb.getLeft() < min) {
                     min = lb.getLeft();
-                    leftMostLAbel = lb;
+                    leftMostLabel = lb;
+                }
             }
         }
-        return leftMostLAbel;
+        return leftMostLabel;
     }
 
     private void uporzadkujObszar() {
@@ -2112,6 +2122,10 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         bAgain.getLayoutParams().height = sizeH - yLd;
         bAgain.requestLayout();
+
+        bShiftLeft.getLayoutParams().height = sizeH - yLd;
+        bShiftLeft.getLayoutParams().width  = 2*bAgain.getWidth();
+        bShiftLeft.requestLayout();
 
         bUpperLower.getLayoutParams().height = sizeH - yLd;
         bUpperLower.getLayoutParams().width  = 2*bAgain.getWidth();

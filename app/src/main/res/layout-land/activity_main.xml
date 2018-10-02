@@ -128,7 +128,7 @@
         android:layout_alignParentLeft="true"
         android:visibility="visible"
         android:textStyle="bold"
-        android:text="&lt;&lt;x"
+        android:text="&lt;&lt;"
     />
 
 

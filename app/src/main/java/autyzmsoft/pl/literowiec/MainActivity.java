@@ -684,7 +684,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
        //bDajGestosc.setText("TV :   Ol: "); //sledzenie
 
-       //currWord = "SPODNIE";
+       currWord = "SPODNIE";
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
        //currWord = "************";
@@ -882,6 +882,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         bAgain.setText(""); //czyszcze, bo cos moze zostac po animacji.... (patrz opi MakeMeBlink()
 
         bHint.setEnabled(false);
+        bShiftLeft.setEnabled(false);
     }
 
 
@@ -1138,6 +1139,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
                     lb.setLayoutParams(lPar);       //"commit" na View, bedzie siedzial 'twardo'
                 }
             }
+        } else {
+            Toast.makeText(this, "Brak liter do przesunięcia w lewo.", Toast.LENGTH_LONG).show();
         }
     }  //koniec Metody()
 
@@ -1178,8 +1181,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
                     //sledzenie:
                     int Xstop = X;
-                    tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
-                    tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
+                    //tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
+                    //tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
 
                     /* Sprawdzenie, czy srodek etykiety jest w Obszarze; Jezeli tak - dosuniecie do lTrim. : */
                     //1.Policzenie wspolrzednych srodka Litery: (zakladam, ze srodek litery jest w srodku kontrolki o szer w i wys. h)
@@ -2162,6 +2165,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         /*if (mGlob.BUPLOW_ALL)*/ bUpperLower.setEnabled(true);
         /*if (mGlob.BAGAIN_ALL)*/ bAgain.setEnabled(true);
         /*if (mGlob.BHINT_ALL) */ bHint.setEnabled(true);
+        bShiftLeft.setEnabled(true);
     }
 
 

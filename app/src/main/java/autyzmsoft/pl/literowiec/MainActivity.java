@@ -684,7 +684,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
        //bDajGestosc.setText("TV :   Ol: "); //sledzenie
 
-       currWord = "SPODNIE";
+       //currWord = "SPODNIE";
+       currWord = "nie";
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
        //currWord = "************";
@@ -1174,18 +1175,21 @@ MainActivity extends Activity implements View.OnLongClickListener {
                     //policzInAreasy(); -> sledzenie
                     //a potem sie to ww. zmodyfikuje w action up....
 
+                    //Toast.makeText(MainActivity.this, ((MojTV) view).getOrigL(), Toast.LENGTH_SHORT).show();
+
                     break;
                 case MotionEvent.ACTION_UP:
 
                     ((MojTV) view).setTextColor(Color.BLACK); //przywroceni koloru przeciaganej litery - kosmetyka
 
                     //sledzenie:
-                    int Xstop = X;
+                    //int Xstop = X;
                     //tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
                     //tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
 
                     /* Sprawdzenie, czy srodek etykiety jest w Obszarze; Jezeli tak - dosuniecie do lTrim. : */
                     //1.Policzenie wspolrzednych srodka Litery: (zakladam, ze srodek litery jest w srodku kontrolki o szer w i wys. h)
+                    layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
                     int w  = view.getWidth();
                     int lm = layoutParams.leftMargin;
                     int h = view.getHeight();

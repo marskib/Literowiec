@@ -1126,9 +1126,9 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
     private void przesunWLewo(int dx) {
-    /* ********************************************************************************************************* */
-    /* WSZYSKIE etykiety z Obszaru zostają przesuniete w lewo, zeby zrobic wiecej miejsca z prawej na układanie */
-    /* ********************************************************************************************************* */
+    /* ************************************************************************************************************* */
+    /* WSZYSKIE etykiety z Obszaru zostają przesuniete w lewo o dx, zeby zrobic wiecej miejsca z prawej na układanie */
+    /* ************************************************************************************************************* */
         for (MojTV lb : lbs) {
             if (lb.isInArea()) {
                 //lb.setLeft(lb.getLeft()-x); - to nie jest dobre, nie ma czegos w rodzaju 'commit'owania'... (patrz nizej)
@@ -1147,7 +1147,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         MojTV mojTV = dajLeftmostInArea();  //skrajna lewa
         if (!(mojTV == null)) {             //jesli Obszar nie pusty
             int x = mojTV.getLeft();
-            x = (int) (x/2);                //przesuwam w lewo o polowe dystansu skrajnej lewej od poczatku Obszaru
+            x = (int) (x/2);
             przesunWLewo(x);
         } else {
         Toast.makeText(this, "Brak liter do przesunięcia w lewo.", Toast.LENGTH_LONG).show();
@@ -1211,6 +1211,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
                     //2.Dosunirecie Litery na poziomy srodek Obszaru (linia yLtrim); srodek etykiety ma wypasc na yLtrim:
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
                         layoutParams.topMargin = yLtrim - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
+                        view.setLayoutParams(layoutParams);
+
 
                         //Bylo 'trimowanie' a wiec na pewno jestesmy w Obszarze- dajemy znac i badanie ewentualnego ZWYCIESTWA :
                         ((MojTV) view).setInArea(true);
@@ -1241,7 +1243,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
                     }
                     //3.Jesli srodek litery zostala wyciagnieta za bande - dosuwam z powrotem:
-                    if (xLit < xLl) {   //dosuniecie w prawo
+                    if (xLit <= xLl) {   //dosuniecie w prawo
                         //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
                         layoutParams.leftMargin = xLl - view.getPaddingLeft()+2 ; //dosuniecie w prawo
                         rootLayout.invalidate();
@@ -1249,18 +1251,17 @@ MainActivity extends Activity implements View.OnLongClickListener {
                         //litera bedzie w Obszarze i zostanie 'dotrimowana'"
                         view.dispatchTouchEvent(event); // Dispatch touch event to view
                     }
-                    if (xLit > xLp) {   //dosuniecie w lewo
-                        //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
-
-                        //Bedziemy przesuwac w lewo Wszystkie lit. z Obszaru:
-                        ((MojTV) view).setInArea(true);  //zeby ostatnia litera tez 'zalapala' sie na przesuniecie funkcją przesunWLewo
-
-                        przesunWLewo(w + view.getPaddingRight());
+                    if (xLit >= xLp) {   //dosuniecie w lewo
+                        //Bedziemy przesuwac w lewo Wszystkie lit. z Obszaru; dzieki temu mniej problemów, np. znika problem IE-->EI:
+                        ((MojTV) view).setInArea(true);  //zeby ostatnia litera tez 'zalapala' sie na przesuniecie funkcją przesunWLewo()
+                        przesunWLewo(2*w);
                         view.dispatchTouchEvent(event);
 
-//                        layoutParams.leftMargin = xLp - w + view.getPaddingRight(); //dosuniecie w lewo
-//                        rootLayout.invalidate();
-//                        view.dispatchTouchEvent(event);
+                        /*tak bylo do 2018.10.07; zastapilem przez sekwencje powyzej
+                        layoutParams.leftMargin = xLp - w + view.getPaddingRight(); //dosuniecie w lewo
+                        rootLayout.invalidate();
+                        view.dispatchTouchEvent(event);
+                        */
                     }
                     //3.Jezeli srodek litery za górnym lub dolnym brzegiem ekranu - dosuwam z powrotem:
                     if (yLit<0) {

@@ -685,7 +685,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
        //bDajGestosc.setText("TV :   Ol: "); //sledzenie
 
        //currWord = "SPODNIE";
-       currWord = "nie";
+       //currWord = "nie";
        //currWord = "ABCDEFGHIJKL";
        //currWord = "cytryna";
        //currWord = "************";
@@ -1124,26 +1124,36 @@ MainActivity extends Activity implements View.OnLongClickListener {
     } //koniec Metody()
 
 
+
+    private void przesunWLewo(int dx) {
+    /* ********************************************************************************************************* */
+    /* WSZYSKIE etykiety z Obszaru zostają przesuniete w lewo, zeby zrobic wiecej miejsca z prawej na układanie */
+    /* ********************************************************************************************************* */
+        for (MojTV lb : lbs) {
+            if (lb.isInArea()) {
+                //lb.setLeft(lb.getLeft()-x); - to nie jest dobre, nie ma czegos w rodzaju 'commit'owania'... (patrz nizej)
+                RelativeLayout.LayoutParams lPar =  (RelativeLayout.LayoutParams) lb.getLayoutParams();
+                lPar.leftMargin -= dx;
+                lb.setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
+            }
+        }
+    } //koniec Metody()
+
+
     public void bShiftLeftOnClick(View view) {
-     /* ********************************************************************************************************* */
-     /* Wszystkie etykiety z Obszaru zostają przesuniete w lewo, zeby zrobic wiecej miejsca z prawej na układanie */
-     /* ********************************************************************************************************* */
+    /* *******************************************************************/
+    /* Przesuniecie o polowe dystansu od skrajnej lewej do pocz. Obszaru */
+    /* *******************************************************************/
         MojTV mojTV = dajLeftmostInArea();  //skrajna lewa
         if (!(mojTV == null)) {             //jesli Obszar nie pusty
             int x = mojTV.getLeft();
-            x = (int) (x / 2);              //przesuwam w lewo o polowe dystansu skrajnej lewej od poczatku Obszaru
-            for (MojTV lb : lbs) {
-                if (lb.isInArea()) {
-                    //lb.setLeft(lb.getLeft()-x); - to nie jest dobre, nie ma czegos w rodzaju 'commit'owania'...
-                    RelativeLayout.LayoutParams lPar =  (RelativeLayout.LayoutParams) lb.getLayoutParams();
-                    lPar.leftMargin -= x;
-                    lb.setLayoutParams(lPar);       //"commit" na View, bedzie siedzial 'twardo'
-                }
-            }
+            x = (int) (x/2);                //przesuwam w lewo o polowe dystansu skrajnej lewej od poczatku Obszaru
+            przesunWLewo(x);
         } else {
-            Toast.makeText(this, "Brak liter do przesunięcia w lewo.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Brak liter do przesunięcia w lewo.", Toast.LENGTH_LONG).show();
         }
     }  //koniec Metody()
+
 
 
     private final class ChoiceTouchListener implements OnTouchListener {
@@ -1192,7 +1202,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
                     layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
                     int w  = view.getWidth();
                     int lm = layoutParams.leftMargin;
-                    int h = view.getHeight();
+                    int h  = view.getHeight();
                     int tm = layoutParams.topMargin;
 
                     //srodek litery:
@@ -1241,9 +1251,16 @@ MainActivity extends Activity implements View.OnLongClickListener {
                     }
                     if (xLit > xLp) {   //dosuniecie w lewo
                         //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
-                        layoutParams.leftMargin = xLp - w + view.getPaddingRight(); //dosuniecie w lewo
-                        rootLayout.invalidate();
+
+                        //Bedziemy przesuwac w lewo Wszystkie lit. z Obszaru:
+                        ((MojTV) view).setInArea(true);  //zeby ostatnia litera tez 'zalapala' sie na przesuniecie funkcją przesunWLewo
+
+                        przesunWLewo(w + view.getPaddingRight());
                         view.dispatchTouchEvent(event);
+
+//                        layoutParams.leftMargin = xLp - w + view.getPaddingRight(); //dosuniecie w lewo
+//                        rootLayout.invalidate();
+//                        view.dispatchTouchEvent(event);
                     }
                     //3.Jezeli srodek litery za górnym lub dolnym brzegiem ekranu - dosuwam z powrotem:
                     if (yLit<0) {

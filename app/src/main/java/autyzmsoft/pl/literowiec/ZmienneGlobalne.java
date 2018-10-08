@@ -33,7 +33,7 @@ import java.io.File;
 public class ZmienneGlobalne extends Application {
 
 
-    public final boolean PELNA_WERSJA = true;        //czy Pelna czy Darmowa wersja aplikacji
+    public final boolean PELNA_WERSJA = false;        //czy Pelna czy Darmowa wersja aplikacji
     public final int     MAX_OBR_LIMIT = 2;          //maksymalna liczba obrazkow w katalogu, gdy wersja DARMOWA
     public final boolean nieGrajJestemW105 = false;  //robocza na czas developmentu
     public final boolean DLA_KRZYSKA = false;        //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www

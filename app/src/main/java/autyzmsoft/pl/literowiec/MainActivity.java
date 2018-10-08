@@ -130,7 +130,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
     private Button bHint;         //klawisz podpowiedzi
     private Button bAgain;        //wymieszanie liter; klawisz pod Obszarem
     private Button bAgain1;       //wymieszanie liter; klawisz podbDalej
-    private Button bShiftLeft;    //na przesuwanie w Lewo etykiet z Obszaru (zeby zrobic miejsce z prawej na dalsze ukladanie)
+    private Button bShiftLeft;    //na przesuwanie w Lewo etykiet z Obszaru (zeby zrobic miejsce z prawej na dalsze ukladanie); przesuniecie w lewo calego Wyrazu; zakladam,ze klawisz czly czas obecny na ekranie
 
     private LinearLayout lObszar;
     private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
@@ -883,7 +883,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         bAgain.setText(""); //czyszcze, bo cos moze zostac po animacji.... (patrz opi MakeMeBlink()
 
         bHint.setEnabled(false);
-        bShiftLeft.setEnabled(false);
+        //setEnabled(false);
     }
 
 
@@ -1131,7 +1131,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
     /* ************************************************************************************************************* */
         for (MojTV lb : lbs) {
             if (lb.isInArea()) {
-                //lb.setLeft(lb.getLeft()-x); - to nie jest dobre, nie ma czegos w rodzaju 'commit'owania'... (patrz nizej)
+                //lb.setLeft(lb.getLeft()-x); - to nie jest dobre, bo nie ma czegos w rodzaju 'commit'owania'... (patrz nizej)
                 RelativeLayout.LayoutParams lPar =  (RelativeLayout.LayoutParams) lb.getLayoutParams();
                 lPar.leftMargin -= dx;
                 lb.setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
@@ -1141,16 +1141,33 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
     public void bShiftLeftOnClick(View view) {
-    /* *******************************************************************/
-    /* Przesuniecie o polowe dystansu od skrajnej lewej do pocz. Obszaru */
-    /* *******************************************************************/
-        MojTV mojTV = dajLeftmostInArea();  //skrajna lewa
-        if (!(mojTV == null)) {             //jesli Obszar nie pusty
-            int x = mojTV.getLeft();
+    /* ***************************************************************************/
+    /* Przesuniecie o polowe dystansu od skrajnej lewej do pocz. Obszaru         */
+    /* Jezeli wyraz ulozony - przesuwamy wyraz; jezeli nie - przesuwamy etykiety */
+    /* Przesuwamy o polowe dystansu do lewego brzegu Obszaru                     */
+    /* ***************************************************************************/
+
+        int x;
+        //ewentualne przesuniecie wyrazu:
+        if (tvShownWord.getVisibility()==VISIBLE) {
+            x = tvShownWord.getLeft();
             x = (int) (x/2);
-            przesunWLewo(x);
-        } else {
-        Toast.makeText(this, "Brak liter do przesunięcia w lewo.", Toast.LENGTH_LONG).show();
+            //tvShownWord.setLeft(x);  //ta instrukcja nie 'commituje', tylko na oglad 'tymczasowy', ponizej OK
+            LinearLayout.LayoutParams lPar =  (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
+            lPar.leftMargin = x;
+            tvShownWord.setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
+        }
+        //ewentualne przesuniecie etykiet:
+        else {
+            MojTV mojTV = dajLeftmostInArea();  //skrajna lewa
+            if (!(mojTV == null)) {             //jesli Obszar nie pusty
+                x = mojTV.getLeft();
+                x = (int) (x / 2);
+                przesunWLewo(x);
+            } else {
+                Toast.makeText(this, "Brak liter do przesunięcia w lewo.",
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }  //koniec Metody()
 
@@ -1208,6 +1225,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
                     //srodek litery:
                     int xLit = lm + (int) (w/2.0);
                     int yLit = tm + (int) (h/2.0);
+
                     //2.Dosunirecie Litery na poziomy srodek Obszaru (linia yLtrim); srodek etykiety ma wypasc na yLtrim:
                     if ((yLit>yLg && yLit<yLd) && (xLit>xLl && xLit<xLp)) {
                         layoutParams.topMargin = yLtrim - (int) (h/2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
@@ -1251,10 +1269,13 @@ MainActivity extends Activity implements View.OnLongClickListener {
                         //litera bedzie w Obszarze i zostanie 'dotrimowana'"
                         view.dispatchTouchEvent(event); // Dispatch touch event to view
                     }
-                    if (xLit >= xLp) {   //dosuniecie w lewo
+
+                    //Dosuniecie w lewo; ale dotyczy TYLKO etykiety ze "swiatła" Obszaru ("swiatla", czyli rowniez za Prawym końcem Obszaru):
+                    if ((xLit >= xLp) && (yLit>yLg && yLit<yLd)) {
+
                         //Bedziemy przesuwac w lewo Wszystkie lit. z Obszaru; dzieki temu mniej problemów, np. znika problem IE-->EI:
                         ((MojTV) view).setInArea(true);  //zeby ostatnia litera tez 'zalapala' sie na przesuniecie funkcją przesunWLewo()
-                        przesunWLewo(2*w);
+                        przesunWLewo(w);
                         view.dispatchTouchEvent(event);
 
                         /*tak bylo do 2018.10.07; zastapilem przez sekwencje powyzej
@@ -1263,6 +1284,16 @@ MainActivity extends Activity implements View.OnLongClickListener {
                         view.dispatchTouchEvent(event);
                         */
                     }
+
+                    //Dosuniecie w LEWO, ale dotyczy etykiet SPOZA "światła" Obszaru:
+                    if ((xLit >= xLp) && !(yLit>yLg && yLit<yLd)) {
+                        layoutParams.leftMargin = xLp - view.getWidth();
+                        rootLayout.invalidate();
+                        view.dispatchTouchEvent(event); // Dispatch touch event to view
+                    }
+
+
+
                     //3.Jezeli srodek litery za górnym lub dolnym brzegiem ekranu - dosuwam z powrotem:
                     if (yLit<0) {
                         //layoutParams.topMargin += Math.abs(layoutParams.topMargin);
@@ -2186,8 +2217,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
         /*if (mGlob.BPOMIN_ALL)*/ bPomin.setEnabled(true);
         /*if (mGlob.BUPLOW_ALL)*/ bUpperLower.setEnabled(true);
         /*if (mGlob.BAGAIN_ALL)*/ bAgain.setEnabled(true);
-        /*if (mGlob.BHINT_ALL) */ bHint.setEnabled(true);
-        bShiftLeft.setEnabled(true);
+        /*ifbShiftLeft. (mGlob.BHINT_ALL) */ bHint.setEnabled(true);
+        //setEnabled(true);
     }
 
 

@@ -1150,6 +1150,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         int x;
         //ewentualne przesuniecie wyrazu:
         if (tvShownWord.getVisibility()==VISIBLE) {
+            usunGrawitacje();           //usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w korygujJesliWystaje() i przeszkodzilaby w przesunieciu tvShownWord
             x = tvShownWord.getLeft();
             x = (int) (x/2);
             //tvShownWord.setLeft(x);  //ta instrukcja nie 'commituje', tylko na oglad 'tymczasowy', ponizej OK

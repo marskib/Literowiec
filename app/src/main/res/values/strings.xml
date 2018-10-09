@@ -30,7 +30,7 @@
     </string>
 
 
-    <string name="apka_info_02">par obrazek-dźwięk. Wszystkie</string>
+    <string name="apka_info_02"> par obrazek-dźwięk. Wszystkie</string>
 
     <string name="apka_info_03" tools:ignore="Typos">elementy graficzne i dźwiękowe zostały
         utworzone
@@ -131,6 +131,12 @@
         \n
         Aplikacja akceptuje również zasoby stworzone na potrzeby aplikacji MPrzegladarka (zarówno
         wersji Windowsowej jak Androidowej).
+        \n
+        Maksymalna dopuszczalna liczba liter w wyrazie - 12.
+        \n
+        Wyrazy dłuższe niż 12 liter zostaną \"ucięte\" do 12 liter.
+        \n
+        Przykład: <i>niezapominajki</i> -> <i>niezapominaj</i>
         \n
     </string>
 

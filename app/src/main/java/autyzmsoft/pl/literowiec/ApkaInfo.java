@@ -59,7 +59,7 @@ public class ApkaInfo extends Activity {
         //Ustawia drobny druczek na ApkaInfo; robie skladając kod, zeby zautomatyzowac
         //pobieranie liczby obrazków z Assets apkikacji (zeby nie na sztywano).
 
-        String strLiczba = String.valueOf(MainActivity.listaObrazkowAssets.length)+" "; //w Informacjach odnosimy sie tylko do obrazkow w zasobach
+        String strLiczba = " "+String.valueOf(MainActivity.listaObrazkowAssets.length)+" "; //w Informacjach odnosimy sie tylko do obrazkow w zasobach
         String rob1 = getResources().getString(R.string.apka_info_01);
         String rob2 = getResources().getString(R.string.apka_info_02);
         String rob3 = getResources().getString(R.string.apka_info_03);

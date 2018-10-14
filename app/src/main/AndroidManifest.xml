@@ -4,33 +4,34 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
-        <!--android:icon="@mipmap/ic_launcher"-->
-        <!--android:roundIcon="@mipmap/ic_launcher_round"-->
-
+    <!-- android:icon="@mipmap/ic_launcher" -->
+    <!-- android:roundIcon="@mipmap/ic_launcher_round" -->
     <application
         android:name=".ZmienneGlobalne"
         android:allowBackup="true"
-        android:label="@string/app_name"
         android:icon="@drawable/autyzmsoft"
+        android:label="@string/app_name"
         android:roundIcon="@drawable/autyzmsoft"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name=".MainActivity"
+            android:name="autyzmsoft.pl.literowiec.MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="autyzmsoft.pl.literowiec.MainActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
         <activity
             android:name=".DialogModalny"
             android:theme="@android:style/Theme.Dialog">
-        <intent-filter>
-            <action   android:name="autyzmsoft.pl.literowiec.DialogModalny" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
+            <intent-filter>
+                <action android:name="autyzmsoft.pl.literowiec.DialogModalny"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
         </activity>
 
         <activity
@@ -38,30 +39,39 @@
             android:label="@string/title_activity_ustawienia"
             android:screenOrientation="landscape">
             <intent-filter>
-                <action android:name="autyzmsoft.pl.literowiec.UstawieniaActivity" />
-                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="autyzmsoft.pl.literowiec.UstawieniaActivity"/>
+                <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
 
-        <activity android:name=".ApkaInfo"
-                  android:label="Informacje o aplikacji"
-                  android:screenOrientation="landscape">
+        <activity
+            android:name=".ApkaInfo"
+            android:label="Informacje o aplikacji"
+            android:screenOrientation="landscape">
         </activity>
-
-        <activity android:name=".InternalExternalKlasa"
-                  android:label="wybierz katalog"
-                  android:screenOrientation="landscape">
+        <activity
+            android:name=".InternalExternalKlasa"
+            android:label="wybierz katalog"
+            android:screenOrientation="landscape">
         </activity>
-
         <activity
             android:name=".FileChooserActivity"
             android:label="@string/title_activity_file_choser"
             android:screenOrientation="portrait">
         </activity>
-
         <activity
             android:name=".WersjaDemoOstrzez"
             android:screenOrientation="landscape">
+        </activity>
+        <activity
+
+            android:name="autyzmsoft.pl.literowiec.Startowiec"
+            android:label="@string/app_name"
+            android:screenOrientation="landscape">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
         </activity>
     </application>
 

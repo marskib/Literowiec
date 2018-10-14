@@ -6,13 +6,16 @@
     <string name="ostrzegaj_demo"><b>Informacja.</b>\n
         Używasz aplikacji w wersji Darmowej.
         \n\n
-        W wersji Darmowej, w katalogu zewnętrznym (zasoby tworzone przez Użytkownika) mogą znajdować się maksymalnie <b>2</b> obrazki.
+        W wersji Darmowej, w katalogu zewnętrznym (zasoby tworzone przez Użytkownika) mogą znajdować
+        się maksymalnie <b>2</b> obrazki.
         \n\n
-        Jeżeli wskazany przez Ciebie katalog będzie zawierał więcej niż 2 obrazki, nie zostanie on użyty przez aplikację.
+        Jeżeli wskazany przez Ciebie katalog będzie zawierał więcej niż 2 obrazki, nie zostanie on
+        użyty przez aplikację.
         \n\n
         Pełna wersja może obsłużyć katalogi z dowolną liczbą obrazków.
         \n\n
-        Pełna wersja jest dostępna na stronie <b>AutyzmSoft.pl</b>
+        Pełna wersja jest dostępna na stronie
+        <b>AutyzmSoft.pl</b>
     </string>
 
 
@@ -30,7 +33,7 @@
     </string>
 
 
-    <string name="apka_info_02"> par obrazek-dźwięk. Wszystkie</string>
+    <string name="apka_info_02">par obrazek-dźwięk. Wszystkie</string>
 
     <string name="apka_info_03" tools:ignore="Typos">elementy graficzne i dźwiękowe zostały
         utworzone
@@ -100,7 +103,8 @@
         <i>
             <b>Rodzina</b>
         </i>
-        \nAplikacja wyświetli zdjęcie, odegra dźwięk, a obok zdjęcia umieści w sposób losowy litery wchodzące w skład wyrazu <i>mama</i>).
+        \nAplikacja wyświetli zdjęcie, odegra dźwięk, a obok zdjęcia umieści w sposób losowy litery
+        wchodzące w skład wyrazu <i>mama</i>).
         \n
         W ten sam sposów wrzucamy do katalogu zdjęcia pozostałych członków rodziny.
         \n
@@ -136,7 +140,8 @@
         \n
         Wyrazy dłuższe niż 12 liter zostaną \"ucięte\" do 12 liter.
         \n
-        Przykład: <i>niezapominajki</i> -> <i>niezapominaj</i>
+        Przykład: <i>niezapominajki</i> ->
+        <i>niezapominaj</i>
         \n
     </string>
 
@@ -148,13 +153,15 @@
         \n
         \n
         <b>Ekran z ustawieniami:</b>
-        \nMożemy wyłączyć/włączyć głos, obraz, podpowiedzi, ustalać formę nagrody dźwiękowej, poziom trudności, możemy
+        \nMożemy wyłączyć/włączyć głos, obraz, podpowiedzi, ustalać formę nagrody dźwiękowej, poziom
+        trudności, możemy
         wybrać źródło z którego mają być pobierane obrazki - własny katalog/zasoby aplikacji.
         \n
         \n
         \n
     </string>
     <string name="title_activity_file_choser">FileChoserActivity</string>
+    <string name="title_activity_startowiec">Startowiec</string>
 
 
 </resources>

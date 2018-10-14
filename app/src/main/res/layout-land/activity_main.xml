@@ -63,6 +63,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginRight="2dp"
+
+        android:paddingTop="0dp"
+
         android:text="@string/bAgain_text"
         android:textStyle="bold"
         android:visibility="invisible"/>

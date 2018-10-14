@@ -36,9 +36,9 @@ public class ApkaInfo extends Activity {
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
                 if (v == bStart)
-                    returnIntent.putExtra("MESSAGE", "KL_START");
+                   returnIntent.putExtra("MESSAGE", "KL_START");
                 else
-                    returnIntent.putExtra("MESSAGE", "KL_OK");
+                   returnIntent.putExtra("MESSAGE", "KL_OK");
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }

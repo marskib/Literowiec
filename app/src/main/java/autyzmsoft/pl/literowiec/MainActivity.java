@@ -241,6 +241,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
         //3.Set content view AFTER ABOVE sequence (to avoid crash):
 
         setContentView(R.layout.activity_main);
+        //new MojeTlo().execute(); -- 2018.10.12
 
 
 //ski ski 2018.09.10   ****proby z 'progress' barem:
@@ -1166,8 +1167,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
                 x = (int) (x / 2);
                 przesunWLewo(x);
             } else {
-                Toast.makeText(this, "Brak liter do przesunięcia w lewo.",
-                        Toast.LENGTH_LONG).show();
+                //Toast.makeText(this, "Brak liter do przesunięcia w lewo.",  Toast.LENGTH_LONG).show();
             }
         }
     }  //koniec Metody()
@@ -2552,7 +2552,6 @@ MainActivity extends Activity implements View.OnLongClickListener {
         float scaledDensity = this.getResources().getDisplayMetrics().scaledDensity;
         return Math.round(px /scaledDensity);
     }
-
 
 
 }

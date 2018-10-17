@@ -23,8 +23,9 @@ public class Startowiec extends Activity {
         @Override
         protected Void doInBackground(Void... voids) {
 
+            //Bez tego sleep'a ponizej caly mechanizm nie dziala jak nalezy (nie pojawi sie napis 'prosze czekac'...):
             try {
-              Thread.sleep(1000);
+              Thread.sleep(1500);
             }
             catch (InterruptedException e) {
               Thread.interrupted();

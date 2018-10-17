@@ -1149,7 +1149,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
     /* ***************************************************************************/
 
         int x;
-        //ewentualne przesuniecie wyrazu:
+        //ewentualne przesuniecie calego wyrazu:
         if (tvShownWord.getVisibility()==VISIBLE) {
             usunGrawitacje();           //usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w korygujJesliWystaje() i przeszkodzilaby w przesunieciu tvShownWord
             x = tvShownWord.getLeft();
@@ -1161,16 +1161,42 @@ MainActivity extends Activity implements View.OnLongClickListener {
         }
         //ewentualne przesuniecie etykiet:
         else {
+            sciesnij();
+/*
             MojTV mojTV = dajLeftmostInArea();  //skrajna lewa
             if (!(mojTV == null)) {             //jesli Obszar nie pusty
                 x = mojTV.getLeft();
                 x = (int) (x / 2);
                 przesunWLewo(x);
-            } else {
-                //Toast.makeText(this, "Brak liter do przesunięcia w lewo.",  Toast.LENGTH_LONG).show();
             }
+*/
         }
     }  //koniec Metody()
+
+
+    private void sciesnij() {
+        MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
+        tRob = posortowanaTablicaFromObszar();
+        int licznik = ileWObszarze(); //licznosc lRob (=ile w Obszarze);
+        //szukamy najwiekszek 'dziury' pomiedzy literami w Obszarze:
+        int maxDX = Integer.MIN_VALUE;
+        int wsk = -1;
+        for (int i = 0; i < licznik-1; i++) {
+            int dx = tRob[i+1].getLeft() - tRob[i].getRight();
+            if (dx > maxDX) {
+                maxDX = dx;
+                wsk = i+1; //najwieksza dziura jest na lewo od tego indeksu
+            }
+        }
+        //Sciesniamy:
+        if (wsk != -1) {
+            for (int i = wsk; i < licznik; i++) {
+                RelativeLayout.LayoutParams lPar =  (RelativeLayout.LayoutParams) tRob[i].getLayoutParams();
+                lPar.leftMargin -= maxDX;
+                tRob[i].setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
+            }
+        }
+    } //koniec metody
 
 
 
@@ -1200,7 +1226,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
                     //action_down wykonuje sie (chyba) ZAWSZE, wiec zakladam:
                     ((MojTV) view).setInArea(false);
-                    //policzInAreasy(); -> sledzenie
+                    //ileWObszarze(); -> sledzenie
                     //a potem sie to ww. zmodyfikuje w action up....
 
                     //Toast.makeText(MainActivity.this, ((MojTV) view).getOrigL(), Toast.LENGTH_SHORT).show();
@@ -1236,7 +1262,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
                         //Bylo 'trimowanie' a wiec na pewno jestesmy w Obszarze- dajemy znac i badanie ewentualnego ZWYCIESTWA :
                         ((MojTV) view).setInArea(true);
 
-                        if (policzInAreasy() == currWord.length()) {  //wszystkie litery wyrazu znalazly sie w Obszarze
+                        if (ileWObszarze() == currWord.length()) {  //wszystkie litery wyrazu znalazly sie w Obszarze
                             if (poprawnieUlozono()) {
                                 if (mGlob.LETTER_HOPP_EF)  //ostatnio polozona litera podskoczy z 'radosci' - efekciarstwo:
                                     view.startAnimation(animShakeLong);
@@ -1341,7 +1367,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
             if (mGlob.SND_ERROR_EF)
                 odegrajZAssets(BRR_SND,20); //dzwiek 'brrrrr'
 
-            if (policzInAreasy()==currWord.length()) { //jezeli wszystkie litery polozone, ale źle (patrz zalozenie wejsciowe), to glos dezaprobaty:
+            if (ileWObszarze()==currWord.length()) { //jezeli wszystkie litery polozone, ale źle (patrz zalozenie wejsciowe), to glos dezaprobaty:
                 if (mGlob.DEZAP)
                     odegrajZAssets(DEZAP_SND,320);  //"y-y" męski glos dezaprobaty
             }
@@ -1637,7 +1663,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
 
-    private int policzInAreasy() {
+    private int ileWObszarze() {
     //Zlicza, ile elementow znajduje sie aktualnie w Obszarze
         int licznik = 0;
         for (MojTV lb : lbs) {
@@ -2268,12 +2294,14 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
         return (litWpar.equals(litWtext));
 
-    }
+    } //koniec Metody()
 
-    private String coWidacInObszar() {
-    /* ********************************************************** */
-    /* Zwraca w postaci Stringa to, co AKTUALNIE widac w Obszarze */
-    /* ********************************************************** */
+
+
+    private MojTV[] posortowanaTablicaFromObszar() {
+    /* ******************************************************************************************** */
+    /* Znajdujace sie w Obszarze elementy zwraca w tablicy, POSORTOWANEJ wg. lefej fizycznej wsp. X */
+    /* ******************************************************************************************** */
 
         MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
         //Wszystkie z Obszaru odzwierciedlam w tRob:
@@ -2302,8 +2330,24 @@ MainActivity extends Activity implements View.OnLongClickListener {
             }
         }  //while
 
+        return tRob;
+
+    } //koniec Metody()
+
+
+
+    private String coWidacInObszar() {
+    /* ********************************************************** */
+    /* Zwraca w postaci Stringa to, co AKTUALNIE widac w Obszarze */
+    /* ********************************************************** */
+        MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
+        tRob = posortowanaTablicaFromObszar();
         //Wypakowanie do Stringa i zwrot na zewnatrz:
         StringBuilder sb = new StringBuilder();
+
+        //Jaka jest licznosc tablicy tRob[] ?:
+        int licznik = ileWObszarze();
+
         for (int i = 0; i<licznik; i++) {
             //sb.append(tRob[i].getOrigL());
             sb.append(tRob[i].getText());

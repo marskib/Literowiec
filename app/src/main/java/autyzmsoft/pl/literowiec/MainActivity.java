@@ -1175,12 +1175,15 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
     private void sciesnij() {
+        int licznik = ileWObszarze(); //jednoczesnie licznosc lRob ponizej (=ile w Obszarze);
+
+        if (licznik==0) return;
+
         MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
         tRob = posortowanaTablicaFromObszar();
-        int licznik = ileWObszarze(); //licznosc lRob (=ile w Obszarze);
-        //szukamy najwiekszek 'dziury' pomiedzy literami w Obszarze:
-        int maxDX = Integer.MIN_VALUE;
-        int wsk = -1;
+        //szukamy najwiekszej 'dziury' pomiedzy literami w Obszarze:
+        int maxDX = (int) tRob[0].getLeft()/2;
+        int wsk = 0;
         for (int i = 0; i < licznik-1; i++) {
             int dx = tRob[i+1].getLeft() - tRob[i].getRight();
             if (dx > maxDX) {
@@ -1188,13 +1191,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
                 wsk = i+1; //najwieksza dziura jest na lewo od tego indeksu
             }
         }
-        //Sciesniamy:
-        if (wsk != -1) {
-            for (int i = wsk; i < licznik; i++) {
-                RelativeLayout.LayoutParams lPar =  (RelativeLayout.LayoutParams) tRob[i].getLayoutParams();
-                lPar.leftMargin -= maxDX;
-                tRob[i].setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
-            }
+        //Sciesniamy (wszystkie na prawo od wsk (wlaczniez wsk) pojda w lewo ):
+        for (int i = wsk; i < licznik; i++) {
+            RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) tRob[i].getLayoutParams();
+            lPar.leftMargin -= maxDX;
+            tRob[i].setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
         }
     } //koniec metody
 

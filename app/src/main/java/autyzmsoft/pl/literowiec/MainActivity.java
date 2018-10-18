@@ -1175,14 +1175,17 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
     private void sciesnij() {
-        int licznik = ileWObszarze(); //jednoczesnie licznosc lRob ponizej (=ile w Obszarze);
+    /* Sciesnia litery w Obszarze. Zasada: najpierw sciesnia miedzy literami, a jak sie nie da, */
+    /* to przesuwa wszystko w strone lewej krawedzi Obszaru.                                    */
 
-        if (licznik==0) return;
+        int licznik = ileWObszarze(); //jednoczesnie licznosc lRob[] ponizej (=ile w Obszarze);
 
-        MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
+        if (licznik==0) return; //jak pusty Obszar - nie robie nic
+
+        MojTV[] tRob;                //tablica robocza, do dzialań
         tRob = posortowanaTablicaFromObszar();
         //szukamy najwiekszej 'dziury' pomiedzy literami w Obszarze:
-        int maxDX = (int) tRob[0].getLeft()/2;
+        int maxDX = Integer.MIN_VALUE;
         int wsk = 0;
         for (int i = 0; i < licznik-1; i++) {
             int dx = tRob[i+1].getLeft() - tRob[i].getRight();
@@ -1191,11 +1194,20 @@ MainActivity extends Activity implements View.OnLongClickListener {
                 wsk = i+1; //najwieksza dziura jest na lewo od tego indeksu
             }
         }
-        //Sciesniamy (wszystkie na prawo od wsk (wlaczniez wsk) pojda w lewo ):
-        for (int i = wsk; i < licznik; i++) {
-            RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) tRob[i].getLayoutParams();
-            lPar.leftMargin -= maxDX;
-            tRob[i].setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
+        //Przesuwamy/sciesniamy litery:
+        if (maxDX>0) {
+            //Sciesniamy (wszystkie na prawo od wsk (wlacznie z wsk) pojda w lewo ):
+            for (int i = wsk; i < licznik; i++) {
+                RelativeLayout.LayoutParams lPar =
+                        (RelativeLayout.LayoutParams) tRob[i].getLayoutParams();
+                lPar.leftMargin -= maxDX;
+                tRob[i].setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
+            }
+        }
+        //Przesuwamy wszystko do lewego brzegu Obszaru:
+        else {
+            maxDX = (int) tRob[0].getLeft()/2;
+            przesunWLewo(maxDX);
         }
     } //koniec metody
 

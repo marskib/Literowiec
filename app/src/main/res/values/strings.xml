@@ -162,6 +162,7 @@
     </string>
     <string name="title_activity_file_choser">FileChoserActivity</string>
     <string name="title_activity_startowiec">Startowiec</string>
+  <string name="please_wait">Proszę czekać...</string>
 
 
 </resources>

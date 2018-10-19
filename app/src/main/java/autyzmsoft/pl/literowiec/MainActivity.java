@@ -3,7 +3,6 @@ package autyzmsoft.pl.literowiec;
 import static android.graphics.Color.RED;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
-
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.LATWE;
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.SREDNIE;
 import static autyzmsoft.pl.literowiec.ZmienneGlobalne.TRUDNE;
@@ -59,7 +58,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -72,23 +70,31 @@ import java.util.Random;
 //Prowadzenie litery po ekranie Wykonalem na podstawie: https://github.com/delaroy/DragNDrop
 //YouTube: https://www.youtube.com/watch?v=H3qr1yK6u3M   szukać:android drag and drop delaroy
 
-public class
-MainActivity extends Activity implements View.OnLongClickListener {
+public class MainActivity extends Activity implements View.OnLongClickListener {
 
   public static final int MAXL = 12;          //maxymalna dopuszczalna liczba liter w wyrazie
 
-  public static final int DELAY_EXERC = 1000; //opoznienie w pokazywaniu rozrzuconych liter i podpisu pod Obrazkiem
+  public static final int DELAY_EXERC = 1000;
+  //opoznienie w pokazywaniu rozrzuconych liter i podpisu pod Obrazkiem
 
   public static final long DELAY_ORDER = 600; //opoznienie uporządkowania Obszaru po Zwyciestwie
 
   //Pliki dzwiekowe komentarzy-nagrod:
-  private static final String DEZAP_SND = "nagrania/komentarze/negatywy/male/nie-e2.m4a"; //dzwiek dezaprobaty, gdy bledny caly wyraz
-  private static final String PLUSK_SND = "nagrania/komentarze/plusk_curbed.ogg";         //dzwiek poprawnie polozonej litery
-  private static final String BRR_SND = "nagrania/komentarze/brrr.mp3";                 //dzwiek blednie polozonej litery i/lub calego wyrazu
-  private static final String DING_SND = "nagrania/komentarze/ding.mp3";                 //dzwiek poprawnie ulozonego wyrazu
+  private static final String DEZAP_SND = "nagrania/komentarze/negatywy/male/nie-e2.m4a";
+  //dzwiek dezaprobaty, gdy bledny caly wyraz
+
+  private static final String PLUSK_SND = "nagrania/komentarze/plusk_curbed.ogg";
+  //dzwiek poprawnie polozonej litery
+
+  private static final String BRR_SND = "nagrania/komentarze/brrr.mp3";
+  //dzwiek blednie polozonej litery i/lub calego wyrazu
+
+  private static final String DING_SND = "nagrania/komentarze/ding.mp3";
+  //dzwiek poprawnie ulozonego wyrazu
 
 
   Intent intModalDialog;  //Na okienko dialogu 'modalnego' orzy starcie aplikacji
+
   Intent intUstawienia;   //Na przywolanie ekranu z ustawieniami
 
   static MediaPlayer mp = null;
@@ -97,18 +103,23 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
   //Obrazek i nazwa pod obrazkiem:
   private ImageView imageView;
+
   TextView tvNazwa;
-  //Kontener z obrazkiem (do [long]klikania (lepiej niz na image - rozwiazuje problem z niewidzialnym obrazkiem):
+
+  //Kontener z obrazkiem (do [long]klikania (lepiej niz na image - rozwiazuje problem z
+  // niewidzialnym obrazkiem):
   RelativeLayout l_imageContainer;
 
   //Placeholders'y na etykiety (12 szt.):
-  MojTV L00, L01, L02, L03,
-      L04, L05, L06, L07,
-      L08, L09, L10, L11;
+  MojTV L00, L01, L02, L03, L04, L05, L06, L07, L08, L09, L10, L11;
 
 
-  public static MojTV[] lbs;     //tablica zawierajaca (oryginalne) litery wyrazu; onomastyka: lbs = 'labels'
-  private static MojTV[] lbsRob;  //tablica robocza, do dzialań (m.in. latwego wykrycia prawidlowego porzadku ulozenia etykiet w Obszarze); podzbior tab. lbs
+  public static MojTV[] lbs;
+  //tablica zawierajaca (oryginalne) litery wyrazu; onomastyka: lbs = 'labels'
+
+  private static MojTV[] lbsRob;
+  //tablica robocza, do dzialań (m.in. latwego wykrycia prawidlowego porzadku ulozenia etykiet
+  // w Obszarze); podzbior tab. lbs
 
 
   TextView tvInfo, tvInfo1, tvInfo2, tvInfo3;
@@ -118,48 +129,82 @@ MainActivity extends Activity implements View.OnLongClickListener {
   private int sizeH, sizeW;    //wymiary Urzadzenia
 
   private int _xDelta;
+
   private int _yDelta;
 
-  private int yLg, yLd, xLl, xLp; //wspolrzedne pionowe ygrek Linij Górnej i Dolnej oraz wspolrzedne poziome x linij Lewej i Prawej obszaru 'gorącego'
-  private int yLtrim;          ///polozenie  linii 'Trimowania' - srodek Obszaru, do tej linii dosuwam etykiety (kosmetyka znaczaca)
+  private int yLg, yLd, xLl, xLp;
+  //wspolrzedne pionowe ygrek Linij Górnej i Dolnej oraz wspolrzedne poziome x linij Lewej i
+  // Prawej obszaru 'gorącego'
+
+  private int yLtrim;
+  ///polozenie  linii 'Trimowania' - srodek Obszaru, do tej linii dosuwam etykiety (kosmetyka
+  // znaczaca)
 
   private RelativeLayout.LayoutParams lParams, layoutParams;
 
   public boolean inUp = false; //czy jestesmy w trybie duzych/malych liter
+
   private Button bUpperLower;   //wielkie/male litery
+
   private Button bHint;         //klawisz podpowiedzi
+
   private Button bAgain;        //wymieszanie liter; klawisz pod Obszarem
+
   private Button bAgain1;       //wymieszanie liter; klawisz podbDalej
-  private Button bShiftLeft;    //na przesuwanie w Lewo etykiet z Obszaru (zeby zrobic miejsce z prawej na dalsze ukladanie); przesuniecie w lewo calego Wyrazu; zakladam,ze klawisz czly czas obecny na ekranie
+
+  private Button bShiftLeft;
+  //na przesuwanie w Lewo etykiet z Obszaru (zeby zrobic miejsce z prawej na dalsze ukladanie);
+  // przesuniecie w lewo calego Wyrazu; zakladam,ze klawisz czly czas obecny na ekranie
 
   private LinearLayout lObszar;
-  private Button bDalej;                              //button na przechodzenie po kolejne cwiczenie
-  private Button bPomin;                              //na pominiecie/ucieczke z cwiczenia nie konczac go
+
+  private Button bDalej;
+  //button na przechodzenie po kolejne cwiczenie
+
+  private Button bPomin;
+  //na pominiecie/ucieczke z cwiczenia nie konczac go
 
   public static File katalogSD;                 //katalog z obrazkami na SD (internal i external)
-  public static String[] listaObrazkowSD = null;    //lista obrazkow w katalogu na SD (internal i externa)
 
-  public static String katalogAssets = null;               //Katalogu w Assets, w ktorym trzymane beda obrazki
-  public static String[] listaObrazkowAssets = null;         //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
+  public static String[] listaObrazkowSD = null;
+  //lista obrazkow w katalogu na SD (internal i externa)
 
-  public static String[] listaOper = null; //listas 'operacyjna', z niej ostateczne pobieranie obrazkow
+  public static String katalogAssets = null;
+  //Katalogu w Assets, w ktorym trzymane beda obrazki
 
-  boolean nieGraj = true;    //przelacznik(semafar) : grac/nie grac - jesli start apk. to ma nie grac slowa (bo glupio..)
+  public static String[] listaObrazkowAssets = null;
+  //lista obrazkow z Assets/obrazki - dla wersji demo (i nie tylko...)
+
+  public static String[] listaOper = null;
+  //listas 'operacyjna', z niej ostateczne pobieranie obrazkow
+
+  boolean nieGraj = true;
+  //przelacznik(semafar) : grac/nie grac - jesli start apk. to ma nie grac slowa (bo glupio..)
 
   public static int currImage = -1;      //indeks biezacego obrazka
-  public String currWord = "*";     //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w starych wersjach byl...)
+
+  public String currWord = "*";
+  //bieżacy, wygenerowany wyraz, wziety z currImage; sluzy do porownan; nie jest wyswietlany (w
+  // starych wersjach byl...)
 
   Button bDajGestosc; //sledzenie
+
   public static int density;          //gestosc ekranu - przydatne system-wide
 
   public static boolean PW = true;    //Pierwsze Wejscie do aplikacji
 
-  private Pamietacz mPamietacz;       //do pamietania przydzielonych obrazkow, zeby w miare mozliwosci nie powtarzaly sie
+  private Pamietacz mPamietacz;
+  //do pamietania przydzielonych obrazkow, zeby w miare mozliwosci nie powtarzaly sie
 
-  ZmienneGlobalne mGlob;                          //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
-  KombinacjaOpcji currOptions, newOptions;        //biezace (obowiazujace do chwili wywolania UstawieniaActivity) ustawienia i najnowsze, ustawione w UstawieniaActivity)
+  ZmienneGlobalne mGlob;
+  //'m-member' na zmienne globalne - obiekt singleton klasy ZmienneGlobalne
 
-  Animation animShakeShort, animShakeLong;        //potrzasanie litera[mi] - bledny ciag->short, litera ok->long ; definuję 'wysoko' - wydajnosc
+  KombinacjaOpcji currOptions, newOptions;
+  //biezace (obowiazujace do chwili wywolania UstawieniaActivity) ustawienia i najnowsze,
+  // ustawione w UstawieniaActivity)
+
+  Animation animShakeShort, animShakeLong;
+  //potrzasanie litera[mi] - bledny ciag->short, litera ok->long ; definuję 'wysoko' - wydajnosc
 
 
 
@@ -199,22 +244,33 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
   /*Ponizej, do konca metody onRequestPermissionResult() kod zapewniajacy dostep do kart SD: */
   final private int REQUEST_CODE_ASK_PERMISSIONS = 123;
+
   private float tvWyrazSize;  //rozmiar wyrazu pod obrazkiem
+
   private double screenInches;
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+  public void onRequestPermissionsResult(int requestCode, String[] permissions,
+      int[] grantResults) {
     /* Wywolywana po udzieleniu/odmowie zezwolenia na dostęp do karty (od API 23 i wyzej) */
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     switch (requestCode) {
       case REQUEST_CODE_ASK_PERMISSIONS: {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          //reload my activity with permission granted or use the features what required the permission
+        if (grantResults.length > 0
+            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          //reload my activity with permission granted or use the features what
+          // required the permission
         } else {
-          //toast("Nie udzieliłeś zezwolenia na odczyt. Opcja 'obrazki z mojego katalogu' nie będzie działać. Możesz zainstalować aplikacje ponownie lub zmienić zezwolenie w Menadżerze aplikacji.");
+          //toast("Nie udzieliłeś zezwolenia na odczyt. Opcja 'obrazki z mojego
+          // katalogu' nie będzie działać. Możesz zainstalować aplikacje ponownie lub
+          // zmienić zezwolenie w Menadżerze aplikacji.");
           wypiszOstrzezenie(
-              "Nie udzieliłeś zezwolenia na odczyt. Opcja 'mój katalogAssets' nie będzie działać. Możesz zainstalować aplikację ponownie lub zmienić zezwolenie w Menadżerze aplikacji.");
-          mGlob.ODMOWA_DOST = true;  //dajemy znać, ze odmowiono dostepu; bedzie potrzebne na Ustawieniach przy próbie wybrania wlasnych zasobow
+              "Nie udzieliłeś zezwolenia na odczyt. Opcja 'mój katalogAssets' nie "
+                  + "będzie działać. Możesz zainstalować aplikację ponownie lub zmienić"
+                  + " zezwolenie w Menadżerze aplikacji.");
+          mGlob.ODMOWA_DOST =
+              true;  //dajemy znać, ze odmowiono dostepu; bedzie potrzebne na
+          // Ustawieniach przy próbie wybrania wlasnych zasobow
         }
       }
     }
@@ -223,8 +279,10 @@ MainActivity extends Activity implements View.OnLongClickListener {
   @Override
   public void onCreate(Bundle savedInstanceState) {
 
-    /* ZEZWOLENIA NA KARTE _ WERSJA na MARSHMALLOW, jezeli dziala na starszej wersji, to ten kod wykona sie jako dummy */
-    int jestZezwolenie = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        /* ZEZWOLENIA NA KARTE _ WERSJA na MARSHMALLOW, jezeli dziala na starszej wersji, to ten
+        kod wykona sie jako dummy */
+    int jestZezwolenie = ContextCompat.checkSelfPermission(this,
+        Manifest.permission.READ_EXTERNAL_STORAGE);
     if (jestZezwolenie != PackageManager.PERMISSION_GRANTED) {
       ActivityCompat.requestPermissions(this,
           new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
@@ -238,7 +296,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
     //1.Remove title bar:
     requestWindowFeature(Window.FEATURE_NO_TITLE);
     //2.Remove notification bar:
-    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+        WindowManager.LayoutParams.FLAG_FULLSCREEN);
     //3.Set content view AFTER ABOVE sequence (to avoid crash):
 
     setContentView(R.layout.activity_main);
@@ -258,7 +317,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 //            }
 //        };
 //
-//         final ProgressDialog mProgressDlg = ProgressDialog.show(this, "App_Name", "Loading data...",
+//         final ProgressDialog mProgressDlg = ProgressDialog.show(this, "App_Name", "Loading
+// data...",
 //         true, false);
 //         new Thread(new Runnable(){
 //         public void run() {
@@ -307,7 +367,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
     przypiszLabelsyAndListenery();
 
     //animacja na potrzasanie litera[mi]:
-    animShakeShort = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shaking_short);
+    animShakeShort = AnimationUtils.loadAnimation(getApplicationContext(),
+        R.anim.shaking_short);
     animShakeLong = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.shaking_long);
 
     //Poprawienie wydajnosci? (zeby w onTouch nie tworzyc stale obiektow) L01 - placeholder
@@ -363,11 +424,14 @@ MainActivity extends Activity implements View.OnLongClickListener {
     currOptions = new KombinacjaOpcji();
     newOptions = new KombinacjaOpcji();
 
-    dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage
-    setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
+    dajNextObrazek();                   //daje index currImage obrazka do prezentacji oraz
+    // wyraz currWord odnaleziony pod indeksem currImage
+    setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez
+    // currImage
     rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currImage
 
-    pokazModal();                       //startowe okienko modalne z logo i objasnieniami 'klikologii'
+    pokazModal();                       //startowe okienko modalne z logo i objasnieniami
+    // 'klikologii'
 
   }  //koniec onCreate()
 
@@ -411,11 +475,13 @@ MainActivity extends Activity implements View.OnLongClickListener {
       case WSZYSTKIE:
         dlug_min = 1;
         dlug_max = Integer.MAX_VALUE;
-        break; //nazwa dluzsza niz 12 (MAXL) znakow - trzeba ja uwzglednic, bo inaczej pozniej exception.. (potem i tak przytne do 12)
+        break; //nazwa dluzsza niz 12 (MAXL) znakow - trzeba ja uwzglednic, bo inaczej
+      // pozniej exception.. (potem i tak przytne do 12)
     }
 
     //Tworze liste robocza:
-    //dzieki temu okresle ile jest wymaganych obrazkow, a tym samym bede mial rozmiar tablicy roboczej
+    //dzieki temu okresle ile jest wymaganych obrazkow, a tym samym bede mial rozmiar tablicy
+    // roboczej
     ArrayList<String> lRob = new ArrayList<String>();
     for (String el : lista) {
       String elTmp = getRemovedExtensionName(el);
@@ -427,7 +493,9 @@ MainActivity extends Activity implements View.OnLongClickListener {
       if ((dlug >= dlug_min) && (dlug <= dlug_max)) {
         lRob.add(el); //dodajemy z rozszerzeniem - pelna nazwa pliku!!!
       }
-      //Sprawdzamy, bo moze byc 'kot1', 'kot2' .... - taki wyraz, chc dluzszy, trzeba wziac, bo last digit bedzie w ptzyszlosci wyciety i zostanie 3-literowe kot, tak jak trzeba...
+      //Sprawdzamy, bo moze byc 'kot1', 'kot2' .... - taki wyraz, chc dluzszy, trzeba
+      // wziac, bo last digit bedzie w ptzyszlosci wyciety i zostanie 3-literowe kot, tak
+      // jak trzeba...
       else {
         if (dlug0 == dlug_max + 1) {
           int idxEnd = dlug - 1;
@@ -456,7 +524,9 @@ MainActivity extends Activity implements View.OnLongClickListener {
     /* Wyrysowanie Obrazka; Odegranie dźwieku; Animacja */
 
     String nazwaObrazka; //zawiera rozszerzenie (.jpg , .bmp , ...)
-    Bitmap bitmap;       //nie trzeba robic bitmapy, mozna bezposrednio ze strumienia, ale bitmap pozwala uzyc bitmat.getWidth() (patrz setCornerRadius())
+    Bitmap
+        bitmap;       //nie trzeba robic bitmapy, mozna bezposrednio ze strumienia, ale
+    // bitmap pozwala uzyc bitmat.getWidth() (patrz setCornerRadius())
 
     if (mGlob.BEZ_OBRAZKOW) {
       imageView.setVisibility(INVISIBLE);
@@ -473,7 +543,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
         String robAbsolutePath = katalogSD + "/" + nazwaObrazka;
         bitmap = BitmapFactory.decodeFile(robAbsolutePath, options);
         //Wykrycie orientacji i ewentualny obrot obrazka:
-        //bitmap = obrocJesliTrzeba(bitmap, robAbsolutePath); - wylaczam, bo chyba(?) nie dziala
+        //bitmap = obrocJesliTrzeba(bitmap, robAbsolutePath); - wylaczam, bo chyba(?) nie
+        // dziala
       } else {  //pobranie obrazka z Assets
         InputStream streamSki = getAssets().open(katalogAssets + "/" + nazwaObrazka);
         bitmap = BitmapFactory.decodeStream(streamSki);
@@ -489,18 +560,20 @@ MainActivity extends Activity implements View.OnLongClickListener {
       }
 
       /******* rounded corners 2018.08.03 *************/
-      RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory
-          .create(getResources(), bitmap); //ostatnim parametrem moglby byc stremSki (patrz wyzej)
+      RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(getResources(),
+          bitmap); //ostatnim parametrem moglby byc stremSki (patrz wyzej)
       dr.setCornerRadius(Math.max(bitmap.getWidth(), bitmap.getHeight()) / 20.0f);
       imageView.setImageDrawable(dr);
       /******* rounded corners koniec *************/
 
       //Pokazania obrazka z 'efektem' :
-      if (!mGlob.BEZ_OBRAZKOW) { //trzeba sprawdzic warunek, bo animacja pokazalaby obrazek na chwile...
+      if (!mGlob.BEZ_OBRAZKOW) { //trzeba sprawdzic warunek, bo animacja pokazalaby obrazek
+        // na chwile...
         Animation a = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
         imageView.startAnimation(a);
       }
-      //Ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie indziej):
+      //Ewentualna nazwa pod obrazkiem (robie tutaj, bo lepszy efekt wizualny niż gdzie
+      // indziej):
       if (mGlob.Z_NAZWA) {
         pokazUkryjNazwe();
         Animation b = AnimationUtils.loadAnimation(this, R.anim.skalowanie);
@@ -541,9 +614,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
       String sciezka_do_pliku_dzwiekowego = "nagrania/" + rdzenNazwy + ".ogg";
       odegrajZAssets(sciezka_do_pliku_dzwiekowego, opozniacz);
     } else {  //pobranie nagrania z directory
-      //odegranie z SD (na razie nie zajmujemy sie rozszerzeniem=typ pliku dzwiekowego jest (prawie) dowolny):
+      //odegranie z SD (na razie nie zajmujemy sie rozszerzeniem=typ pliku dzwiekowego jest
+      // (prawie) dowolny):
       String sciezka_do_pliku_dzwiekowego = katalogSD + "/"
-          + rdzenNazwy; //tutaj przekazujemy rdzen nazwy, bez rozszerzenia, bo mogą być różne (.mp3, ogg, .wav...)
+          + rdzenNazwy; //tutaj przekazujemy rdzen nazwy, bez rozszerzenia, bo mogą być
+      // różne (.mp3, ogg, .wav...)
       odegrajZkartySD(sciezka_do_pliku_dzwiekowego, opozniacz);
     }
   }  //koniec Metody()
@@ -567,17 +642,22 @@ MainActivity extends Activity implements View.OnLongClickListener {
           } else {
             mp = new MediaPlayer();
           }
-          final String sciezka_do_pliku = sciezka_do_pliku_parametr; //udziwniam, bo klasa wewn. i kompilator sie czepia....
+          final String sciezka_do_pliku =
+              sciezka_do_pliku_parametr; //udziwniam, bo klasa wewn. i kompilator
+          // sie czepia....
           AssetFileDescriptor descriptor = getAssets().openFd(sciezka_do_pliku);
-          mp.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+          mp.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(),
+              descriptor.getLength());
           descriptor.close();
           mp.prepare();
           mp.setVolume(1f, 1f);
           mp.setLooping(false);
           mp.start();
-          //Toast.makeText(getApplicationContext(),"Odgrywam: "+sciezka_do_pliku,Toast.LENGTH_SHORT).show();
+          //Toast.makeText(getApplicationContext(),"Odgrywam: "+sciezka_do_pliku,Toast
+          // .LENGTH_SHORT).show();
         } catch (Exception e) {
-          //Toast.makeText(getApplicationContext(), "Nie można odegrać pliku z dźwiękiem.", Toast.LENGTH_LONG).show();
+          //Toast.makeText(getApplicationContext(), "Nie można odegrać pliku z
+          // dźwiękiem.", Toast.LENGTH_LONG).show();
           e.printStackTrace();
         }
       }
@@ -595,7 +675,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
     }
 
     //Na pdst. parametru metody szukam odpowiedniego pliku do odegrania:
-    //(typuję, jak moglby sie nazywac plik i sprawdzam, czy istbieje. jezeli istnieje - OK, wychodze ze sprawdzania majac wytypowaną nazwe pliku)
+    //(typuję, jak moglby sie nazywac plik i sprawdzam, czy istbieje. jezeli istnieje - OK,
+    // wychodze ze sprawdzania majac wytypowaną nazwe pliku)
     String pliczek;
     pliczek = sciezka_do_pliku_parametr + ".m4a";
     File file = new File(pliczek);
@@ -612,8 +693,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
             pliczek = sciezka_do_pliku_parametr + ".amr";
             file = new File(pliczek);
             if (!file.exists()) {
-              pliczek = ""; //to trzeba zrobic, zeby 'gracefully wyjsc z metody (na Android 4.4 sie wali, jesli odgrywa plik nie istniejacy...)
-              //dalej nie sprawdzam/nie typuję... (na razie) (.wma nie sa odtwarzane na Androidzie)
+              pliczek =
+                  ""; //to trzeba zrobic, zeby 'gracefully wyjsc z metody (na
+              // Android 4.4 sie wali, jesli odgrywa plik nie istniejacy...)
+              //dalej nie sprawdzam/nie typuję... (na razie) (.wma nie sa
+              // odtwarzane na Androidzie)
             }
           }
         }
@@ -644,7 +728,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
           });
           //albo mozna tak:
           //mPlayer.setOnCompletionListener(getApplicationContext()); ,
-          //a dalej w kodzie klasy zdefiniowac tego listenera, czyli public void onCompletion(MediaPlayer xx) {...}
+          //a dalej w kodzie klasy zdefiniowac tego listenera, czyli public void
+          // onCompletion(MediaPlayer xx) {...}
         }
       }
     }, delay_milisek);
@@ -652,7 +737,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private void dajNextObrazek() {
-    //Daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod indeksem currImage;
+    //Daje index currImage obrazka do prezentacji oraz wyraz currWord odnaleziony pod
+    // indeksem currImage;
     //Na podst. currImage ustawia nazwe currWord.
 
     currImage = dajLosowyNumerObrazka();
@@ -757,9 +843,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
             k = rand.nextInt(lbs.length);
           }
           while (lbs[k].getVisibility()
-              == VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste (=niewidoczne) etykiety
+              == VISIBLE); //petla gwarantuje, ze trafiamy tylko w puste
+          // (=niewidoczne) etykiety
 
-          //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) + pokazanie:
+          //Umieszczenie litery na wylosowanej pozycji (i w strukturze obiektu MojTV) +
+          // pokazanie:
           lbs[k].setOrigL(z);
           lbs[k].setText(z);
           lbs[k].setTextColor(Color.BLACK);  //kosmetyka, ale wazna...
@@ -768,7 +856,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
           //podpiecie animacji:
           lbs[k].startAnimation(a);
         }
-        if (inUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba - podnosimy
+        if (inUp)             //ulozylismy z malych (oryginalnych) liter. Jesli trzeba -
+        // podnosimy
         {
           podniesLabels();
         }
@@ -812,7 +901,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
     resetujLabelsy();
     ustawLadnieEtykiety();
-    dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz currWord = nazwa obrazka bez nalecialosci)
+    dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz
+    // currWord = nazwa obrazka bez nalecialosci)
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
       getAnimatorSkib(imageView, 300).start();
@@ -821,13 +911,17 @@ MainActivity extends Activity implements View.OnLongClickListener {
       handler.postDelayed(new Runnable() {
         @Override
         public void run() {
-          setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
-          rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego pr888888888888888888888zez currWord
+          setCurrentImage();                  //wyswietla currImage i odgrywa słowo
+          // okreslone przez currImage
+          rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego
+          // pr888888888888888888888zez currWord
         }
       }, 500);
     } else {
-      setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
-      rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego pr888888888888888888888zez currWord
+      setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone
+      // przez currImage
+      rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego
+      // pr888888888888888888888zez currWord
     }
 
     tvShownWord.setVisibility(INVISIBLE);
@@ -953,7 +1047,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
         lb.setText(coWidac);
       }
     }
-    tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(Locale.getDefault())); //podniesienie nazwy pod Obrazkiem
+    tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(
+        Locale.getDefault())); //podniesienie nazwy pod Obrazkiem
   } //koniec Metody()
 
   private void restoreOriginalLabels() {
@@ -978,9 +1073,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
     coWidac = coWidac.toUpperCase(Locale.getDefault());
     tvShownWord.setText(coWidac);
 
-    tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(Locale.getDefault())); //podniesienie nazwy pod Obrazkiem
+    tvNazwa.setText(tvNazwa.getText().toString().toUpperCase(
+        Locale.getDefault())); //podniesienie nazwy pod Obrazkiem
 
-    ewentualnieSciesnij(); //Sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi za Obszar no mater what...
+    ewentualnieSciesnij(); //Sciesniam jezeli b.dlugi wyraz z letterSpacing>0 , bo wychodzi
+    // za Obszar no mater what...
     korygujJesliWystaje();
 
   }  //koniec Metody()
@@ -995,7 +1092,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
         int rightT = tvShownWord.getRight();  //T - od 'textV..'
         int rightL = lObszar.getRight();      //L - od 'lOb...'
 
-        //bDajGestosc.setText("TV : "+Integer.toString(rightT)+" Ol :"+Integer.toString(rightL)); //sledzenie
+        //bDajGestosc.setText("TV : "+Integer.toString(rightT)+" Ol :"+Integer.toString
+        // (rightL)); //sledzenie
 
         if (rightT >= rightL) {
           addGravityToParent();
@@ -1009,16 +1107,20 @@ MainActivity extends Activity implements View.OnLongClickListener {
   private void restoreOriginalWyraz() {
     //Wyraz z Obszaru zmniejszany jest do małych (scislej: oryginalnych) liter.
     //Uwzględnia to problem MIKOŁAJ->Mikołaj
-    //Wywolywane w kontekscie zmiany z Wielkich->małe, wiec staram sie, zeby wyraz z malymi literami
+    //Wywolywane w kontekscie zmiany z Wielkich->małe, wiec staram sie, zeby wyraz z malymi
+    // literami
     //rozpoczynal sie tam, gdzie zaczynal sie wyraz z "macierzysty" (jezeli wyraz<MAXL znakow)
 
     String coPokazac = currWord;
     restoreApplyLetterSpacing(tvShownWord);
     tvShownWord.setText(coPokazac);
 
-    //Jezeli wyraz nie jest zbyt dlugi, to wyraz zacznie sie tam, gdzie zaczynal sie wyraz z Wielimi literami
-    //(przy b.dlugich wyrazach nie mozna sobie na to pozwolic - patrz 'niedziedzie' przy zmianie Wielki->male nie miesci sie w Obszarze(!)
-    //(wieloliterowy wyraz malymi literami moze byc dluzszy niz ten sam wyraz Wielkimi, bo wielki ma usuniety letterSpacing(!)):
+    //Jezeli wyraz nie jest zbyt dlugi, to wyraz zacznie sie tam, gdzie zaczynal sie wyraz z
+    // Wielimi literami
+    //(przy b.dlugich wyrazach nie mozna sobie na to pozwolic - patrz 'niedziedzie' przy
+    // zmianie Wielki->male nie miesci sie w Obszarze(!)
+    //(wieloliterowy wyraz malymi literami moze byc dluzszy niz ten sam wyraz Wielkimi, bo
+    // wielki ma usuniety letterSpacing(!)):
     final int pocz = tvShownWord.getLeft();
     if (currWord.length() < MAXL) {
       tvShownWord.post(new Runnable() {
@@ -1037,8 +1139,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 //        bDalej.getLayoutParams().height = yLg;
 //        bDalej.requestLayout();
 
-    int screenSize = getResources().getConfiguration().screenLayout &
-        Configuration.SCREENLAYOUT_SIZE_MASK;
+    int screenSize = getResources().getConfiguration().screenLayout
+        & Configuration.SCREENLAYOUT_SIZE_MASK;
 
     String toastMsg;
     switch (screenSize) {
@@ -1098,8 +1200,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   public void bDajGestoscOnClick(View view) {
-    int screenSize = getResources().getConfiguration().screenLayout &
-        Configuration.SCREENLAYOUT_SIZE_MASK;
+    int screenSize = getResources().getConfiguration().screenLayout
+        & Configuration.SCREENLAYOUT_SIZE_MASK;
 
     int density = getResources().getDisplayMetrics().densityDpi;
     switch (density) {
@@ -1135,8 +1237,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
   /**
    * dotyczy: imageView
    * Co na dlugim kliknieciu na obrazku - powolanie ekranu z opcjami
-   */
-  public boolean onLongClick(View view) {
+   */ public boolean onLongClick(View view) {
     intUstawienia = new Intent("autyzmsoft.pl.literowiec.UstawieniaActivity");
     startActivity(intUstawienia);
     return true;
@@ -1144,13 +1245,18 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private void przesunWLewo(int dx) {
-    /* ************************************************************************************************************* */
-    /* WSZYSKIE etykiety z Obszaru zostają przesuniete w lewo o dx, zeby zrobic wiecej miejsca z prawej na układanie */
-    /* ************************************************************************************************************* */
+    /*
+     * ************************************************************************************************************* */
+        /* WSZYSKIE etykiety z Obszaru zostają przesuniete w lewo o dx, zeby zrobic wiecej
+        miejsca z prawej na układanie */
+    /*
+     * ************************************************************************************************************* */
     for (MojTV lb : lbs) {
       if (lb.isInArea()) {
-        //lb.setLeft(lb.getLeft()-x); - to nie jest dobre, bo nie ma czegos w rodzaju 'commit'owania'... (patrz nizej)
-        RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) lb.getLayoutParams();
+        //lb.setLeft(lb.getLeft()-x); - to nie jest dobre, bo nie ma czegos w rodzaju
+        // 'commit'owania'... (patrz nizej)
+        RelativeLayout.LayoutParams lPar =
+            (RelativeLayout.LayoutParams) lb.getLayoutParams();
         lPar.leftMargin -= dx;
         lb.setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
       }
@@ -1165,24 +1271,28 @@ MainActivity extends Activity implements View.OnLongClickListener {
     /* jezeli nie ulozony - sciesniam/przesuwam etykiety                         */
     /* ***************************************************************************/
 
-    if (ileWObszarze()==0 && (tvShownWord.getVisibility() != VISIBLE)) {
+    if (ileWObszarze() == 0 && (tvShownWord.getVisibility() != VISIBLE)) {
       return; //kiedy nic nie ma w Obszarze - nie robie nic
     }
 
     int x;
     //ewentualne przesuniecie calego wyrazu:
     if (tvShownWord.getVisibility() == VISIBLE) {
-      usunGrawitacje();           //usuniecie Grawitacji z lObszar, bo mogla byc ustawiona w korygujJesliWystaje() i przeszkodzilaby w przesunieciu tvShownWord
+      usunGrawitacje();           //usuniecie Grawitacji z lObszar, bo mogla byc ustawiona
+      // w korygujJesliWystaje() i przeszkodzilaby w przesunieciu tvShownWord
       x = tvShownWord.getLeft();
       x = x / 2;                  //Przesuwamy o polowe dystansu do lewego brzegu Obszaru
-      //tvShownWord.setLeft(x);  //ta instrukcja nie 'commituje', tylko na oglad 'tymczasowy', ponizej OK
-      LinearLayout.LayoutParams lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
+      //tvShownWord.setLeft(x);  //ta instrukcja nie 'commituje', tylko na oglad
+      // 'tymczasowy', ponizej OK
+      LinearLayout.LayoutParams lPar =
+          (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
       lPar.leftMargin = x;
-      tvShownWord.setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
+      tvShownWord.setLayoutParams(
+          lPar);       //"commit" na View, view bedzie siedzial 'twardo'
     }
     //ewentualne przesuniecie etykiet:
     else {
-      boolean sciesnil = sciesnij();
+      boolean sciesnil = likwidujBiggestGap();
       if (!sciesnil) { //przesuwamy Wszystko w lewo
         MojTV mojTV = dajLeftmostInArea();  //skrajna lewa
         x = mojTV.getLeft();
@@ -1193,19 +1303,22 @@ MainActivity extends Activity implements View.OnLongClickListener {
   }  //koniec Metody()
 
 
-  private boolean sciesnij() {
-    /* Sciesnia litery w Obszarze. Zasada: wyszukuje najwieksza dziurę i likwiduja ją. */
+  private boolean likwidujBiggestGap() {
+    /***********************************************************************************/
+    /* Zmiejsza odcinek zajmowany przez litery w Obszarze.                             */
+    /* Zasada: wyszukuje najwieksza dziurę i likwiduja ją.                             */
+    /* Likwidacja dziury poprzez przesuniecie etykiet z prawej w lewo o jej szerokosc. */
     /* Jezeli nie znajdzie dziury>0 , zwraca false. Uwaga - padding brany pod uwage.   */
+    /***********************************************************************************/
 
     int licznik = ileWObszarze(); //jednoczesnie licznosc lRob[] ponizej (=ile w Obszarze);
 
     if (licznik == 0) {
-      return false; //jak pusty Obszar - nie robie nic
+      return false; //jak pusty Obszar lub ulozono wyraz - nie robie nic
     }
 
-    MojTV[] tRob;                //tablica robocza, do dzialań
-    tRob = posortowanaTablicaFromObszar();
-    //szukamy najwiekszej 'dziury' pomiedzy literami w Obszarze:
+    MojTV[] tRob = posortowanaTablicaFromObszar();     //tablica robocza, do dzialań
+    //Szukamy najwiekszej 'dziury' pomiedzy literami w Obszarze:
     int maxDX = Integer.MIN_VALUE;
     int wsk = 0;
     for (int i = 0; i < licznik - 1; i++) {
@@ -1219,9 +1332,11 @@ MainActivity extends Activity implements View.OnLongClickListener {
     if (maxDX > 0) {
       //Sciesniamy (wszystkie na prawo od wsk (wlacznie z wsk) pojda w lewo ):
       for (int i = wsk; i < licznik; i++) {
-        RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) tRob[i].getLayoutParams();
+        RelativeLayout.LayoutParams lPar =
+            (RelativeLayout.LayoutParams) tRob[i].getLayoutParams();
         lPar.leftMargin -= maxDX;
-        tRob[i].setLayoutParams(lPar);       //"commit" na View, view bedzie siedzial 'twardo'
+        tRob[i].setLayoutParams(
+            lPar);       //"commit" na View, view bedzie siedzial 'twardo'
       }
     }
     return (maxDX > 0); //bylo/nie bylo scieśniania
@@ -1251,27 +1366,32 @@ MainActivity extends Activity implements View.OnLongClickListener {
           //Pokazanie szerokosci kontrolki:
           //tvInfo.setText(Integer.toString(view.getWidth()));
 
-          ((MojTV) view).setTextColor(RED); //zmiana koloru przeciaganej litery - kosmetyka
+          ((MojTV) view).setTextColor(
+              RED); //zmiana koloru przeciaganej litery - kosmetyka
 
           //action_down wykonuje sie (chyba) ZAWSZE, wiec zakladam:
           ((MojTV) view).setInArea(false);
           //ileWObszarze(); -> sledzenie
           //a potem sie to ww. zmodyfikuje w action up....
 
-          //Toast.makeText(MainActivity.this, ((MojTV) view).getOrigL(), Toast.LENGTH_SHORT).show();
+          //Toast.makeText(MainActivity.this, ((MojTV) view).getOrigL(), Toast
+          // .LENGTH_SHORT).show();
 
           break;
         case MotionEvent.ACTION_UP:
 
-          ((MojTV) view).setTextColor(Color.BLACK); //przywroceni koloru przeciaganej litery - kosmetyka
+          ((MojTV) view).setTextColor(
+              Color.BLACK); //przywroceni koloru przeciaganej litery - kosmetyka
 
           //sledzenie:
           //int Xstop = X;
           //tvInfo.setText("xKontrolki=" + Integer.toString(layoutParams.leftMargin));
           //tvInfo1.setText("xPalca=" + Integer.toString(Xstop));
 
-          /* Sprawdzenie, czy srodek etykiety jest w Obszarze; Jezeli tak - dosuniecie do lTrim. : */
-          //1.Policzenie wspolrzednych srodka Litery: (zakladam, ze srodek litery jest w srodku kontrolki o szer w i wys. h)
+                    /* Sprawdzenie, czy srodek etykiety jest w Obszarze; Jezeli tak - dosuniecie
+                    do lTrim. : */
+          //1.Policzenie wspolrzednych srodka Litery: (zakladam, ze srodek litery jest
+          // w srodku kontrolki o szer w i wys. h)
           layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
           int w = view.getWidth();
           int lm = layoutParams.leftMargin;
@@ -1282,17 +1402,23 @@ MainActivity extends Activity implements View.OnLongClickListener {
           int xLit = lm + (int) (w / 2.0);
           int yLit = tm + (int) (h / 2.0);
 
-          //2.Dosunirecie Litery na poziomy srodek Obszaru (linia yLtrim); srodek etykiety ma wypasc na yLtrim:
+          //2.Dosunirecie Litery na poziomy srodek Obszaru (linia yLtrim); srodek
+          // etykiety ma wypasc na yLtrim:
           if ((yLit > yLg && yLit < yLd) && (xLit > xLl && xLit < xLp)) {
-            layoutParams.topMargin = yLtrim - (int) (h / 2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
+            layoutParams.topMargin = yLtrim - (int) (h
+                / 2.0);  //odejmowanie zeby srodek etykiety wypadl na lTrim
             view.setLayoutParams(layoutParams);
 
-            //Bylo 'trimowanie' a wiec na pewno jestesmy w Obszarze- dajemy znac i badanie ewentualnego ZWYCIESTWA :
+            //Bylo 'trimowanie' a wiec na pewno jestesmy w Obszarze- dajemy znac i
+            // badanie ewentualnego ZWYCIESTWA :
             ((MojTV) view).setInArea(true);
 
-            if (ileWObszarze() == currWord.length()) {  //wszystkie litery wyrazu znalazly sie w Obszarze
+            if (ileWObszarze()
+                == currWord.length()) {  //wszystkie litery wyrazu znalazly sie w
+              // Obszarze
               if (poprawnieUlozono()) {
-                if (mGlob.LETTER_HOPP_EF)  //ostatnio polozona litera podskoczy z 'radosci' - efekciarstwo:
+                if (mGlob.LETTER_HOPP_EF)  //ostatnio polozona litera podskoczy z
+                // 'radosci' - efekciarstwo:
                 {
                   view.startAnimation(animShakeLong);
                 }
@@ -1311,7 +1437,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
               if (!mCurrWord.contains(whatSeen)) {
                 reakcjaNaBledneUlozenie();
-              } else {//polozona (poprawnie) litera 'bujnie' się; odegrany zostanie 'plusk' :
+              } else {//polozona (poprawnie) litera 'bujnie' się; odegrany zostanie
+                // 'plusk' :
                 if (mGlob.SND_LETTER_OK_EF) {
                   odegrajZAssets(PLUSK_SND, 0);
                 }
@@ -1324,25 +1451,33 @@ MainActivity extends Activity implements View.OnLongClickListener {
           }
           //3.Jesli srodek litery zostala wyciagnieta za bande - dosuwam z powrotem:
           if (xLit <= xLl) {   //dosuniecie w prawo
-            //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
-            layoutParams.leftMargin = xLl - view.getPaddingLeft() + 2; //dosuniecie w prawo
+            //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast
+            // .LENGTH_SHORT).show();
+            layoutParams.leftMargin =
+                xLl - view.getPaddingLeft() + 2; //dosuniecie w prawo
             rootLayout.invalidate();
-            //Ponowne wywolanie eventa - spowoduje, ze wykona sie onTouch na tym samym view z zastanym (=ACTION_UP) eventem/parametrem, ale na innym polozeniu litery,
+            //Ponowne wywolanie eventa - spowoduje, ze wykona sie onTouch na tym
+            // samym view z zastanym (=ACTION_UP) eventem/parametrem, ale na innym
+            // polozeniu litery,
             //litera bedzie w Obszarze i zostanie 'dotrimowana'"
             view.dispatchTouchEvent(event); // Dispatch touch event to view
           }
 
-          //Dosuniecie w lewo; ale dotyczy TYLKO etykiety ze "swiatła" Obszaru ("swiatla", czyli rowniez za Prawym końcem Obszaru):
+          //Dosuniecie w lewo; ale dotyczy TYLKO etykiety ze "swiatła" Obszaru
+          // ("swiatla", czyli rowniez za Prawym końcem Obszaru):
           if ((xLit >= xLp) && (yLit > yLg && yLit < yLd)) {
 
-            //Bedziemy przesuwac w lewo Wszystkie lit. z Obszaru; dzieki temu mniej problemów, np. znika problem IE-->EI:
-            ((MojTV) view)
-                .setInArea(true);  //zeby ostatnia litera tez 'zalapala' sie na przesuniecie funkcją przesunWLewo()
+            //Bedziemy przesuwac w lewo Wszystkie lit. z Obszaru; dzieki temu mniej
+            // problemów, np. znika problem IE-->EI:
+            ((MojTV) view).setInArea(
+                true);  //zeby ostatnia litera tez 'zalapala' sie na przesuniecie
+            // funkcją przesunWLewo()
             przesunWLewo(w);
             view.dispatchTouchEvent(event);
 
                         /*tak bylo do 2018.10.07; zastapilem przez sekwencje powyzej
-                        layoutParams.leftMargin = xLp - w + view.getPaddingRight(); //dosuniecie w lewo
+                        layoutParams.leftMargin = xLp - w + view.getPaddingRight(); //dosuniecie
+                        w lewo
                         rootLayout.invalidate();
                         view.dispatchTouchEvent(event);
                         */
@@ -1355,7 +1490,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
             view.dispatchTouchEvent(event); // Dispatch touch event to view
           }
 
-          //3.Jezeli srodek litery za górnym lub dolnym brzegiem ekranu - dosuwam z powrotem:
+          //3.Jezeli srodek litery za górnym lub dolnym brzegiem ekranu - dosuwam z
+          // powrotem:
           if (yLit < 0) {
             //layoutParams.topMargin += Math.abs(layoutParams.topMargin);
             layoutParams.topMargin = 0;
@@ -1365,7 +1501,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
           }
 
           //sledzenie:
-          //tvInfo2.setText("xLit="+Integer.toString(xLit)+" yLit="+Integer.toString(yLit));
+          //tvInfo2.setText("xLit="+Integer.toString(xLit)+" yLit="+Integer.toString
+          // (yLit));
           break;
                 /*
                 case MotionEvent.ACTION_POINTER_DOWN:
@@ -1403,8 +1540,9 @@ MainActivity extends Activity implements View.OnLongClickListener {
         odegrajZAssets(BRR_SND, 20); //dzwiek 'brrrrr'
       }
 
-      if (ileWObszarze() == currWord
-          .length()) { //jezeli wszystkie litery polozone, ale źle (patrz zalozenie wejsciowe), to glos dezaprobaty:
+      if (ileWObszarze()
+          == currWord.length()) { //jezeli wszystkie litery polozone, ale źle (patrz
+        // zalozenie wejsciowe), to glos dezaprobaty:
         if (mGlob.DEZAP) {
           odegrajZAssets(DEZAP_SND, 320);  //"y-y" męski glos dezaprobaty
         }
@@ -1471,7 +1609,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
   } //koniec Metody()
 
   private String dajLosowyPlik(String aktywa) {
-    //Zwraca losowy plik z podanego katalogu w Assets; używana do generowania losowej pochwały/nagany
+    //Zwraca losowy plik z podanego katalogu w Assets; używana do generowania losowej
+    // pochwały/nagany
 
     String[] listaKomciow = null;
     AssetManager mgr = getAssets();
@@ -1495,7 +1634,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
   } //koniec metody()
 
   private int dajLeftmostX() {
-    //Daje wspolrzedną X najbardziej na lewo polozonej przez usera etykiety z Obszaru; pomocnicza
+    //Daje wspolrzedną X najbardziej na lewo polozonej przez usera etykiety z Obszaru;
+    // pomocnicza
 
     int min = Integer.MAX_VALUE;
     for (MojTV lb : lbs) {
@@ -1525,17 +1665,25 @@ MainActivity extends Activity implements View.OnLongClickListener {
   }
 
   private void uporzadkujObszar() {
-    /* ******************************************************************************************* */
-    /* Po Zwyciestwie:                                                                             */
-    /* Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz, przywracamy klawisz bDalej */
-    /* Jesli trzeba - robimy korekcje miejsca wyswietlania (zeby wyraz sie miescil w Obszarze)     */
-    /* Gasimy niektore klawisze pod Obszarem.                                                      */
-    /* ******************************************************************************************* */
+    /*
+     * ******************************************************************************************* */
+    /* Po Zwyciestwie:
+     *  */
+        /* Gasimy wszysko (litery w obszarze); wyswietlamy zwycieski wyraz, przywracamy klawisz
+        bDalej */
+        /* Jesli trzeba - robimy korekcje miejsca wyswietlania (zeby wyraz sie miescil w
+        Obszarze)     */
+    /* Gasimy niektore klawisze pod Obszarem.
+     *  */
+    /*
+     * ******************************************************************************************* */
 
-    //Przywracamy wielkosc letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach (length>10) o wielkich literach:
+    //Przywracamy wielkosc letterSpacing, bo mogly byc zmienione przy b. dlugich wyrazach
+    // (length>10) o wielkich literach:
     restoreApplyLetterSpacing(tvShownWord);
 
-    //Wyswietlenie wyrazu rozpoczynam od miejsca, gdzie user umiescil 1-sza litere (z ewentualnymi poprawkami):
+    //Wyswietlenie wyrazu rozpoczynam od miejsca, gdzie user umiescil 1-sza litere (z
+    // ewentualnymi poprawkami):
     LinearLayout.LayoutParams lPar;
     lPar = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
     int leftMost = dajLeftmostX();
@@ -1547,14 +1695,18 @@ MainActivity extends Activity implements View.OnLongClickListener {
     lPar.leftMargin = leftMost;
 
     //ski ski ++
-    // 2018.09.06 - kod poniżej zapewnia, ze tvShownWord zostanie pokazane "równo" z ulozonymi literami, nie będzie "podskoku"
-    //Trudno wyelimimnowac ten 'podskok' w xml, ale kod ponizej wydaje sie troche 'nadmiarowy' i niepewny (lbs[0])
+    // 2018.09.06 - kod poniżej zapewnia, ze tvShownWord zostanie pokazane "równo" z
+    // ulozonymi literami, nie będzie "podskoku"
+    //Trudno wyelimimnowac ten 'podskok' w xml, ale kod ponizej wydaje sie troche
+    // 'nadmiarowy' i niepewny (lbs[0])
     //Sprawdzic na tablecie Marcina - tam widac wysokie 'skoki' ;)
     int h = lbs[0].getHeight(); //wys=sokosc litery (? czy aby na pewno -> wielka vs. mala)
-    int lSrWz = (int) lObszar.getHeight() / 2;  //linia Srodkowa Wzgledna (w przestrzeni wspolrzednych lObszar)
+    int lSrWz = (int) lObszar.getHeight()
+        / 2;  //linia Srodkowa Wzgledna (w przestrzeni wspolrzednych lObszar)
     ////rownowazne getHeightt90 -> int lSrWz = ((int) ((yLd-yLg)/2.0));
     lPar.topMargin = lSrWz - (int) (h / 2.0)
-        - 6;  //odejmowanie zeby srodek etykiety wypadl na lTrim; -6 bo 'y' jest ucinane od dolu...
+        - 6;  //odejmowanie zeby srodek etykiety wypadl na lTrim; -6 bo 'y' jest ucinane
+    // od dolu...
     //ski ski --
 
     tvShownWord.setLayoutParams(lPar);
@@ -1563,14 +1715,16 @@ MainActivity extends Activity implements View.OnLongClickListener {
       ewentualnieSciesnij();  //reakcja na b.dlugi wyraz wielkimi literami (>10)
     }
 
-    pokazWyraz();                     //w Obszarze pokazany zostaje ulozony wyraz (umieszczaam w tvSHownWord; + ewentualna korekcja polozenia)
+    pokazWyraz();                     //w Obszarze pokazany zostaje ulozony wyraz
+    // (umieszczaam w tvSHownWord; + ewentualna korekcja polozenia)
 
     //Gasimy wszystkie etykiety:
     for (MojTV lb : lbs) {
       lb.setVisibility(INVISIBLE);
     }
 
-    //Przywrocenie/pokazanie klawisza bDalej i bAgain1 oraz niektorych dodatkowych (z lekkim opoznieniem):
+    //Przywrocenie/pokazanie klawisza bDalej i bAgain1 oraz niektorych dodatkowych (z lekkim
+    // opoznieniem):
     Handler mHandl = new Handler();
     mHandl.postDelayed(new Runnable() {
       @Override
@@ -1609,14 +1763,17 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private void restoreApplyLetterSpacing(TextView mTV) {
-    //Przywracamy wielkosc letterSpacing (po zmianie wymuszonej przez dlugi wyraz) + ewentualna reakcja na ustawienia globalne
+    //Przywracamy wielkosc letterSpacing (po zmianie wymuszonej przez dlugi wyraz) +
+    // ewentualna reakcja na ustawienia globalne
 
     if (Build.VERSION.SDK_INT >= 21) {
-      //float lspacing = getResources().getDimension(R.dimen.lspacing_ski); nie dziala, ustawiam na żywca....
+      //float lspacing = getResources().getDimension(R.dimen.lspacing_ski); nie dziala,
+      // ustawiam na żywca....
       //tvShownWord.setLetterSpacing(lspacing);
       if (mGlob.ZE_SPACING) {
         if (mTV.length() >= MAXL && inUp) {
-          return; //za dlugich wielkich nie rozszerzamy, bo moga sie nie zmiescic na wielu urzadzeniach...
+          return; //za dlugich wielkich nie rozszerzamy, bo moga sie nie zmiescic na
+          // wielu urzadzeniach...
         }
         mTV.setLetterSpacing((float) 0.1);   //UWAGA!!! - na "żywca"... patrz wyżej
         //!!! BARDZO WAZNE: !!!
@@ -1629,7 +1786,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
   private void pokazWyraz() {
     //Pokazanie ulozonego wyrazu w Obszarze;
-    //Wyraz skladam z tego, co widac na ekranie, nie uzywając currWord (bo problemy z duze/male litery)
+    //Wyraz skladam z tego, co widac na ekranie, nie uzywając currWord (bo problemy z
+    // duze/male litery)
 
     tvShownWord.setText(coWidacInObszar());
 
@@ -1653,15 +1811,21 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private void addGravityToParent() {
-    /* **************************************************************************************** */
-    /* Dodanie grawitacji sciagajacej do prawego boku do lObszar;                               */
-    /* Dzieki temu, ze mamy gwarancje, jezeli wyraz wystaje za lObszar, to zostanie "cofnięty"  */
-    /* i pokazany w całości w lObszar.                                                          */
-    /* **************************************************************************************** */
+    /*
+     * **************************************************************************************** */
+    /* Dodanie grawitacji sciagajacej do prawego boku do lObszar;
+     *  */
+        /* Dzieki temu, ze mamy gwarancje, jezeli wyraz wystaje za lObszar, to zostanie
+        "cofnięty"  */
+    /* i pokazany w całości w lObszar.
+     *  */
+    /*
+     * **************************************************************************************** */
 
     RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) lObszar.getLayoutParams();
 
-    //"usuniecie" marginesu z TextView'a (bo mogl byc programowo ustawiony i w takim wypadku grawitacja by nie zadzialala):
+    //"usuniecie" marginesu z TextView'a (bo mogl byc programowo ustawiony i w takim wypadku
+    // grawitacja by nie zadzialala):
     LinearLayout.LayoutParams lTV = (LinearLayout.LayoutParams) tvShownWord.getLayoutParams();
     lTV.leftMargin = 0;
     tvShownWord.setLayoutParams(lTV);
@@ -1675,7 +1839,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
   private void ewentualnieSciesnij() {
     //Jesli wyraz dluzszy niz 11, to sciesniam (jesli szeroki)
     //Sciesnianie jest API dependent, wiec badam.
-    //Jezeli API<21 nie robie nic, bo taki wyraz nie jest sciesniony i na pewno(?) sie miesci....
+    //Jezeli API<21 nie robie nic, bo taki wyraz nie jest sciesniony i na pewno(?) sie
+    // miesci....
     //Zakladam, ze wywolywana tylko, gdy duze litery; przy malych- wszystko sie miesci
 
     if (currWord.length() < MAXL) {
@@ -1711,7 +1876,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
     String coUlozyl = coWidacInObszar();
 
-    //Uwaga - nie nalezy podnosic do upperCase obydwu stron "równania" i porownywac bez warunku 'if' (jak ponizej) --> problemy (Mikolaj-Mikolaj):
+    //Uwaga - nie nalezy podnosic do upperCase obydwu stron "równania" i porownywac bez
+    // warunku 'if' (jak ponizej) --> problemy (Mikolaj-Mikolaj):
     if (!inUp) {
       return coUlozyl.equals(currWord);
     } else {
@@ -1752,40 +1918,53 @@ MainActivity extends Activity implements View.OnLongClickListener {
       odegrajWyraz(200);
     }
 
-    //Pokazujemy cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
+    //Pokazujemy cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez
+    // UstawieniaActivity):
 
-    //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl niewidoczny):
+    //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl
+    // niewidoczny):
     if (mGlob.BEZ_OBRAZKOW) {
       imageView.setVisibility(INVISIBLE);
       l_imageContainer.setBackgroundResource(R.drawable.border_skib_gray);
     } else {
       imageView.setVisibility(VISIBLE);
       l_imageContainer.setBackgroundColor(Color.TRANSPARENT);
-      //l_imageContainer.setBackgroundResource(0); - alternatywa do Color.TRANSPARENT (podobno TRANSPARENT lepszy)
+      //l_imageContainer.setBackgroundResource(0); - alternatywa do Color.TRANSPARENT
+      // (podobno TRANSPARENT lepszy)
     }
-    odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
+    odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na
+    // UstawieniaActivity = w obiekcie mGlob
     pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
-    restoreApplyLetterSpacing(tvShownWord); //reakcja na ewentualna zmiane odstepu miedzy literami w ulozonym wyrazie
+    restoreApplyLetterSpacing(
+        tvShownWord); //reakcja na ewentualna zmiane odstepu miedzy literami w ulozonym
+    // wyrazie
 
     //Badamy najistotniejsze opcje; Gdyby zmieniono Katalog lub poziom, to naczytanie na nowo:
-    newOptions.pobierzZeZmiennychGlobalnych();           //jaki byl wynik ostatniej 'wizyty' w UstawieniaActivity
+    newOptions.pobierzZeZmiennychGlobalnych();           //jaki byl wynik ostatniej 'wizyty'
+    // w UstawieniaActivity
     if (!newOptions.takaSamaJak(
-        currOptions)) {          //musimy naczytac ponownie, bo zmieniono zrodlo obrazkow (chocby poprzez zmiane poziomu trudnosci)
+        currOptions)) {          //musimy naczytac ponownie, bo zmieniono zrodlo obrazkow
+      // (chocby poprzez zmiane poziomu trudnosci)
       currOptions.pobierzZeZmiennychGlobalnych();      //zapamietanie na przyszlosc
       if (!mGlob.ZRODLEM_JEST_KATALOG) {
         listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets,
-            mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona raz na zawsze w onCreate()
+            mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona raz
+        // na zawsze w onCreate()
       } else {
         tworzListeFromKatalog();
         listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
       }
-      //Gdyby okazalo sie, ze nie ma obrazkow o wybranym poziomie trudnosci, bierzemy wszystkie (list zrodlowych tworzyc w tym punkcie sterowania nie trzeba):
+      //Gdyby okazalo sie, ze nie ma obrazkow o wybranym poziomie trudnosci, bierzemy
+      // wszystkie (list zrodlowych tworzyc w tym punkcie sterowania nie trzeba):
       if (listaOper.length == 0) {
-        wypiszOstrzezenie("Brak ćwiczeń o wybranym poziomie trudności. Zostaną pokazane wszystkie ćwiczenia.");
+        wypiszOstrzezenie(
+            "Brak ćwiczeń o wybranym poziomie trudności. Zostaną pokazane wszystkie "
+                + "ćwiczenia.");
         mGlob.POZIOM = WSZYSTKIE;
         currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily linie wyzej...
         if (!mGlob.ZRODLEM_JEST_KATALOG) {
-          listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+          listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets,
+              mGlob.POZIOM);
         } else {
           listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
         }
@@ -1808,20 +1987,25 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
   //    public static ArrayList<File> findObrazki(File katalog) {
   public static String[] findObrazki(File katalog) {
-    /* ******************************************************************************************************************* */
-    /* Zwraca liste-tablice obrazkow (plikow graficznych .jpg .bmp .png) z katalogu katalogAssets - uzywana tylko dla przypadku SD karty */
-    /* ******************************************************************************************************************* */
+    /*
+     * ******************************************************************************************************************* */
+        /* Zwraca liste-tablice obrazkow (plikow graficznych .jpg .bmp .png) z katalogu
+        katalogAssets - uzywana tylko dla przypadku SD karty */
+    /*
+     * ******************************************************************************************************************* */
 
 //      Wersja ok, ale na <ArrayList<File>:
 
     ArrayList<File> al = new ArrayList<File>(); //al znaczy "Array List"
-    File[] files = katalog.listFiles(); //w files WSZYSTKIE pliki z katalogu (rowniez nieporządane)
-    if (files != null) { //lepiej sprawdzic, bo wali sie w petli for na niektorych emulatorach...
+    File[] files =
+        katalog.listFiles(); //w files WSZYSTKIE pliki z katalogu (rowniez nieporządane)
+    if (files
+        != null) { //lepiej sprawdzic, bo wali sie w petli for na niektorych emulatorach...
       for (File singleFile : files) {
         if ((singleFile.getName().toUpperCase().endsWith(".JPG"))
             || (singleFile.getName().toUpperCase().endsWith(".PNG"))
-            || (singleFile.getName().toUpperCase().endsWith(".BMP"))
-            || (singleFile.getName().toUpperCase().endsWith(".WEBP"))
+            || (singleFile.getName().toUpperCase()
+            .endsWith(".BMP")) || (singleFile.getName().toUpperCase().endsWith(".WEBP"))
             || (singleFile.getName().toUpperCase().endsWith(".JPEG"))) {
           al.add(singleFile);
         }
@@ -1842,8 +2026,10 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 /*
         List<String> zawartosc = new ArrayList<String>();
-        File[] files = katalog.listFiles(); //w files WSZYSTKIE pliki z katalogu (rowniez nieporządane)
-        if (files != null) { //lepiej sprawdzic, bo wali sie w petli for na niektorych emulatorach...
+        File[] files = katalog.listFiles(); //w files WSZYSTKIE pliki z katalogu (rowniez
+        nieporządane)
+        if (files != null) { //lepiej sprawdzic, bo wali sie w petli for na niektorych
+        emulatorach...
             for (File singleFile : files) {
                 String plikPath = singleFile.getName();
                 if ((plikPath.toUpperCase().endsWith(".JPG"))
@@ -1872,7 +2058,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
       int rob;
       int rozmiar_tab = listaOper.length;
       //Generujemy losowy numer, ale tak, zeby nie wypadl ten sam:
-      if (rozmiar_tab != 1) { //przy tylko jednym obrazku kod ponizej jest petla nieskonczona, więc if
+      if (rozmiar_tab
+          != 1) { //przy tylko jednym obrazku kod ponizej jest petla nieskonczona, więc if
         do {
           rob = (int) (Math.random() * rozmiar_tab);
         } while (rob == currImage);
@@ -1921,10 +2108,7 @@ MainActivity extends Activity implements View.OnLongClickListener {
     bShiftLeft.setOnLongClickListener(new OnLongClickListener() {
       @Override
       public boolean onLongClick(View v) {
-
         Kompresuj();
-
-
         return true; //wazne - znaczy ze 'wybrzmial' i nie wykona sie krotki OnClick
       }
     });
@@ -1933,23 +2117,67 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private void Kompresuj() {
-    int licznik = ileWObszarze();
-    MojTV[] tRob;                //tablica robocza, do dzialań
-    tRob = posortowanaTablicaFromObszar();
-    for (int i = 0; i < licznik - 1; i++) {
-      int dx = tRob[i + 1].getLeft() - tRob[i].getRight(); //uwaga - tutaj wchodzi tez padding
-      if (dx > 0) {
-        RelativeLayout.LayoutParams lPar = (RelativeLayout.LayoutParams) tRob[i+1].getLayoutParams();
-        lPar.leftMargin -= dx;
-        tRob[i+1].setLayoutParams(lPar);
-      }
+    /****************************************************************/
+    /* Kompresuje (=scieesnia) CALOSC liter                         */
+    /* Wyglada 'dziwnie' ale iteracyjnie nie dawalo sie zrobic...   */
+    /* Zrobilem intuicyjno-dopswiadczalnie...                       */
+    /* mtv to 'byt' formalny, bo na czyms trzeba bylo oprzec post'a */
+    /****************************************************************/
+
+    if (ileWObszarze() == 0) {
+      return;
     }
+
+    likwidujBiggestGap();
+    MojTV mtv = dajLeftmostInArea();
+    mtv.post(new Runnable() {
+      @Override
+      public void run() {
+        likwidujBiggestGap();
+        MojTV mtv = dajLeftmostInArea();
+        mtv.post(new Runnable() {
+          @Override
+          public void run() {
+            likwidujBiggestGap();
+            MojTV mtv = dajLeftmostInArea();
+            mtv.post(new Runnable() {
+              @Override
+              public void run() {
+                likwidujBiggestGap();
+                MojTV mtv = dajLeftmostInArea();
+                mtv.post(new Runnable() {
+                  @Override
+                  public void run() {
+                    likwidujBiggestGap();
+                    MojTV mtv = dajLeftmostInArea();
+                    mtv.post(new Runnable() {
+                      @Override
+                      public void run() {
+                        likwidujBiggestGap();
+                        MojTV mtv = dajLeftmostInArea();
+                        mtv.post(new Runnable() {
+                          @Override
+                          public void run() {
+                            likwidujBiggestGap();
+                          }
+                        });
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+    });
   } //koniec Metody()
 
   private void dostosujDoUrzadzen() {
     RelativeLayout.LayoutParams lPar;
 
-    //Pobieram wymiary ekranu na potrzeby dostosowania wielkosci Obrazka i Prostokata/Obszaru 'gorącego' do ekranu urządzenia:
+    //Pobieram wymiary ekranu na potrzeby dostosowania wielkosci Obrazka i Prostokata/Obszaru
+    // 'gorącego' do ekranu urządzenia:
     DisplayMetrics displaymetrics = new DisplayMetrics();
     getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
     //przekazanie na zewnatrz:
@@ -1957,8 +2185,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
     sizeH = displaymetrics.heightPixels;
 
     //sledzenie - pokazania wymiarow urządzenia i rozdzielczosci dpi
-    tvInfo3.setText(Integer.toString(sizeW) + "x" + Integer.toString(sizeH) + " dpi=" + Integer
-        .toString(displaymetrics.densityDpi));
+    tvInfo3.setText(Integer.toString(sizeW) + "x" + Integer.toString(sizeH) + " dpi="
+        + Integer.toString(displaymetrics.densityDpi));
 
     //Obrazek - ustawiam w lewym górnym rogu:
     lPar = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
@@ -1985,7 +2213,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
   public static String getRemovedExtensionName(String name) {
     /**
-     * Pomocnicza, widoczna wszedzie metodka na pozbycie sie rozszerzenia z nazwy pliku - dostajemy "goly" wyraz
+     * Pomocnicza, widoczna wszedzie metodka na pozbycie sie rozszerzenia z nazwy pliku -
+     * dostajemy "goly" wyraz
      */
     String baseName;
     if (name.lastIndexOf(".") == -1) {
@@ -1999,7 +2228,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
   public static String usunLastDigitIfAny(String name) {
     /**
-     * Pomocnicza, widoczna wszedzie, usuwa ewentualna ostatnia cyfre w nazwie zdjecia (bo moze byc pies1.jpg, pies1.hjpg. pies2.jpg - rozne psy)
+     * Pomocnicza, widoczna wszedzie, usuwa ewentualna ostatnia cyfre w nazwie zdjecia (bo
+     * moze byc pies1.jpg, pies1.hjpg. pies2.jpg - rozne psy)
      * Zakladamy, ze dostajemy nazwe bez rozszerzenia i bez kropki na koncu
      */
     int koniec = name.length() - 1;
@@ -2028,10 +2258,14 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private void ustawLadnieEtykiety() {
-    /* *************************************************************************************************** */
-    /* Ustawiam Literki/Etykiety L0n wzgledem obrazka i wzgledem siebie - na lewo od obrazka               */
-    /* Kazdy rząd (3 rzedy) ustawiam niejako osobno, poczynajac od 1-go elementu w rzedzie jako od wzorca. */
-    /* *************************************************************************************************** */
+    /*
+     * *************************************************************************************************** */
+    /* Ustawiam Literki/Etykiety L0n wzgledem obrazka i wzgledem siebie - na lewo od obrazka
+     *  */
+        /* Kazdy rząd (3 rzedy) ustawiam niejako osobno, poczynajac od 1-go elementu w rzedzie
+        jako od wzorca. */
+    /*
+     * *************************************************************************************************** */
 
     //wstawka dla duzych ekranow - powiekszam litery:
 //        if (sizeW>1100) {
@@ -2039,12 +2273,15 @@ MainActivity extends Activity implements View.OnLongClickListener {
 //            float wsp = 1.07f;
 //            if (sizeW>1900) wsp = 1.2f;
 //            for (MojTV lb : lbs) lb.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size);
-//            tvShownWord.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size); //wyraz wyswietlany nie powinien roznic sie od liter
+//            tvShownWord.setTextSize(TypedValue.COMPLEX_UNIT_PX, wsp*litera_size); //wyraz
+// wyswietlany nie powinien roznic sie od liter
 //        }
 
-    final int odstepWpionie = yLg / 4; //od gory ekranu do Obszaru sa 3 wiersze etykiet, wiec 4 przerwy
+    final int odstepWpionie =
+        yLg / 4; //od gory ekranu do Obszaru sa 3 wiersze etykiet, wiec 4 przerwy
 
-    int od_obrazka = (int) getResources().getDimension(R.dimen.od_obrazka); //odstep 1-szej litery 1-go rzedu od obrazka
+    int od_obrazka = (int) getResources().getDimension(
+        R.dimen.od_obrazka); //odstep 1-szej litery 1-go rzedu od obrazka
 
     RelativeLayout.LayoutParams lPar;
     //L00 (1-szy rząd):
@@ -2071,13 +2308,17 @@ MainActivity extends Activity implements View.OnLongClickListener {
     int lsize = (int) getResources().getDimension(R.dimen.litera_size);
     //Toast.makeText(this,"litera_size: "+pxToSp(lsize),Toast.LENGTH_SHORT).show();
 
-    //L01:  //dalej trzeba uzywac Runnable - czekanie az obiekt L00 'usadowi' sie - inaczej wartosci nieustalobe, czyli ok. 0....
+    //L01:  //dalej trzeba uzywac Runnable - czekanie az obiekt L00 'usadowi' sie - inaczej
+    // wartosci nieustalobe, czyli ok. 0....
     L00.post(new Runnable() {
       @Override
       public void run() { //czekanie aż policzy/usadowi sie L01
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L01.getLayoutParams();
-        lParX.leftMargin = ((RelativeLayout.LayoutParams) L00.getLayoutParams()).leftMargin + poprawka;
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L01.getLayoutParams();
+        lParX.leftMargin =
+            ((RelativeLayout.LayoutParams) L00.getLayoutParams()).leftMargin + poprawka;
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_1st_row);
         int marginesTop = 1 * odstepWpionie - L00.getHeight() / 2 - poprPion;
         lParX.topMargin = marginesTop;
         L01.setLayoutParams(lParX); //n
@@ -2088,9 +2329,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
     L01.post(new Runnable() {
       @Override
       public void run() { //czekanie aż policzy/usadowi się L01
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L02.getLayoutParams();
-        lParX.leftMargin = ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + poprawka;
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L02.getLayoutParams();
+        lParX.leftMargin =
+            ((RelativeLayout.LayoutParams) L01.getLayoutParams()).leftMargin + poprawka;
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_1st_row);
         int marginesTop = 1 * odstepWpionie - L00.getHeight() / 2 - poprPion;
         lParX.topMargin = marginesTop;
         L02.setLayoutParams(lParX); //n
@@ -2101,10 +2345,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
     L02.post(new Runnable() {
       @Override
       public void run() { //czekanie aż policzy/usadowi się L02
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L03.getLayoutParams();
-        lParX.leftMargin =
-            ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin + poprawka;//(int) (0.80*poprawka);
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_1st_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L03.getLayoutParams();
+        lParX.leftMargin = ((RelativeLayout.LayoutParams) L02.getLayoutParams()).leftMargin
+            + poprawka;//(int) (0.80*poprawka);
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_1st_row);
         int marginesTop = 1 * odstepWpionie - L00.getHeight() / 2 - poprPion;
         lParX.topMargin = marginesTop;
         L03.setLayoutParams(lParX); //n
@@ -2113,9 +2359,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
     //L04: (2-gi rząd):
     lPar = (RelativeLayout.LayoutParams) L04.getLayoutParams();
-    lPar.leftMargin =
-        ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width +
-            od_obrazka / 4;
+    lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin
+        + imageView.getLayoutParams().width + od_obrazka / 4;
     //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
     marginesTop = 2 * odstepWpionie - L00.getHeight() / 2; //2- bo 2-gi wiersz
     lPar.topMargin = marginesTop;
@@ -2126,9 +2371,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
     L04.post(new Runnable() {
       @Override
       public void run() {
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L05.getLayoutParams();
-        lParX.leftMargin = ((RelativeLayout.LayoutParams) L04.getLayoutParams()).leftMargin + poprawka;
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L05.getLayoutParams();
+        lParX.leftMargin =
+            ((RelativeLayout.LayoutParams) L04.getLayoutParams()).leftMargin + poprawka;
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_2nd_row);
         int marginesTop = 2 * odstepWpionie - L00.getHeight() / 2;
         lParX.topMargin = marginesTop;
         L05.setLayoutParams(lParX);
@@ -2139,10 +2387,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
     L05.post(new Runnable() {
       @Override
       public void run() {
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L06.getLayoutParams();
-        lParX.leftMargin =
-            ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin + poprawka;//(int) (0.90*poprawka);;
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L06.getLayoutParams();
+        lParX.leftMargin = ((RelativeLayout.LayoutParams) L05.getLayoutParams()).leftMargin
+            + poprawka;//(int) (0.90*poprawka);;
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_2nd_row);
         int marginesTop = 2 * odstepWpionie - L00.getHeight() / 2;
         lParX.topMargin = marginesTop;
         L06.setLayoutParams(lParX); //n
@@ -2153,9 +2403,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
     L06.post(new Runnable() {
       @Override
       public void run() {
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L07.getLayoutParams();
-        lParX.leftMargin = ((RelativeLayout.LayoutParams) L06.getLayoutParams()).leftMargin + poprawka;
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_2nd_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L07.getLayoutParams();
+        lParX.leftMargin =
+            ((RelativeLayout.LayoutParams) L06.getLayoutParams()).leftMargin + poprawka;
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_2nd_row);
         int marginesTop = 2 * odstepWpionie - L00.getHeight() / 2;
         lParX.topMargin = marginesTop;
         L07.setLayoutParams(lParX); //n
@@ -2164,9 +2417,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
     //L08: (3-ci rząd):
     lPar = (RelativeLayout.LayoutParams) L08.getLayoutParams();
-    lPar.leftMargin =
-        ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin + imageView.getLayoutParams().width +
-            od_obrazka / 2;
+    lPar.leftMargin = ((RelativeLayout.LayoutParams) imageView.getLayoutParams()).leftMargin
+        + imageView.getLayoutParams().width + od_obrazka / 2;
     //marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
     marginesTop = 3 * odstepWpionie - L00.getHeight() / 2; //3- bo 3-szy wiersz
     lPar.topMargin = marginesTop + poprPion;
@@ -2177,9 +2429,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
     L08.post(new Runnable() {
       @Override
       public void run() {
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L09.getLayoutParams();
-        lParX.leftMargin = ((RelativeLayout.LayoutParams) L08.getLayoutParams()).leftMargin + poprawka;
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L09.getLayoutParams();
+        lParX.leftMargin =
+            ((RelativeLayout.LayoutParams) L08.getLayoutParams()).leftMargin + poprawka;
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_3rd_row);
         int marginesTop = 3 * odstepWpionie - L00.getHeight() / 2 + poprPion;
         lParX.topMargin = marginesTop;
         L09.setLayoutParams(lParX); //n
@@ -2190,9 +2445,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
     L09.post(new Runnable() {
       @Override
       public void run() {
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L10.getLayoutParams();
-        lParX.leftMargin = ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + poprawka;
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L10.getLayoutParams();
+        lParX.leftMargin =
+            ((RelativeLayout.LayoutParams) L09.getLayoutParams()).leftMargin + poprawka;
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_3rd_row);
         int marginesTop = 3 * odstepWpionie - L00.getHeight() / 2 + poprPion;
         lParX.topMargin = marginesTop;
         L10.setLayoutParams(lParX); //n
@@ -2203,10 +2461,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
     L10.post(new Runnable() {
       @Override
       public void run() {
-        RelativeLayout.LayoutParams lParX = (RelativeLayout.LayoutParams) L11.getLayoutParams();
-        lParX.leftMargin =
-            ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin + poprawka;//(int) (0.80*poprawka);
-        //int marginesTop = (int) getResources().getDimension(R.dimen.margin_top_size_3rd_row);
+        RelativeLayout.LayoutParams lParX =
+            (RelativeLayout.LayoutParams) L11.getLayoutParams();
+        lParX.leftMargin = ((RelativeLayout.LayoutParams) L10.getLayoutParams()).leftMargin
+            + poprawka;//(int) (0.80*poprawka);
+        //int marginesTop = (int) getResources().getDimension(R.dimen
+        // .margin_top_size_3rd_row);
         int marginesTop = 3 * odstepWpionie - L00.getHeight() / 2 + poprPion;
         lParX.topMargin = marginesTop;
         L11.setLayoutParams(lParX); //n
@@ -2238,7 +2498,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
           }
           //Zmieniamy w 1-szym wierszu; w 1-szym wierszu pozwalam tylko w dol :
           if (lb == lbs[0] || lb == lbs[1] || lb == lbs[2] || lb == lbs[3]) {
-            //w 1-szym wierszu zmieniamy tylko przy duzych gestosciach, inaczej główki liter wystają poza górną krawędź ekranu:
+            //w 1-szym wierszu zmieniamy tylko przy duzych gestosciach, inaczej
+            // główki liter wystają poza górną krawędź ekranu:
             if (density > DisplayMetrics.DENSITY_MEDIUM) {
               k = -Math.abs(k);
               if (density > DisplayMetrics.DENSITY_HIGH) {
@@ -2248,7 +2509,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
             }
           }
           //Zmieniamy w 3-cim wierszu :
-          if (lb == lbs[8] || lb == lbs[9] || lb == lbs[10] || lb == lbs[11]) { //w 3-cim wierszu pozwalam tylko w gore
+          if (lb == lbs[8] || lb == lbs[9] || lb == lbs[10]
+              || lb == lbs[11]) { //w 3-cim wierszu pozwalam tylko w gore
             k = Math.abs(k);
             lParX.topMargin -= k;
           }
@@ -2265,36 +2527,40 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private void cofnijWlewo() {
-    /* Cofa w lewo skrajne etykiety 1-go i 3-go rzedu, bo na niektórych urządzeniach wystają za bandę */
+        /* Cofa w lewo skrajne etykiety 1-go i 3-go rzedu, bo na niektórych urządzeniach wystają
+        za bandę */
 
-    lbs[11].post(new Runnable() { //lbs[11] bo czekam, az wszystko zostanie ulozone (doswiadczlnie)
-      @Override
-      public void run() {
-        for (MojTV lb : lbs) {
-          //tylko 3-cia kolumna, 1-szy i 3-ci rzad:
-          if (lb == lbs[3] || lb == lbs[11]) {
-            int lewy =
-                xLp - (int) (1.55 * lbs[0].getWidth());  //lbs[0] bo potrzebne cos 'statycznego' - doswiadczalnie)
-            RelativeLayout.LayoutParams lParY = (RelativeLayout.LayoutParams) lb.getLayoutParams();
-            lParY.leftMargin = lewy;
-            lb.setLayoutParams(lParY);
+    lbs[11].post(
+        new Runnable() { //lbs[11] bo czekam, az wszystko zostanie ulozone (doswiadczlnie)
+          @Override
+          public void run() {
+            for (MojTV lb : lbs) {
+              //tylko 3-cia kolumna, 1-szy i 3-ci rzad:
+              if (lb == lbs[3] || lb == lbs[11]) {
+                int lewy = xLp - (int) (1.55 * lbs[0].getWidth());  //lbs[0] bo potrzebne cos 'statycznego' - doswiadczalnie
+                RelativeLayout.LayoutParams lParY =
+                    (RelativeLayout.LayoutParams) lb.getLayoutParams();
+                lParY.leftMargin = lewy;
+                lb.setLayoutParams(lParY);
+              }
+            }
           }
-        }
-      }
-    });
+        });
 
   } //koniec Metody()
 
   private void ustawWymiaryKlawiszy() {
     //Wymiarowuje klawisze bDalej, bPomin, bAgain, bHint, bUpperLOwer
-    //bDalej zajmuje przestrzen od gory do gornej krawedzi Obszaru, ale zostawia 2/3 swojej wysokosci miejsce na bAgain1:
+    //bDalej zajmuje przestrzen od gory do gornej krawedzi Obszaru, ale zostawia 2/3 swojej
+    // wysokosci miejsce na bAgain1:
 
     bDalej.getLayoutParams().height = (int) (0.66 * yLg);
     bDalej.requestLayout();
 
     bAgain1.getLayoutParams().height = (int) (0.32 * yLg);
     bAgain1.getLayoutParams().width = bDalej.getWidth();
-    int lsize = (int) getResources().getDimension(R.dimen.litera_size); //30% rozmiaru liter-etykiet
+    int lsize = (int) getResources().getDimension(
+        R.dimen.litera_size); //30% rozmiaru liter-etykiet
     bAgain1.setTextSize(pxToSp(lsize / 3));
     bAgain1.requestLayout();
 
@@ -2364,12 +2630,16 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
   public void bHintOnClick(View view) {
     /* Podpowiada kolejna litere do ulozenia */
-    /* Idea algorytmu - iteruje po currWord i wskazuje 1sza litere nie na swoim miejscu w Obszarze */
+        /* Idea algorytmu - iteruje po currWord i wskazuje 1sza litere nie na swoim miejscu w
+        Obszarze */
 
         /* Wziete z Sylabowanki (Lazarus):
-        (* Idea algorytmu : przegladam wyraz sylaba po sylabie (od lewej) i jezeli przegladana sylaba nie jest na swoim       *)
-        (* miejscu w ramce, to wyrozniam ją (inaczej: pokazuję pierwszą sylabę, która nie jest na swoim miejscu)              *)
-        (* Inne podejscia prowadzily do b. skomplikowanego algorytmu.                                                         *)
+        (* Idea algorytmu : przegladam wyraz sylaba po sylabie (od lewej) i jezeli przegladana
+        sylaba nie jest na swoim       *)
+        (* miejscu w ramce, to wyrozniam ją (inaczej: pokazuję pierwszą sylabę, która nie jest na
+         swoim miejscu)              *)
+        (* Inne podejscia prowadzily do b. skomplikowanego algorytmu.
+                                     *)
         */
 
     final char[] wyraz = currWord.toCharArray();       //bo latwiej operowac na Char'ach
@@ -2415,13 +2685,18 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private MojTV[] posortowanaTablicaFromObszar() {
-    /* ******************************************************************************************** */
-    /* Znajdujace sie w Obszarze elementy zwraca w tablicy, POSORTOWANEJ wg. lefej fizycznej wsp. X */
-    /* ******************************************************************************************** */
+    /*
+     * ******************************************************************************************** */
+        /* Znajdujace sie w Obszarze elementy zwraca w tablicy, POSORTOWANEJ wg. lefej fizycznej
+        wsp. X */
+    /*
+     * ******************************************************************************************** */
 
     MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
     //Wszystkie z Obszaru odzwierciedlam w tRob:
-    int licznik = 0;                               //po wyjsciu z petli bedzie zawieral liczbe liter w Obszarze
+    int licznik =
+        0;                               //po wyjsciu z petli bedzie zawieral liczbe
+    // liter w Obszarze
     for (MojTV lb : lbs) {
       if (lb.isInArea()) {
         tRob[licznik] = lb;
@@ -2482,7 +2757,9 @@ MainActivity extends Activity implements View.OnLongClickListener {
     for (MojTV lb : lbs) {
       if (!lb.equals("*")) {
         String etyk = lb.getOrigL();
-        if (etyk.equals(coDostalem) && !lb.isInArea()) {  //tylko mrugamy poza Obszarem - inaczej niejednznacznosci....
+        if (etyk.equals(coDostalem)
+            && !lb.isInArea()) {  //tylko mrugamy poza Obszarem - inaczej
+          // niejednznacznosci....
 
           //lb.blink(5); -- inna wersja
           lb.makeMeBlink(400, 5, 4, RED);
@@ -2492,7 +2769,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
       }
     }
 
-    //Nie mrugnal litera spoza Obszaru, zatem walę po calym Obszarze, bo ulozono 'kaszanę' i trzeba jakos dac znac:
+    //Nie mrugnal litera spoza Obszaru, zatem walę po calym Obszarze, bo ulozono 'kaszanę' i
+    // trzeba jakos dac znac:
     //koniecznie odblokowuję bAgain (jesli zablokowany)....:
     bAgain.setEnabled(true);
     bAgain.setVisibility(VISIBLE);
@@ -2514,12 +2792,12 @@ MainActivity extends Activity implements View.OnLongClickListener {
    * @param duration for how long in ms will it blink
    * @param offset start offset of the animation
    * @param ileRazy ile razy ma mrugnac
-   * @param kolor jakim kolorem ma mrugac zrodlo: https://gist.github.com/cesarferreira/4fcae632b18904035d3b slaby punk:
-   * text na buttonie traci "dziewictwo" i pozostaje potem nie do ruszenia... - dlatego w innych punktach kodu niszcze
-   * go i regeneruję
+   * @param kolor jakim kolorem ma mrugac zrodlo: https://gist.github .com/cesarferreira/4fcae632b18904035d3b slaby punk: text na buttonie traci "dziewictwo" i pozostaje potem nie
+   * do ruszenia... - dlatego w innych punktach kodu niszcze go i regeneruję
    */
 
-  private static void makeMeBlink(Button obiekt, int duration, int offset, int ileRazy, int kolor) {
+  private static void makeMeBlink(Button obiekt, int duration, int offset, int ileRazy,
+      int kolor) {
 
     final int savedColor = obiekt.getCurrentTextColor();
 
@@ -2556,7 +2834,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
   private void ZapishDoSharedPreferences() {
     /* Zapisanie (niektorych!) ustawienia w SharedPreferences na przyszła sesję */
 
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(
+        getApplicationContext());
     SharedPreferences.Editor edit = sharedPreferences.edit();
 
     edit.putBoolean("Z_NAZWA", mGlob.Z_NAZWA);
@@ -2596,7 +2875,8 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
 
   private Bitmap obrocJesliTrzeba(Bitmap bitmap, String sciezkaDoPliku) {
-    //Wykrywa(?) orientacje obrazka i ewentualnie obraca obrazek pobrany z dysku tak aby byl pokazany prawidłowo
+    //Wykrywa(?) orientacje obrazka i ewentualnie obraca obrazek pobrany z dysku tak aby byl
+    // pokazany prawidłowo
 
     ExifInterface ei = null;
     try {
@@ -2640,18 +2920,21 @@ MainActivity extends Activity implements View.OnLongClickListener {
 
     Matrix matrix = new Matrix();
     matrix.postRotate(angle);
-    return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-        matrix, true);
+    return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix,
+        true);
   } //koniec Metody()
 
 
-  /*Klasa do sprawdzania czy podczas zmiany ustawien uzytkownik zmienil (klikaniem) zrodlo obrazkow */
+  /*Klasa do sprawdzania czy podczas zmiany ustawien uzytkownik zmienil (klikaniem) zrodlo
+  obrazkow */
   /* (lub wykonal dzialanie rownowazne zmianie zrodla) */
   /* dotyczy (na razie) tylko zródła i ścieżki */
   class KombinacjaOpcji {
 
     private boolean ZRODLEM_JEST_KATALOG;
+
     private String WYBRANY_KATALOG;
+
     private int POZIOM;
 
     KombinacjaOpcji() {

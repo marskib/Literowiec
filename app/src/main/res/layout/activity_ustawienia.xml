@@ -5,39 +5,110 @@
   android:layout_height="match_parent"
   android:scrollbars="vertical"
   android:fadeScrollbars="false"
-
-                                            android:background="#BEBEBE"
-
+  android:background="#BEBEBE"
   tools:context="autyzmsoft.pl.literowiec.UstawieniaActivity">
 
   <RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-        <TextView
+    <TextView
+        android:id="@+id/tv_tytul"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/tvInstrukcja_size"
+        android:layout_marginBottom="0dp"
+        android:paddingBottom="0dp"
+        android:text="USTAWIENIA"/>
 
-            android:id="@+id/tv_tytul"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textSize="@dimen/tvInstrukcja_size"
-            android:layout_marginBottom="0dp"
-            android:paddingBottom="0dp"
-            android:text="USTAWIENIA"
+    <LinearLayout
+      android:id="@+id/l_Poziom"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/tv_tytul"
+
+      android:layout_marginTop="@dimen/maly_odstep"
+      android:background="@drawable/border_skib"
+      android:orientation="vertical"
+      android:layout_centerHorizontal="true"
+      android:padding="@dimen/maly_odstep">
+
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/maly_odstep"
+        android:text="Poziom trudności"
+        android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
         />
 
+      <RadioGroup
+        android:id="@+id/rg_poziomy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_margin"
+        android:orientation="vertical">
 
-      <!--***********************-->
-      <LinearLayout
+        <RadioButton
+          android:id="@+id/rb_latwe"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/text_margin"
+          android:checked="false"
+          android:text="łatwe (max. 4 litery) "
+          android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+          android:textStyle="bold"/>
+
+        <RadioButton
+          android:id="@+id/rb_srednie"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/text_margin"
+          android:layout_marginTop="@dimen/maly_odstep"
+          android:checked="false"
+          android:text="średnie (5-7 liter)"
+          android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+
+          android:textStyle="bold"/>
+
+        <RadioButton
+          android:id="@+id/rb_trudne"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/text_margin"
+          android:checked="false"
+          android:text="trudne (8-12 liter)"
+          android:layout_marginTop="@dimen/maly_odstep"
+          android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+          android:textStyle="bold"/>
+
+        <RadioButton
+          android:id="@+id/rb_wszystkie"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginStart="@dimen/text_margin"
+          android:layout_marginTop="@dimen/maly_odstep"
+          android:checked="true"
+          android:text="Wszystkie"
+          android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+          android:textStyle="bold"
+          android:layout_marginBottom="@dimen/text_margin"/>
+
+      </RadioGroup>
+
+    </LinearLayout>
+
+
+    <LinearLayout
           android:id="@+id/l_FileChooser"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
 
-          android:layout_below="@+id/tv_tytul"
+          android:layout_below="@+id/l_Poziom"
 
           android:layout_marginLeft="@dimen/text_margin"
-          android:layout_marginRight="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-          android:layout_marginTop="@dimen/maly_odstep"
+          android:layout_marginRight="@dimen/text_margin"
+          android:layout_marginTop="@dimen/text_margin"
           android:background="@drawable/border_skib_green"
           android:orientation="vertical"
           android:padding="@dimen/maly_odstep">
@@ -185,8 +256,101 @@
       android:textStyle="bold"
       />
 
+    <LinearLayout
+      android:id="@+id/l_RewardChooser"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_below="@id/l_Zobrazowanie"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+      android:background="@drawable/border_skib_blue"
+      android:orientation="vertical"
+      android:padding="@dimen/maly_odstep"
+      >
 
-      <LinearLayout
+      <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/maly_odstep"
+        android:text="Komentarze-Nagrody "
+        android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+        />
+
+
+      <RadioGroup
+        android:id="@+id/rg_nagrody"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/text_margin"
+        android:orientation="vertical">
+
+        <RadioButton
+          android:id="@+id/rb_GlosOklaski"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/text_margin"
+          android:checked="true"
+          android:text="głos i oklaski"
+          android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+          android:textStyle="bold"
+          />
+
+        <RadioButton
+          android:id="@+id/rb_TylkoGlos"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/text_margin"
+          android:layout_marginTop="5dp"
+          android:checked="false"
+          android:text="tylko głos"
+          android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+          android:textStyle="bold"
+          />
+
+        <RadioButton
+          android:id="@+id/rb_TylkoOklaski"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/text_margin"
+          android:checked="false"
+          android:text="tylko oklaski"
+          android:layout_marginTop="5dp"
+          android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+          android:textStyle="bold"
+          />
+
+        <RadioButton
+          android:id="@+id/rb_No_Comments"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_marginLeft="@dimen/text_margin"
+          android:layout_marginTop="5dp"
+          android:checked="false"
+          android:text="bez nagród"
+          android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+          android:textStyle="bold"
+          />
+
+      </RadioGroup>
+
+      <CheckBox
+        android:id="@+id/cb_Dezap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/text_margin"
+        android:layout_marginTop="5dp"
+        android:checked="true"
+        android:text="dezaprobata, gdy błąd "
+        android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+        android:textStyle="bold"
+        android:layout_marginBottom="10dp"
+        />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
           android:id="@+id/l_Zobrazowanie"
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -260,174 +424,8 @@
       </LinearLayout>
 
 
-      <LinearLayout
-          android:id="@+id/l_Poziom"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_below="@id/l_Zobrazowanie"
-          android:layout_marginLeft="@dimen/text_margin"
-          android:layout_marginRight="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-          android:layout_marginTop="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-          android:background="@drawable/border_skib"
-          android:orientation="vertical"
-          android:layout_centerHorizontal="true"
-          android:padding="@dimen/maly_odstep">
-
-          <TextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginLeft="@dimen/maly_odstep"
-              android:text="Poziom trudności"
-              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-          />
-
-          <RadioGroup
-              android:id="@+id/rg_poziomy"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginTop="@dimen/text_margin"
-              android:orientation="vertical">
-
-              <RadioButton
-                  android:id="@+id/rb_latwe"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginLeft="@dimen/text_margin"
-                  android:checked="false"
-                  android:text="łatwe (max. 4 litery) "
-                  android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"/>
-
-              <RadioButton
-                  android:id="@+id/rb_srednie"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginLeft="@dimen/text_margin"
-                  android:layout_marginTop="5dp"
-                  android:checked="false"
-                  android:text="średnie (5-7 liter)"
-                  android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"/>
-
-              <RadioButton
-                  android:id="@+id/rb_trudne"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginLeft="@dimen/text_margin"
-                  android:checked="false"
-                  android:text="trudne (8-12 liter)"
-                  android:layout_marginTop="5dp"
-                  android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"/>
-
-              <RadioButton
-                  android:id="@+id/rb_wszystkie"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:layout_marginLeft="@dimen/text_margin"
-                  android:layout_marginTop="5dp"
-                  android:checked="true"
-                  android:text="Wszystkie"
-                  android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                  android:textStyle="bold"
-                  android:layout_marginBottom="10dp"/>
-
-          </RadioGroup>
-
-      </LinearLayout>
 
 
-    <LinearLayout
-      android:id="@+id/l_RewardChooser"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_below="@id/l_Poziom"
-      android:layout_centerHorizontal="true"
-      android:layout_marginTop="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-      android:background="@drawable/border_skib_blue"
-      android:orientation="vertical"
-      android:padding="@dimen/maly_odstep"
-      >
-
-      <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/maly_odstep"
-        android:text="Komentarze-Nagrody "
-        android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-        />
-
-
-        <RadioGroup
-            android:id="@+id/rg_nagrody"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/text_margin"
-            android:orientation="vertical">
-
-            <RadioButton
-                android:id="@+id/rb_GlosOklaski"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/text_margin"
-                android:checked="true"
-                android:text="głos i oklaski"
-                android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                android:textStyle="bold"
-            />
-
-            <RadioButton
-                android:id="@+id/rb_TylkoGlos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/text_margin"
-                android:layout_marginTop="5dp"
-                android:checked="false"
-                android:text="tylko głos"
-                android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                android:textStyle="bold"
-            />
-
-            <RadioButton
-                android:id="@+id/rb_TylkoOklaski"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/text_margin"
-                android:checked="false"
-                android:text="tylko oklaski"
-                android:layout_marginTop="5dp"
-                android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                android:textStyle="bold"
-            />
-
-            <RadioButton
-                android:id="@+id/rb_No_Comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/text_margin"
-                android:layout_marginTop="5dp"
-                android:checked="false"
-                android:text="bez nagród"
-                android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-                android:textStyle="bold"
-            />
-
-        </RadioGroup>
-
-        <CheckBox
-            android:id="@+id/cb_Dezap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/text_margin"
-            android:layout_marginTop="5dp"
-            android:checked="true"
-            android:text="dezaprobata, gdy błąd "
-            android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-            android:textStyle="bold"
-            android:layout_marginBottom="10dp"
-        />
-
-    </LinearLayout>
 
 
     <!--**************************************************************************-->

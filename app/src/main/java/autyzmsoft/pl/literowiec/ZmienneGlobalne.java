@@ -148,6 +148,8 @@ public class ZmienneGlobalne extends Application {
     ZE_SPACING = sharedPreferences.getBoolean("ZE_SPACING", this.ZE_SPACING);
     ODMOWA_DOST = sharedPreferences.getBoolean("ODMOWA_DOST", this.ODMOWA_DOST);
 
+    POZIOM = sharedPreferences.getInt("POZIOM", this.POZIOM);
+
     BHINT_ALL = sharedPreferences.getBoolean("BHINT_ALL", this.BHINT_ALL);
     BPOMIN_ALL = sharedPreferences.getBoolean("BPOMIN_ALL", this.BPOMIN_ALL);
     BUPLOW_ALL = sharedPreferences.getBoolean("BUPLOW_ALL", this.BUPLOW_ALL);

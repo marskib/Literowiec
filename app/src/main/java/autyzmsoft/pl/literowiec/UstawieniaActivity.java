@@ -271,7 +271,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     boolean miemIsSelected  = mGlob.NIEM;
     boolean francIsSelected = mGlob.FRANC;
 
-    //wylaczenie wlączonego:
+    //wylaczenie wlączonego :
 //    if (((CheckBox)view).isChecked()) {
 //      ((CheckBox)view).setChecked(false);
 //      return;

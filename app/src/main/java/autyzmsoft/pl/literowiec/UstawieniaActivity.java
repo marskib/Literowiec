@@ -66,6 +66,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   CheckBox cb_SndOKEf;
   CheckBox cb_SndVictEf;
 
+  CheckBox cb_ang;
+  CheckBox cb_niem;
+  CheckBox cb_franc;
+
 
   TextView sciezka; //informacyjny teksci pokazujacy biezacy katalogAssets i/lub liczbe obrazkow
   
@@ -259,6 +263,33 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Toast.makeText(this, "Jeszcze nie zaimplementowane...", Toast.LENGTH_SHORT).show();
     Intent intent = new Intent(getApplicationContext(), ApkaInfo.class);
     this.startActivityForResult(intent, REQUEST_CODE_WRACAM_Z_APKA_INFO);
+  }
+
+  public void jezykiOnClick(View view) {
+
+    boolean angIsSelected   = mGlob.ANG;
+    boolean miemIsSelected  = mGlob.NIEM;
+    boolean francIsSelected = mGlob.FRANC;
+
+    //wylaczenie wlączonego:
+//    if (((CheckBox)view).isChecked()) {
+//      ((CheckBox)view).setChecked(false);
+//      return;
+//    }
+    //wylaczam inne, wlaczam tylko ten, co trzeba:
+
+    CheckBox cb = (CheckBox) view;
+
+    cb_ang.setChecked(false);
+    cb_niem.setChecked(false);
+    cb_franc.setChecked(false);
+
+    switch (cb)
+
+
+
+
+    ((CheckBox)view).setChecked();
   }
 
 
@@ -502,6 +533,20 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     isChecked    = mGlob.SND_VICTORY_EF;
     cb_SndVictEf.setChecked(isChecked);
     /* efekciarstwo - koniec */
+
+    /* jezyki obce: */
+    cb_ang    = (CheckBox) findViewById(R.id.cb_ang);
+    isChecked = mGlob.ANG;
+    cb_ang.setChecked(isChecked);
+
+    cb_niem    = (CheckBox) findViewById(R.id.cb_niem);
+    isChecked  = mGlob.NIEM;
+    cb_niem.setChecked(isChecked);
+
+    cb_franc   = (CheckBox) findViewById(R.id.cb_franc);
+    isChecked  = mGlob.FRANC;
+    cb_franc.setChecked(isChecked);
+    /* jezyki obce - koniec: */
 
 
     /* żródło: */

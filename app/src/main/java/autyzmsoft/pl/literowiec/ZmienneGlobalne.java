@@ -68,6 +68,12 @@ public class ZmienneGlobalne extends Application {
   public boolean SND_LETTER_OK_EF;    //czy dzwiek PLUSK, gdy litera polozona poprawnie (nie dotyczy ostatniej)
   public boolean SND_VICTORY_EF;      //czy dzwiek 'ding' gdy poprawnie ulozono wyraz (przy ostatniej poprawnej literze)
 
+  //Jezyki obce (tego nie przechowuje w SharedPref):
+  public boolean ANG;
+  public boolean NIEM;
+  public boolean FRANC;
+
+
   public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu, w produkcyjnej na true)
 
   public boolean PO_DIALOGU_MOD = false;  //na mechanizm zapewniajacy odegranie slowa po zamknieciu DialoguModalnego (patrz DialogModalny.onPause i MainAct.onResume)
@@ -109,13 +115,18 @@ public class ZmienneGlobalne extends Application {
     IMG_TURN_EF = true;            //Onomastyka -> EF = EFFECT
     WORD_SHAKE_EF = true;
     LETTER_HOPP_EF = true;
-    SND_ERROR_EF = true;            //Onomastyka -> SND = sound
+    SND_ERROR_EF = true;           //Onomastyka -> SND = sound
     SND_LETTER_OK_EF = true;
     SND_VICTORY_EF = true;
 
+    //Jezyki obce:
+    ANG   = false;
+    NIEM  = false;
+    FRANC = false;
+
     ODMOWA_DOST = false;              //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 
-    POKAZ_MODAL = true;
+    POKAZ_MODAL = true;               //nie pokazuje okienka modalnego na starcie (na czas developmentu - zebu ulatwic uruchamianie)
 
     ZRODLEM_JEST_KATALOG = false;        //startujemy ze zrodlem w Assets
     WYBRANY_KATALOG = "*^5%dummy";       //"nic jeszcze nie wybrano" - lepiej to niz null, bo z null'em problemy...

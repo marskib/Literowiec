@@ -2723,26 +2723,28 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                     }
                     //3.Jesli srodek litery zostala wyciagnieta za bande - dosuwam z powrotem:
                     if (xLit <= xLl) {   //dosuniecie w prawo
-                        //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast
-                        // .LENGTH_SHORT).show();
+                        //Toast.makeText(MainActivity.this, "Wyszedl za bande...", Toast.LENGTH_SHORT).show();
                         layoutParams.leftMargin = xLl - view.getPaddingLeft() + 2; //dosuniecie w prawo
                         rootLayout.invalidate();
                         //Ponowne wywolanie eventa - spowoduje, ze wykona sie onTouch na tym
-                        // samym view z zastanym (=ACTION_UP) eventem/parametrem, ale na innym
-                        // polozeniu litery,
+                        // samym view z zastanym (=ACTION_UP) eventem/parametrem, ale na innym polozeniu litery,
                         //litera bedzie w Obszarze i zostanie 'dotrimowana'"
                         view.dispatchTouchEvent(event); // Dispatch touch event to view
                     }
 
                     //Dosuniecie w lewo; ale dotyczy TYLKO etykiety ze "swiatła" Obszaru
                     // ("swiatla", czyli rowniez za Prawym końcem Obszaru):
-                    if ((xLit >= xLp) && (yLit > yLg && yLit < yLd)) {
+                    if ((xLit >= xLp) && (yLit > yLg && yLit < yLd)) { //polozyl litere ZA prawa krawedzia (patrz Marcin ;) )
 
-                        //Bedziemy przesuwac w lewo Wszystkie lit. z Obszaru; dzieki temu mniej
-                        // problemów, np. znika problem IE-->EI:
-                        ((MojTV) view).setInArea(true);  //zeby ostatnia litera tez 'zalapala' sie na przesuniecie
-                        // funkcją przesunWLewo()
-                        przesunWLewo(w);
+                        //Bedziemy przesuwac w lewo lit. z Obszaru; dzieki temu mniej problemów, np. znika problem IE-->EI:
+                        ((MojTV) view).setInArea(true);  //zeby ostatnia litera tez 'zalapala' sie na przesuniecie funkcją przesunWLewo()
+
+                        //Jak sie nie uda przesunac w lewo (bo za blisko brzegu), to bedziemy probowac sciesnic:
+                        if (dajLeftmostX() > w) //if -> zeby nie przesunął za lewa bandę
+                            przesunWLewo(w);
+                        else
+                            likwidujBiggestGap();
+
                         view.dispatchTouchEvent(event);
 
                         /*tak bylo do 2018.10.07; zastapilem przez sekwencje powyzej

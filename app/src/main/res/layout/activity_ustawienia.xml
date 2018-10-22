@@ -539,16 +539,73 @@
         />-->
 
     </LinearLayout>
-    <!--**************************************************************************-->
 
 
+      <LinearLayout
+          android:id="@+id/l_JezykObcy"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_below="@id/l_EffectChooser"
+
+          android:layout_marginTop="@dimen/tvInstrukcja_size"
+          android:background="@drawable/border_skib_blue"
+          android:orientation="vertical"
+          android:layout_centerHorizontal="true"
+          android:padding="@dimen/maly_odstep">
+
+          <TextView
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginLeft="@dimen/maly_odstep"
+              android:layout_marginRight="@dimen/text_margin"
+              android:text="Nauka języka obcego"
+              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"/>
+
+          <CheckBox
+              android:id="@+id/cb_ang"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginTop="@dimen/text_margin"
+              android:layout_marginStart="@dimen/text_margin"
+              android:checked="false"
+              android:text="Angielski "
+              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+              android:onClick="jezykiOnClick"
+              android:textStyle="bold"/>
+
+          <CheckBox
+              android:id="@+id/cb_niem"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="@dimen/text_margin"
+              android:layout_marginTop="@dimen/maly_odstep"
+              android:checked="false"
+              android:text="Niemiecki "
+              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+              android:onClick="jezykiOnClick"
+              android:textStyle="bold"/>
+
+          <CheckBox
+              android:id="@+id/cb_franc"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_marginStart="@dimen/text_margin"
+              android:checked="false"
+              android:text="Francuski "
+              android:layout_marginTop="@dimen/maly_odstep"
+              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+              android:layout_marginBottom="@dimen/text_margin"
+              android:onClick="jezykiOnClick"
+              android:textStyle="bold"/>
+
+      </LinearLayout>
 
 
     <Button
       android:id="@+id/bDefault"
       android:layout_width="wrap_content"
       android:layout_height="match_parent"
-      android:layout_below="@id/l_EffectChooser"
+      android:layout_below="@id/l_JezykObcy"
       android:layout_centerHorizontal="true"
       android:layout_marginTop="@dimen/btn_zrodlo_text_rozmiar"
       android:onClick="bDefaultClick"

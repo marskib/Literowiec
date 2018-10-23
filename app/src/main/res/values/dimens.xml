@@ -25,6 +25,7 @@
     <dimen name="bOK_size">25sp</dimen>
     <dimen name="tvPoziom_size">28dp</dimen>
     <dimen name="tvGledzenie_size">20sp</dimen>
+    <dimen name="tvMozliwosci_size">16sp</dimen>
     <dimen name="ostrzegaj_demo_size">20sp</dimen>
 
 </resources>

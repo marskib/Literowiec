@@ -29,7 +29,7 @@ public class ZmienneGlobalne extends Application {
 
 
   public final boolean PELNA_WERSJA = true;        //czy Pelna czy Darmowa wersja aplikacji
-  public final boolean nieGrajJestemW105 = true;  //robocza na czas developmentu
+  public final boolean nieGrajJestemW105 = false;  //robocza na czas developmentu
 
   //Poziomy trudnosci:
   public static final int LATWE = 1;
@@ -39,7 +39,7 @@ public class ZmienneGlobalne extends Application {
   public final int MAX_OBR_LIMIT = 2;               //maksymalna liczba obrazkow w katalogu, gdy wersja DARMOWA
   public final boolean DLA_KRZYSKA = false;        //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
   public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
-  public String WYBRANY_KATALOG;      //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
+  public String WYBRANY_KATALOG;       //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)
   public boolean ROZNICUJ_OBRAZKI;     //Czy za każdym razem pokazywany inny obrazek
   public boolean BEZ_OBRAZKOW;         //nie pokazywac obrazkow
   public boolean BEZ_DZWIEKU;          //nie odgrywać słów

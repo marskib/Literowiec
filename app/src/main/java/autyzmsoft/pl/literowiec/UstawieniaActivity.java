@@ -267,12 +267,15 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
 
 
   public void jezykiOnClick(View view) {
+  //Wybor jezyka.
+  //Kod ponizej symuluje zachowanie checkbox'ów jak radiobattons w RadioGrup
 
     int licznik = 0;
     if (cb_ang.isChecked())   licznik++;
     if (cb_niem.isChecked())  licznik++;
     if (cb_franc.isChecked()) licznik++;
 
+    //wylaczenie kliknietego wlączonego checkboxa:
     if (licznik==0) {
       ((CheckBox)view).setChecked(false);
       if (view==cb_ang)   mGlob.ANG   = false;
@@ -284,6 +287,9 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     cb_ang.setChecked(false);
     cb_niem.setChecked(false);
     cb_franc.setChecked(false);
+    mGlob.ANG   = false;
+    mGlob.NIEM  = false;
+    mGlob.FRANC = false;
 
     ((CheckBox)view).setChecked(true);
     if (view==cb_ang)   mGlob.ANG   = true;

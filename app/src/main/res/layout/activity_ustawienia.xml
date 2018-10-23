@@ -554,12 +554,23 @@
           android:padding="@dimen/maly_odstep">
 
           <TextView
+              android:id="@+id/tv_jezyki"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
-              android:layout_marginLeft="@dimen/maly_odstep"
-              android:layout_marginRight="@dimen/text_margin"
+              android:layout_marginStart="@dimen/maly_odstep"
+              android:layout_marginEnd="@dimen/text_margin"
               android:text="Nauka języka obcego"
               android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"/>
+
+          <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/maly_odstep"
+            android:text="(demonstracja możliwości)"
+            android:textSize="@dimen/tvMozliwosci_size"
+            android:layout_marginTop="-5dp"/>
+
+
 
           <CheckBox
               android:id="@+id/cb_ang"

@@ -2419,7 +2419,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         }
 
         //Sortowanie (babelkowe) tRob względem lewej wspolrzednej:
-        MojTV elRob = new MojTV(this);    //element roboczy
+        //nieoptymalne?: 2018-10-23
+        //MojTV elRob = new MojTV(this);    //element roboczy
+
+        MojTV elRob;     //element roboczy
         boolean bylSort = true;
         while (bylSort) {
             bylSort = false;
@@ -2442,8 +2445,13 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         /* ********************************************************** */
         /* Zwraca w postaci Stringa to, co AKTUALNIE widac w Obszarze */
         /* ********************************************************** */
-        MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
-        tRob = posortowanaTablicaFromObszar();
+
+        //nieoptymalne?: 2018-10-23
+        //MojTV[] tRob = new MojTV[MAXL];                //tablica robocza, do dzialań
+        //tRob = posortowanaTablicaFromObszar();
+
+        MojTV[] tRob = posortowanaTablicaFromObszar();    //tablica robocza, do dzialań
+
         //Wypakowanie do Stringa i zwrot na zewnatrz:
         StringBuilder sb = new StringBuilder();
 
@@ -2454,8 +2462,13 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             //sb.append(tRob[i].getOrigL());
             sb.append(tRob[i].getText());
         }
-        String coWidac = sb.toString();
-        return coWidac;
+
+        //nieoptymalne?: 2018-10-23
+        //String coWidac = sb.toString();
+        //return coWidac;
+
+        return sb.toString();
+
     } //koniec Metody()
 
 

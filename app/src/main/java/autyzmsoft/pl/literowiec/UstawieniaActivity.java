@@ -265,31 +265,31 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     this.startActivityForResult(intent, REQUEST_CODE_WRACAM_Z_APKA_INFO);
   }
 
+
   public void jezykiOnClick(View view) {
 
-    boolean angIsSelected   = mGlob.ANG;
-    boolean miemIsSelected  = mGlob.NIEM;
-    boolean francIsSelected = mGlob.FRANC;
+    int licznik = 0;
+    if (cb_ang.isChecked())   licznik++;
+    if (cb_niem.isChecked())  licznik++;
+    if (cb_franc.isChecked()) licznik++;
 
-    //wylaczenie wlączonego :
-//    if (((CheckBox)view).isChecked()) {
-//      ((CheckBox)view).setChecked(false);
-//      return;
-//    }
-    //wylaczam inne, wlaczam tylko ten, co trzeba:
-
-    CheckBox cb = (CheckBox) view;
+    if (licznik==0) {
+      ((CheckBox)view).setChecked(false);
+      if (view==cb_ang)   mGlob.ANG   = false;
+      if (view==cb_niem)  mGlob.NIEM  = false;
+      if (view==cb_franc) mGlob.FRANC = false;
+      return;
+    }
 
     cb_ang.setChecked(false);
     cb_niem.setChecked(false);
     cb_franc.setChecked(false);
 
-    switch (cb)
+    ((CheckBox)view).setChecked(true);
+    if (view==cb_ang)   mGlob.ANG   = true;
+    if (view==cb_niem)  mGlob.NIEM  = true;
+    if (view==cb_franc) mGlob.FRANC = true;
 
-
-
-
-    ((CheckBox)view).setChecked();
   }
 
 

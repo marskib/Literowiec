@@ -80,6 +80,7 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   protected void onCreate(Bundle savedInstanceState) {
 
     super.onCreate(savedInstanceState);
+    
 
     //pobranie zmiennych globalnych (ustawien):
     mGlob = (ZmienneGlobalne) getApplication();

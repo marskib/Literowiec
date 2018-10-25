@@ -1745,15 +1745,52 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 licznik++;
             }
         }
-        return liczniki;
+        return licznik;
     }
+
+    private void ustawListyNaJezykObcy() {
+    /**
+    * W zaleznosci od wybranego j.obcego ustawia listy globalne (listy z Assets)
+    */
+        if (mGlob.ANG) katalogAssets = "obrazki_ang";
+        if (mGlob.FRANC) katalogAssets = "obrazki_franc";
+        if (mGlob.NIEM) katalogAssets = "obrazki_niem";
+        //Pobranie nowej listy obrazkow z Assets:
+        AssetManager mgr = getAssets();
+        try {
+            listaObrazkowAssets = mgr.list(katalogAssets);  //laduje obrazki z Assets
+            listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }  //koniec Metody()
+
+
+    private void ustawListyNaJezykPolski() {
+    /**
+     * Przywraca listy na jezyk polski (bo byly ustawione na obcy) (listy z Assets)
+     */
+        katalogAssets = "obrazki_demo_ver";
+        if (mGlob.PELNA_WERSJA) {
+            katalogAssets = "obrazki_pelna_ver";
+        }
+        AssetManager mgr = getAssets();
+        try {
+            listaObrazkowAssets = mgr.list(katalogAssets);  //laduje obrazki z Assets
+            listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }  //koniec Metody()
+
+
 
     @Override
     protected void onResume() {
-        /* *************************************   */
-        /* Aplikowanie zmian wprowadzonych w menu  */
-        /* Bądż pierwsze uruchomienie (po splashu) */
-        /* *************************************   */
+    /* *************************************   */
+    /* Aplikowanie zmian wprowadzonych w menu  */
+    /* Bądż pierwsze uruchomienie (po splashu) */
+    /* *************************************   */
         super.onResume();
 
         //Kwestia pierwszego wejscia (PW):
@@ -1767,8 +1804,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             odegrajWyraz(200);
         }
 
-        //Pokazujemy cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez
-        // UstawieniaActivity):
+        //Pokazujemy cwiczenie z parametrami ustawionymi na Zmiennych Glob. (np. poprzez UstawieniaActivity):
 
         //Jezeli bez obrazkow - gasimy biezacy obrazek, z obrazkami - pokazujemy (gdyby byl niewidoczny):
         if (mGlob.BEZ_OBRAZKOW) {
@@ -1779,61 +1815,57 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             l_imageContainer.setBackgroundColor(Color.TRANSPARENT);
             //l_imageContainer.setBackgroundResource(0); - alternatywa do Color.TRANSPARENT (podobno TRANSPARENT lepszy)
         }
-        odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na
-        // UstawieniaActivity = w obiekcie mGlob
+        odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na UstawieniaActivity = w obiekcie mGlob
         pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
         restoreApplyLetterSpacing(tvShownWord); //reakcja na ewentualna zmiane odstepu miedzy literami w ulozonym wyrazie
 
 
-
-
-
         //Badamy najistotniejsze opcje; Gdyby zmieniono Katalog lub poziom, to naczytanie na nowo:
         newOptions.pobierzZeZmiennychGlobalnych();         //jaki byl wynik ostatniej 'wizyty' w UstawieniaActivity
-        if (!newOptions.takaSamaJak(currOptions)) {        //musimy naczytac ponownie, bo zmieniono zrodlo obrazkow (chocby poprzez zmiane poziomu trudnosci)
+        if (!newOptions.takaSamaJak(currOptions)) {        //musimy naczytac ponownie, bo zmieniono zrodlo obrazkow (chocby poprzez zmiane poziomu trudnosci) i/lub jezyk
+
+            //Czy aby to ponizej nie bylo powodem zmian 'jezykowych' (zapamietujemy, bo sie przyda za chwile):
+            boolean powrotDoJPol     = currOptions.isReturnToPolish(newOptions);
+            boolean przejscieNaJObcy = (mGlob.ANG || mGlob.FRANC || mGlob.NIEM);
+
             currOptions.pobierzZeZmiennychGlobalnych();    //zapamietanie na przyszlosc
 
-            /* wstawka, jezeli zmiana polegala na wbworze jezyka obcego: ******************************** */
-            if (mGlob.ANG||mGlob.FRANC||mGlob.NIEM) {
-                katalogAssets = "obrazki_ang";
-                if (mGlob.FRANC) katalogAssets = "obrazki_franc";
-                if (mGlob.NIEM)  katalogAssets = "obrazki_niem";
+            /****** wstawka, jezeli zmiany były związane z wyborem j.obcego lub z powrotem do języka polskiego ******************************** */
+            //Powodem zmian bylo wejscie do jezyka obcego:
+            if (przejscieNaJObcy) ustawListyNaJezykObcy();
+            //Powodem zmiany byl powrot z jezyka obcego do polskiego.
+            //Trzeba (niestety) naczytac na nowo zmienione listy:
+            if (powrotDoJPol) ustawListyNaJezykPolski();
 
-                //Pobranie listy obrazkow z Assets:
-                AssetManager mgr = getAssets();
-                try {
-                    listaObrazkowAssets = mgr.list(katalogAssets);  //laduje obrazki z Assets
-                    listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            if (przejscieNaJObcy||powrotDoJPol) {
                 mPamietacz = new Pamietacz(listaOper); //nowa lista, wiec Pamietacz na nowo....
                 bDalej.callOnClick();
                 return;
             }
-            /* koniec wstawki z jezykiem obcym */
-            else {
+            /************** koniec zmian zwiazanych z jezykiem obcym lub powrotem do polskiego **********/
+
+
+            //Zmiany byly "normalne", nie zwiazane z jezykiem (bo sterowanie doszlo tutaj):
+            if (!mGlob.ZRODLEM_JEST_KATALOG) {
+                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona na zawsze w onCreate()
+            } else {
+                tworzListeFromKatalog();
+                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+            }
+            //Gdyby okazalo sie, ze nie ma obrazkow o wybranym poziomie trudnosci, bierzemy
+            // wszystkie (list zrodlowych tworzyc w tym punkcie sterowania nie trzeba):
+            if (listaOper.length == 0) {
+                wypiszOstrzezenie("Brak ćwiczeń o wybranym poziomie trudności. Zostaną pokazane wszystkie " + "ćwiczenia.");
+                mGlob.POZIOM = WSZYSTKIE;
+                currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily linie wyzej...
                 if (!mGlob.ZRODLEM_JEST_KATALOG) {
-                    listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona na zawsze w onCreate()
+                    listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
                 } else {
-                    tworzListeFromKatalog();
                     listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
                 }
-                //Gdyby okazalo sie, ze nie ma obrazkow o wybranym poziomie trudnosci, bierzemy
-                // wszystkie (list zrodlowych tworzyc w tym punkcie sterowania nie trzeba):
-                if (listaOper.length == 0) {
-                    wypiszOstrzezenie("Brak ćwiczeń o wybranym poziomie trudności. Zostaną pokazane wszystkie " + "ćwiczenia.");
-                    mGlob.POZIOM = WSZYSTKIE;
-                    currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily linie wyzej...
-                    if (!mGlob.ZRODLEM_JEST_KATALOG) {
-                        listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
-                    } else {
-                        listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
-                    }
-                }
-                mPamietacz = new Pamietacz(listaOper); //nowa lista, wiec Pamietacz na nowo....
-                bDalej.callOnClick();
             }
+            mPamietacz = new Pamietacz(listaOper); //nowa lista, wiec Pamietacz na nowo....
+            bDalej.callOnClick();
         }
 
     } //koniec onResume()
@@ -2915,7 +2947,22 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
             return true;
 
-        }
+        } //koniec Metody()
+
+        boolean isReturnToPolish(KombinacjaOpcji nowaKombinacja) {
+        //Okresla, czy nowe opcje to powrot z jezya obcego do polskiego
+            //w starych opcjach nie bylo j. obcego, wiec to nie moze byc powrot do j.pol:
+            if (!(this.jAng||this.jNiem||this.jFranc))
+                return false;
+
+            //Sterowanie doszlo tutaj, wiec w starych opcjach byl j.obcy:
+            if (!(nowaKombinacja.jAng||nowaKombinacja.jNiem||nowaKombinacja.jFranc))
+                return true;
+
+            return false;
+
+        } //koniec Metody()
+
     } //class wewnetrzna
 
 

@@ -297,6 +297,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     if (view==cb_niem)  mGlob.NIEM  = true;
     if (view==cb_franc) mGlob.FRANC = true;
 
+    //Przejscie na Assets, zeby nie bylo 'kwasow' na onResume w MainActivity.
+    //Jest to pojscie na skroty i na 'łatwiznę'..., ale... :
+    rb_zAssets.setChecked(true);
+
   }
 
 

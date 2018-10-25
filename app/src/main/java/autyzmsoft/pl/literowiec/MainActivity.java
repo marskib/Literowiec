@@ -1782,17 +1782,44 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         odblokujZablokujKlawiszeDodatkowe();    //pokaze/ukryje klawisze zgodnie z sytuacja na
         // UstawieniaActivity = w obiekcie mGlob
         pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
-        restoreApplyLetterSpacing(tvShownWord); //reakcja na ewentualna zmiane odstepu miedzy literami w ulozonym
-        // wyrazie
+        restoreApplyLetterSpacing(tvShownWord); //reakcja na ewentualna zmiane odstepu miedzy literami w ulozonym wyrazie
+
+
+
+
 
         //Badamy najistotniejsze opcje; Gdyby zmieniono Katalog lub poziom, to naczytanie na nowo:
-        newOptions.pobierzZeZmiennychGlobalnych();           //jaki byl wynik ostatniej 'wizyty'
-        // w UstawieniaActivity
+        newOptions.pobierzZeZmiennychGlobalnych();         //jaki byl wynik ostatniej 'wizyty' w UstawieniaActivity
         if (!newOptions.takaSamaJak(currOptions)) {        //musimy naczytac ponownie, bo zmieniono zrodlo obrazkow (chocby poprzez zmiane poziomu trudnosci)
-            currOptions.pobierzZeZmiennychGlobalnych();      //zapamietanie na przyszlosc
+            currOptions.pobierzZeZmiennychGlobalnych();    //zapamietanie na przyszlosc
+
+            /* wstawka, jezeli wybrano jezyk obcy: ******************************** */
+            if (mGlob.ANG||mGlob.FRANC||mGlob.NIEM) {
+                katalogAssets = "obrazki_ang";
+                if (mGlob.FRANC) katalogAssets = "obrazki_franc";
+                if (mGlob.NIEM)  katalogAssets = "obrazki_niem";
+
+                //Pobranie listy obrazkow z Assets:
+                AssetManager mgr = getAssets();
+                try {
+                    listaObrazkowAssets = mgr.list(katalogAssets);  //laduje obrazki z Assets
+                    listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mPamietacz = new Pamietacz(listaOper); //nowa lista, wiec Pamietacz na nowo....
+                bDalej.callOnClick();
+                return;
+            }
+            /* koniec wstawki z jezykiem obcym */
+
+
+
+
+
+
             if (!mGlob.ZRODLEM_JEST_KATALOG) {
-                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona raz
-                // na zawsze w onCreate()
+                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona na zawsze w onCreate()
             } else {
                 tworzListeFromKatalog();
                 listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
@@ -2845,6 +2872,13 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         private String WYBRANY_KATALOG;
 
         private int POZIOM;
+        private boolean JOBCY;
+
+        //czy jezyk obcy:
+        private boolean jAng;
+        private boolean jNiem;
+        private boolean jFranc;
+
 
         KombinacjaOpcji() {
             pobierzZeZmiennychGlobalnych();
@@ -2854,6 +2888,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             ZRODLEM_JEST_KATALOG = mGlob.ZRODLEM_JEST_KATALOG;
             WYBRANY_KATALOG = mGlob.WYBRANY_KATALOG;
             POZIOM = mGlob.POZIOM;
+            jAng   = mGlob.ANG;
+            jNiem  = mGlob.NIEM;
+            jFranc = mGlob.FRANC;
         }
 
         /*Sprawdza, czy kombinacje wybranych opcji sa takie same*/
@@ -2867,7 +2904,21 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             if (!(this.POZIOM == nowaKombinacja.POZIOM)) {
                 return false;
             }
+            if (!(this.JOBCY == nowaKombinacja.JOBCY)) {
+                return false;
+            }
+            if (!(this.jAng  == nowaKombinacja.jAng)) {
+                return false;
+            }
+            if (!(this.jNiem == nowaKombinacja.jNiem)) {
+                return false;
+            }
+            if (!(this.jFranc == nowaKombinacja.jFranc)) {
+                return false;
+            }
+
             return true;
+
         }
     } //class wewnetrzna
 

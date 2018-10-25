@@ -1745,7 +1745,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 licznik++;
             }
         }
-        return licznik;
+        return liczniki;
     }
 
     @Override

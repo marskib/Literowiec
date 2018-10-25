@@ -1793,7 +1793,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         if (!newOptions.takaSamaJak(currOptions)) {        //musimy naczytac ponownie, bo zmieniono zrodlo obrazkow (chocby poprzez zmiane poziomu trudnosci)
             currOptions.pobierzZeZmiennychGlobalnych();    //zapamietanie na przyszlosc
 
-            /* wstawka, jezeli wybrano jezyk obcy: ******************************** */
+            /* wstawka, jezeli zmiana polegala na wbworze jezyka obcego: ******************************** */
             if (mGlob.ANG||mGlob.FRANC||mGlob.NIEM) {
                 katalogAssets = "obrazki_ang";
                 if (mGlob.FRANC) katalogAssets = "obrazki_franc";
@@ -1812,32 +1812,28 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
                 return;
             }
             /* koniec wstawki z jezykiem obcym */
-
-
-
-
-
-
-            if (!mGlob.ZRODLEM_JEST_KATALOG) {
-                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona na zawsze w onCreate()
-            } else {
-                tworzListeFromKatalog();
-                listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
-            }
-            //Gdyby okazalo sie, ze nie ma obrazkow o wybranym poziomie trudnosci, bierzemy
-            // wszystkie (list zrodlowych tworzyc w tym punkcie sterowania nie trzeba):
-            if (listaOper.length == 0) {
-                wypiszOstrzezenie("Brak ćwiczeń o wybranym poziomie trudności. Zostaną pokazane wszystkie " + "ćwiczenia.");
-                mGlob.POZIOM = WSZYSTKIE;
-                currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily linie wyzej...
+            else {
                 if (!mGlob.ZRODLEM_JEST_KATALOG) {
-                    listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+                    listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM); //nie trzeba tworzyc listy z Assets - jest stworzona na zawsze w onCreate()
                 } else {
+                    tworzListeFromKatalog();
                     listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
                 }
+                //Gdyby okazalo sie, ze nie ma obrazkow o wybranym poziomie trudnosci, bierzemy
+                // wszystkie (list zrodlowych tworzyc w tym punkcie sterowania nie trzeba):
+                if (listaOper.length == 0) {
+                    wypiszOstrzezenie("Brak ćwiczeń o wybranym poziomie trudności. Zostaną pokazane wszystkie " + "ćwiczenia.");
+                    mGlob.POZIOM = WSZYSTKIE;
+                    currOptions.pobierzZeZmiennychGlobalnych();      //bo sie zmienily linie wyzej...
+                    if (!mGlob.ZRODLEM_JEST_KATALOG) {
+                        listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
+                    } else {
+                        listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+                    }
+                }
+                mPamietacz = new Pamietacz(listaOper); //nowa lista, wiec Pamietacz na nowo....
+                bDalej.callOnClick();
             }
-            mPamietacz = new Pamietacz(listaOper); //nowa lista, wiec Pamietacz na nowo....
-            bDalej.callOnClick();
         }
 
     } //koniec onResume()

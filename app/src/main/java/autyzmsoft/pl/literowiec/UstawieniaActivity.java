@@ -67,8 +67,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   CheckBox cb_SndVictEf;
 
   CheckBox cb_ang;
-  CheckBox cb_niem;
-  CheckBox cb_franc;
 
 
   TextView sciezka; //informacyjny teksci pokazujacy biezacy katalogAssets i/lub liczbe obrazkow
@@ -267,6 +265,10 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
   }
 
 
+
+/* stara wersja, gdy byly 3 jezyki.
+Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' RadioGrupe...
+
   public void jezykiOnClick(View view) {
   //Wybor jezyka.
   //Kod ponizej symuluje zachowanie checkbox'ów jak radiobattons w RadioGrup
@@ -301,6 +303,11 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     //Jest to pojscie na skroty i na 'łatwiznę'..., ale... :
     rb_zAssets.setChecked(true);
 
+  }
+  */
+
+  public void jezykiOnClick(View view) {
+      mGlob.ANG = cb_ang.isChecked();
   }
 
 
@@ -550,13 +557,13 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
     isChecked = mGlob.ANG;
     cb_ang.setChecked(isChecked);
 
-    cb_niem    = (CheckBox) findViewById(R.id.cb_niem);
-    isChecked  = mGlob.NIEM;
-    cb_niem.setChecked(isChecked);
+    //cb_niem    = (CheckBox) findViewById(R.id.cb_niem);
+    //isChecked  = mGlob.NIEM;
+    //cb_niem.setChecked(isChecked);
 
-    cb_franc   = (CheckBox) findViewById(R.id.cb_franc);
-    isChecked  = mGlob.FRANC;
-    cb_franc.setChecked(isChecked);
+    //cb_franc   = (CheckBox) findViewById(R.id.cb_franc);
+    //isChecked  = mGlob.FRANC;
+    //cb_franc.setChecked(isChecked);
     /* jezyki obce - koniec: */
 
 

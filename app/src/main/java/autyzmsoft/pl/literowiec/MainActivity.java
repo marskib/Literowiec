@@ -1749,12 +1749,22 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     }
 
     private void ustawListyNaJezykObcy() {
-    /**
-    * W zaleznosci od wybranego j.obcego ustawia listy globalne (listy z Assets)
-    */
-        if (mGlob.ANG) katalogAssets = "obrazki_ang";
-        if (mGlob.FRANC) katalogAssets = "obrazki_franc";
-        if (mGlob.NIEM) katalogAssets = "obrazki_niem";
+        /**
+         * W zaleznosci od wybranego j.obcego ustawia listy globalne (listy z Assets)
+         */
+        if (mGlob.ANG) {
+            katalogAssets = "obrazki_ang";
+        }
+
+        /* zostawiam, moze kiedys.... :
+        if (mGlob.FRANC) {
+            katalogAssets = "obrazki_franc";
+        }
+        if (mGlob.NIEM) {
+            katalogAssets = "obrazki_niem";
+        }
+        */
+
         //Pobranie nowej listy obrazkow z Assets:
         AssetManager mgr = getAssets();
         try {
@@ -1767,9 +1777,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
 
     private void ustawListyNaJezykPolski() {
-    /**
-     * Przywraca listy na jezyk polski (bo byly ustawione na obcy) (listy z Assets)
-     */
+        /**
+         * Przywraca listy na jezyk polski (bo byly ustawione na obcy) (listy z Assets)
+         */
         katalogAssets = "obrazki_demo_ver";
         if (mGlob.PELNA_WERSJA) {
             katalogAssets = "obrazki_pelna_ver";
@@ -1784,13 +1794,12 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
     }  //koniec Metody()
 
 
-
     @Override
     protected void onResume() {
-    /* *************************************   */
-    /* Aplikowanie zmian wprowadzonych w menu  */
-    /* Bądż pierwsze uruchomienie (po splashu) */
-    /* *************************************   */
+        /* *************************************   */
+        /* Aplikowanie zmian wprowadzonych w menu  */
+        /* Bądż pierwsze uruchomienie (po splashu) */
+        /* *************************************   */
         super.onResume();
 
         //Kwestia pierwszego wejscia (PW):
@@ -1819,31 +1828,33 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         pokazUkryjNazwe();                      //j.w. - nazwa pod obrazkiem
         restoreApplyLetterSpacing(tvShownWord); //reakcja na ewentualna zmiane odstepu miedzy literami w ulozonym wyrazie
 
-
         //Badamy najistotniejsze opcje; Gdyby zmieniono Katalog lub poziom, to naczytanie na nowo:
         newOptions.pobierzZeZmiennychGlobalnych();         //jaki byl wynik ostatniej 'wizyty' w UstawieniaActivity
         if (!newOptions.takaSamaJak(currOptions)) {        //musimy naczytac ponownie, bo zmieniono zrodlo obrazkow (chocby poprzez zmiane poziomu trudnosci) i/lub jezyk
 
             //Czy aby to ponizej nie bylo powodem zmian 'jezykowych' (zapamietujemy, bo sie przyda za chwile):
-            boolean powrotDoJPol     = currOptions.isReturnToPolish(newOptions);
-            boolean przejscieNaJObcy = (mGlob.ANG || mGlob.FRANC || mGlob.NIEM);
+            boolean powrotDoJPol = currOptions.isReturnToPolish(newOptions);
+            boolean przejscieNaJObcy = (mGlob.ANG);  //) || mGlob.FRANC || mGlob.NIEM);
 
             currOptions.pobierzZeZmiennychGlobalnych();    //zapamietanie na przyszlosc
 
             /****** wstawka, jezeli zmiany były związane z wyborem j.obcego lub z powrotem do języka polskiego ******************************** */
             //Powodem zmian bylo wejscie do jezyka obcego:
-            if (przejscieNaJObcy) ustawListyNaJezykObcy();
+            if (przejscieNaJObcy) {
+                ustawListyNaJezykObcy();
+            }
             //Powodem zmiany byl powrot z jezyka obcego do polskiego.
             //Trzeba (niestety) naczytac na nowo zmienione listy:
-            if (powrotDoJPol) ustawListyNaJezykPolski();
+            if (powrotDoJPol) {
+                ustawListyNaJezykPolski();
+            }
 
-            if (przejscieNaJObcy||powrotDoJPol) {
+            if (przejscieNaJObcy || powrotDoJPol) {
                 mPamietacz = new Pamietacz(listaOper); //nowa lista, wiec Pamietacz na nowo....
                 bDalej.callOnClick();
                 return;
             }
             /************** koniec zmian zwiazanych z jezykiem obcym lub powrotem do polskiego **********/
-
 
             //Zmiany byly "normalne", nie zwiazane z jezykiem (bo sterowanie doszlo tutaj):
             if (!mGlob.ZRODLEM_JEST_KATALOG) {
@@ -2809,9 +2820,11 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
                         //Jak sie nie uda przesunac w lewo (bo za blisko brzegu), to bedziemy probowac sciesnic:
                         if (dajLeftmostX() > w) //if -> zeby nie przesunął za lewa bandę
+                        {
                             przesunWLewo(w);
-                        else
+                        } else {
                             likwidujBiggestGap();
+                        }
 
                         view.dispatchTouchEvent(event);
 
@@ -2900,11 +2913,14 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         private String WYBRANY_KATALOG;
 
         private int POZIOM;
+
         private boolean JOBCY;
 
         //czy jezyk obcy:
         private boolean jAng;
+
         private boolean jNiem;
+
         private boolean jFranc;
 
 
@@ -2916,9 +2932,9 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             ZRODLEM_JEST_KATALOG = mGlob.ZRODLEM_JEST_KATALOG;
             WYBRANY_KATALOG = mGlob.WYBRANY_KATALOG;
             POZIOM = mGlob.POZIOM;
-            jAng   = mGlob.ANG;
-            jNiem  = mGlob.NIEM;
-            jFranc = mGlob.FRANC;
+            jAng = mGlob.ANG;
+            //jNiem = mGlob.NIEM;
+            //jFranc = mGlob.FRANC;
         }
 
         /*Sprawdza, czy kombinacje wybranych opcji sa takie same*/
@@ -2935,7 +2951,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             if (!(this.JOBCY == nowaKombinacja.JOBCY)) {
                 return false;
             }
-            if (!(this.jAng  == nowaKombinacja.jAng)) {
+            if (!(this.jAng == nowaKombinacja.jAng)) {
                 return false;
             }
             if (!(this.jNiem == nowaKombinacja.jNiem)) {
@@ -2950,14 +2966,16 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         } //koniec Metody()
 
         boolean isReturnToPolish(KombinacjaOpcji nowaKombinacja) {
-        //Okresla, czy nowe opcje to powrot z jezya obcego do polskiego
+            //Okresla, czy nowe opcje to powrot z jezya obcego do polskiego
             //w starych opcjach nie bylo j. obcego, wiec to nie moze byc powrot do j.pol:
-            if (!(this.jAng||this.jNiem||this.jFranc))
+            if (!(this.jAng || this.jNiem || this.jFranc)) {
                 return false;
+            }
 
             //Sterowanie doszlo tutaj, wiec w starych opcjach byl j.obcy:
-            if (!(nowaKombinacja.jAng||nowaKombinacja.jNiem||nowaKombinacja.jFranc))
+            if (!(nowaKombinacja.jAng || nowaKombinacja.jNiem || nowaKombinacja.jFranc)) {
                 return true;
+            }
 
             return false;
 

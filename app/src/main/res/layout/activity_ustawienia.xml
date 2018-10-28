@@ -578,34 +578,10 @@
               android:layout_height="wrap_content"
               android:layout_marginTop="@dimen/text_margin"
               android:layout_marginStart="@dimen/text_margin"
-              android:checked="false"
-              android:text="Angielski "
-              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-              android:onClick="jezykiOnClick"
-              android:textStyle="bold"/>
-
-          <CheckBox
-              android:id="@+id/cb_niem"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginStart="@dimen/text_margin"
-              android:layout_marginTop="@dimen/maly_odstep"
-              android:checked="false"
-              android:text="Niemiecki "
-              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
-              android:onClick="jezykiOnClick"
-              android:textStyle="bold"/>
-
-          <CheckBox
-              android:id="@+id/cb_franc"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_marginStart="@dimen/text_margin"
-              android:checked="false"
-              android:text="Francuski "
-              android:layout_marginTop="@dimen/maly_odstep"
-              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
               android:layout_marginBottom="@dimen/text_margin"
+              android:checked="false"
+              android:text="angielski "
+              android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
               android:onClick="jezykiOnClick"
               android:textStyle="bold"/>
 

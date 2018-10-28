@@ -71,8 +71,6 @@ public class ZmienneGlobalne extends Application {
 
   //Jezyki obce (tego nie przechowuje w SharedPref):
   public boolean ANG;
-  public boolean NIEM;
-  public boolean FRANC;
 
 
   public boolean POKAZ_MODAL;        //czy pokazywac okienko modalne przy starcie (ergonomia developmentu, w produkcyjnej na true)
@@ -121,9 +119,7 @@ public class ZmienneGlobalne extends Application {
     SND_VICTORY_EF = true;
 
     //Jezyki obce:
-    ANG   = false;
-    NIEM  = false;
-    FRANC = false;
+    ANG = false;
 
     ODMOWA_DOST = false;              //w wersji Androida <= 5 dostep jest automatyczny, wiec muszę to ustawic bo logika aplikacji by przeszkadzala...
 

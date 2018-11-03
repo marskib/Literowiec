@@ -69,7 +69,7 @@ public class ZmienneGlobalne extends Application {
   public boolean SND_LETTER_OK_EF;    //czy dzwiek PLUSK, gdy litera polozona poprawnie (nie dotyczy ostatniej)
   public boolean SND_VICTORY_EF;      //czy dzwiek 'ding' gdy poprawnie ulozono wyraz (przy ostatniej poprawnej literze)
 
-  //Jezyki obce (tego nie przechowuje w SharedPref):
+  //Jezyki obce (tego nie przechowuję w SharedPref):
   public boolean ANG;
 
 

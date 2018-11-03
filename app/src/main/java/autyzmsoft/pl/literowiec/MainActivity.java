@@ -1456,6 +1456,12 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         //teraz konkretny (losowy) plik:
         String doZagrania = dajLosowyPlik(komcie_path);
 
+        //jezeli angielski to wymuszenie (jedynego) angielskiego komunikatu (wstawka):
+        if (mGlob.ANG) {
+            komcie_path = "nagrania/komentarze/pozytywy/female";
+            doZagrania = "07-ok.ogg";
+        }
+
         odegrajZAssets(komcie_path + "/" + doZagrania, 400);    //pochwala glosowa
 
         if (mGlob.TYLKO_GLOS) {

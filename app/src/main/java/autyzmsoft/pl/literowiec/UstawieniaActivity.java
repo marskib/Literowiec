@@ -107,7 +107,6 @@ public class UstawieniaActivity extends Activity implements View.OnClickListener
         ((TextView) findViewById(R.id.tv_Spacing)).setVisibility(View.GONE);
     }
 
-
   }  //koniec Metody()
 
 
@@ -308,6 +307,11 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
 
   public void jezykiOnClick(View view) {
       mGlob.ANG = cb_ang.isChecked();
+      if (cb_ang.isChecked()) {
+          Dialog zapytanie;
+          zapytanie = createAlertDialogWithButtons_Jezyki();
+          zapytanie.show();
+      }
   }
 
 
@@ -322,7 +326,7 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
   }
 
 
-  private Dialog createAlertDialogWithButtons() {
+  private Dialog createAlertDialogWithButtons_Domyslne() {
     AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
     dialogBuilder.setTitle("Przywracanie ustawień domyślnych");
     dialogBuilder.setMessage("Czy przywrócić domyślne ustawienia?");
@@ -343,10 +347,31 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
     return dialogBuilder.create();
   }
 
+    private Dialog createAlertDialogWithButtons_Jezyki() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        dialogBuilder.setTitle("Język obcy");
+        CharSequence kom = "Wybrana opcja ma na celu pokazanie, że aplikacji można również użyć do nauki pisowni\nw językach obcych.";
+        kom = kom+ "\nMateriał przygotowuje się tak samo jak materiał w języku polskim - wykonując samodzielnie zdjęcia oraz nagrania i umieszczając je w katalogu na urządzeniu.";
+        kom = kom + "\nPrezentowana w aplikacji wymowa nie może być uznana za wzorcową wymowę angielską.";
+        dialogBuilder.setMessage(kom);
+
+        dialogBuilder.setCancelable(true); //czy można wychodzić przez esc
+
+        dialogBuilder.setPositiveButton("OK", new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+              //nie robimy nic - powrot z dialogu ; toast("You picked negative button");
+            }
+        });
+
+        return dialogBuilder.create();
+    }
+
+
   public void bDefaultClick(View v) {
     //toast("bDefaultClick");
     Dialog zapytanie;
-    zapytanie = createAlertDialogWithButtons();
+    zapytanie = createAlertDialogWithButtons_Domyslne();
     zapytanie.show();
   }
 

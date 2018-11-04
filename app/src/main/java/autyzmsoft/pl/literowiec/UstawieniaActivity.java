@@ -308,9 +308,12 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
   public void jezykiOnClick(View view) {
       mGlob.ANG = cb_ang.isChecked();
       if (cb_ang.isChecked()) {
+          //ostrzezenie o 'ulomnosci' tej opcji:
           Dialog zapytanie;
           zapytanie = createAlertDialogWithButtons_Jezyki();
           zapytanie.show();
+          //pokazanie 'nowej' liczby obrazkow (atrapa/wymazanie de facto, maniana, bo j.obce to wstawka....):
+          sciezka.setText("        ");
       }
   }
 
@@ -350,8 +353,8 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
     private Dialog createAlertDialogWithButtons_Jezyki() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Język obcy");
-        CharSequence kom = "Wybrana opcja ma na celu pokazanie, że aplikacji można również użyć do nauki pisowni\nw językach obcych.";
-        kom = kom+ "\nMateriał przygotowuje się tak samo jak materiał w języku polskim - wykonując samodzielnie zdjęcia oraz nagrania i umieszczając je w katalogu na urządzeniu.";
+        CharSequence kom = "Wybrana opcja ma na celu pokazanie, że aplikacji można również użyć do nauki pisowniw językach obcych.";
+        kom = kom + "\nMateriał przygotowuje się tak samo jak materiał w języku polskim - wykonując samodzielnie zdjęcia oraz nagrania i umieszczając je w katalogu na urządzeniu.";
         kom = kom + "\nPrezentowana w aplikacji wymowa nie może być uznana za wzorcową wymowę angielską.";
         dialogBuilder.setMessage(kom);
 

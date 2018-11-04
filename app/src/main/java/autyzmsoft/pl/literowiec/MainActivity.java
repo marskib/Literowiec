@@ -560,6 +560,10 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         if (mGlob.PELNA_WERSJA) {
             katalogAssets = "obrazki_pelna_ver";
         }
+        if (mGlob.ANG) { //jezeli ang., to no matter what...
+            katalogAssets = "obrazki_ang";
+        }
+
 
         dostosujDoUrzadzen();
 
@@ -578,7 +582,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             }
         });
 
-        //Stworzenie statycznej, raz na zawsze listy z Assets:
+        //Stworzenie statycznej, raz na zawsze(?) listy z Assets:
         tworzListeFromAssets();
         listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
         //gdyby byly jakies problemy, to na WSZYSTKIE... :
@@ -2030,6 +2034,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         //sledzenie - pokazania wymiarow urządzenia i rozdzielczosci dpi
         tvInfo3.setText(Integer.toString(sizeW) + "x" + Integer.toString(sizeH) + " dpi=" + Integer.toString(displaymetrics.densityDpi));
+        Toast.makeText(mGlob, Integer.toString(sizeW) + "x" + Integer.toString(sizeH) + " dpi="+Integer.toString(displaymetrics.densityDpi), Toast.LENGTH_LONG).show();
 
         //Obrazek - ustawiam w lewym górnym rogu:
         lPar = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
@@ -2619,6 +2624,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         edit.putBoolean("ODMOWA_DOST", mGlob.ODMOWA_DOST);
 
         edit.putBoolean("ROZNICUJ_OBRAZKI", mGlob.ROZNICUJ_OBRAZKI);
+
+        edit.putBoolean("ANG", mGlob.ANG);
 
         edit.putBoolean("ZRODLEM_JEST_KATALOG", mGlob.ZRODLEM_JEST_KATALOG);
         edit.putString("WYBRANY_KATALOG", mGlob.WYBRANY_KATALOG);

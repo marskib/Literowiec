@@ -28,7 +28,7 @@ import java.io.File;
 public class ZmienneGlobalne extends Application {
 
 
-  public final boolean PELNA_WERSJA = true;        //czy Pelna czy Darmowa wersja aplikacji
+  public final boolean PELNA_WERSJA = false;       //czy Pelna czy Darmowa wersja aplikacji
   public final boolean nieGrajJestemW105 = false;  //robocza na czas developmentu
 
   //Poziomy trudnosci:
@@ -69,7 +69,7 @@ public class ZmienneGlobalne extends Application {
   public boolean SND_LETTER_OK_EF;    //czy dzwiek PLUSK, gdy litera polozona poprawnie (nie dotyczy ostatniej)
   public boolean SND_VICTORY_EF;      //czy dzwiek 'ding' gdy poprawnie ulozono wyraz (przy ostatniej poprawnej literze)
 
-  //Jezyki obce (tego nie przechowuję w SharedPref):
+  //Jezyki obce:
   public boolean ANG;
 
 
@@ -173,6 +173,8 @@ public class ZmienneGlobalne extends Application {
     ROZNICUJ_OBRAZKI = sharedPreferences.getBoolean("ROZNICUJ_OBRAZKI", this.ROZNICUJ_OBRAZKI);
 
     ZRODLEM_JEST_KATALOG = sharedPreferences.getBoolean("ZRODLEM_JEST_KATALOG", this.ZRODLEM_JEST_KATALOG);
+
+    ANG = sharedPreferences.getBoolean("ANG", this.ANG);
 
     //Jesli zrodlem miałby byc katalogAssets, to potrzebne dotatkowe sprawdzenie,bo gdyby pomiedzy uruchomieniami
     //zlikwidowano wybrany katalogAssets to mamy problem, i wtedy przelaczamy sie na zrodlo z zasobow aplikacji:

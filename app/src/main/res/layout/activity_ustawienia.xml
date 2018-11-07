@@ -146,6 +146,8 @@
                   android:checked="false"
                   android:text="mój katalog"
                   android:textSize="@dimen/nazwa_text_rozmiar_uwaga_na_huawei"
+                  android:onClick="katalogOnClick"
+
                   android:textStyle="bold"/>
 
           </RadioGroup>

@@ -313,12 +313,12 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     }  //koniec Metody()
 
-    //    public static ArrayList<File> findObrazki(File katalog) {
+
+
     public static String[] findObrazki(File katalog) {
         /*
          * ******************************************************************************************************************* */
-        /* Zwraca liste-tablice obrazkow (plikow graficznych .jpg .bmp .png) z katalogu
-        katalogAssets - uzywana tylko dla przypadku SD karty */
+        /* Zwraca liste-tablice obrazkow (plikow graficznych .jpg .bmp .png) z katalogu katalogAssets - uzywana tylko dla przypadku SD karty */
         /*
          * ******************************************************************************************************************* */
 
@@ -2033,8 +2033,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         sizeH = displaymetrics.heightPixels;
 
         //sledzenie - pokazania wymiarow urządzenia i rozdzielczosci dpi
-        tvInfo3.setText(Integer.toString(sizeW) + "x" + Integer.toString(sizeH) + " dpi=" + Integer.toString(displaymetrics.densityDpi));
-        Toast.makeText(mGlob, Integer.toString(sizeW) + "x" + Integer.toString(sizeH) + " dpi="+Integer.toString(displaymetrics.densityDpi), Toast.LENGTH_LONG).show();
+        //tvInfo3.setText(Integer.toString(sizeW) + "x" + Integer.toString(sizeH) + " dpi=" + Integer.toString(displaymetrics.densityDpi));
+        //Toast.makeText(mGlob, Integer.toString(sizeW) + "x" + Integer.toString(sizeH) + " dpi="+Integer.toString(displaymetrics.densityDpi), Toast.LENGTH_LONG).show();
 
         //Obrazek - ustawiam w lewym górnym rogu:
         lPar = (RelativeLayout.LayoutParams) imageView.getLayoutParams();

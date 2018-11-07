@@ -317,6 +317,10 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
       }
   }
 
+  public void katalogOnClick(View view) {
+    cb_ang.setChecked(false);   //zeby nie bylo niedomowien/problemow
+  }
+
 
   private void przywrocUstDomyslne() {
     /**
@@ -353,8 +357,9 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
     private Dialog createAlertDialogWithButtons_Jezyki() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         dialogBuilder.setTitle("Język obcy");
-        CharSequence kom = "Wybrana opcja ma na celu pokazanie, że aplikacji można również użyć do nauki pisowniw językach obcych.";
+        CharSequence kom = "Wybrana opcja ma na celu zademonstrować, że aplikacji można również użyć do nauki pisowni w językach obcych.";
         kom = kom + "\nMateriał przygotowuje się tak samo jak materiał w języku polskim - wykonując samodzielnie zdjęcia oraz nagrania i umieszczając je w katalogu na urządzeniu.";
+        kom = kom + "\n";
         kom = kom + "\nPrezentowana w aplikacji wymowa nie może być uznana za wzorcową wymowę angielską.";
         dialogBuilder.setMessage(kom);
 
@@ -453,6 +458,7 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
     /* ******************************************************** */
     /* Liczy obrazki (=pliki .jpg .bmp .png) w zadanym katalogu */
     /* zwraca po prostu rozmiar tablicy                         */
+    /* Dotyczy tylko katalogow na zewnetrznej SD                */
     /* ******************************************************** */
 
     return MainActivity.findObrazki(new File(strKatalog)).length;

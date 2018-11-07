@@ -318,6 +318,7 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
   }
 
   public void katalogOnClick(View view) {
+      aaaaaaaaaa
     cb_ang.setChecked(false);   //zeby nie bylo niedomowien/problemow
   }
 

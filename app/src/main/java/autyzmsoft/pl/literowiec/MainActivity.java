@@ -560,7 +560,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
         if (mGlob.PELNA_WERSJA) {
             katalogAssets = "obrazki_pelna_ver";
         }
-        if (mGlob.ANG) { //jezeli ang., to no matter what...
+        if (mGlob.ANG) { //jezeli ang., to no matter what... (doklejka...)
             katalogAssets = "obrazki_ang";
         }
 

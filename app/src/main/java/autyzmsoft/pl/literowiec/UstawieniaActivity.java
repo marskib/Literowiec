@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -20,8 +21,8 @@ import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Zawiera ekran z Ustawieniami. Wywolywana na long toucha na obrazku.
@@ -317,11 +318,6 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
       }
   }
 
-  public void katalogOnClick(View view) {
-      aaaaaaaaaa
-    cb_ang.setChecked(false);   //zeby nie bylo niedomowien/problemow
-  }
-
 
   private void przywrocUstDomyslne() {
     /**
@@ -419,7 +415,24 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
     /* Obsluga klikniec na radio buttony 'Obrazki z zasobow aplikacji', 'Obrazki z wlasnego katalogu' */
     /* ********************************************************************************************** */
 
-    if (arg0==rb_zAssets) {
+      //Jesli jest jezyk, to usuwam, zeby nie bylo niedomowien/problemow: (doklejka po dodaniu funkcjonalnosci 'j.obcy'),
+      //a liste z Assets ustawiam na standardową:
+      cb_ang.setChecked(false);
+      mGlob.ANG = false;
+      MainActivity.katalogAssets = "obrazki_demo_ver"; //w 'sztuczny; sposob przywracam wartosci, zeby dobrze policzylo ponizej...
+      if (mGlob.PELNA_WERSJA) {
+        MainActivity.katalogAssets = "obrazki_pelna_ver";
+      }
+      AssetManager mgr = getAssets();
+      try {
+        MainActivity.listaObrazkowAssets = mgr.list(MainActivity.katalogAssets);  //laduje wszystkie obrazki z Assets
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      //koniec poprawek zwiazanych z 'jezykiem obcym'
+
+
+      if (arg0==rb_zAssets) {
       sciezka.setText(""); //kosmetyka - znika z ekranu
       //jesli kliknieto na "z zasobow aplikacji", to przełączam się na to nowe źródło:
       mGlob.ZRODLEM_JEST_KATALOG = false;

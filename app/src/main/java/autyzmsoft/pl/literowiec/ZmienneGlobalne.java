@@ -36,7 +36,7 @@ public class ZmienneGlobalne extends Application {
   public static final int SREDNIE = 2;
   public static final int TRUDNE = 3;
   public static final int WSZYSTKIE = 0;
-  public final int MAX_OBR_LIMIT = 2;               //maksymalna liczba obrazkow w katalogu, gdy wersja DARMOWA
+  public final int MAX_OBR_LIMIT = 2;              //maksymalna liczba obrazkow w katalogu, gdy wersja DARMOWA
   public final boolean DLA_KRZYSKA = false;        //Czy dla Krzyska do testowania - jesli tak -> wylaczam logo i strone www
   public boolean ZRODLEM_JEST_KATALOG; //Co jest aktualnie źródlem obrazków - Asstes czy Katalog (np. katalogAssets na karcie SD)
   public String WYBRANY_KATALOG;       //katalogAssets (if any) wybrany przez usera jako zrodlo obrazkow (z external SD lub Urządzenia)

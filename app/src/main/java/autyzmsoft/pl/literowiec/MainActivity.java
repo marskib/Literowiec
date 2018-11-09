@@ -995,8 +995,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
         resetujLabelsy();
         ustawLadnieEtykiety();
-        dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz
-        // currWord = nazwa obrazka bez nalecialosci)
+        dajNextObrazek();                   //daje indeks currImage obrazka do prezentacji oraz currWord = nazwa obrazka bez nalecialosci)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {  //efekciarstwo
             getAnimatorSkib(imageView, 300).start();
@@ -1005,10 +1004,8 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    setCurrentImage();                  //wyswietla currImage i odgrywa słowo
-                    // okreslone przez currImage
-                    rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego
-                    // pr888888888888888888888zez currWord
+                    setCurrentImage();                  //wyswietla currImage i odgrywa słowo okreslone przez currImage
+                    rozrzucWyraz();                     //rozrzuca litery wyrazu okreslonego przez currWord
                 }
             }, 500);
         } else {
@@ -1788,19 +1785,31 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
     private void ustawListyNaJezykPolski() {
         /**
-         * Przywraca listy na jezyk polski (bo byly ustawione na obcy) (listy z Assets)
+         * Przywraca list na jezyk polski (bo byl ustawiona na obcy)
          */
+
+        mGlob.POZIOM = WSZYSTKIE;  //zeby uniknac problemow...
+
+        //Najpierw lista z Assets:
         katalogAssets = "obrazki_demo_ver";
         if (mGlob.PELNA_WERSJA) {
             katalogAssets = "obrazki_pelna_ver";
         }
         AssetManager mgr = getAssets();
+
         try {
             listaObrazkowAssets = mgr.list(katalogAssets);  //laduje obrazki z Assets
             listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowAssets, mGlob.POZIOM);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        //Nastepnie ewentualna lista z SD:
+        if (mGlob.ZRODLEM_JEST_KATALOG) {
+            tworzListeFromKatalog();
+            listaOper = listaOgraniczonaDoPoziomuTrudnosci(listaObrazkowSD, mGlob.POZIOM);
+        }
+
     }  //koniec Metody()
 
 
@@ -1848,7 +1857,7 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
 
             currOptions.pobierzZeZmiennychGlobalnych();    //zapamietanie na przyszlosc
 
-            /****** wstawka, jezeli zmiany były związane z wyborem j.obcego lub z powrotem do języka polskiego ******************************** */
+            /****** WSTAWKA, jezeli zmiany były związane z wyborem j.obcego lub z powrotem do języka polskiego ******************************** */
             //Powodem zmian bylo wejscie do jezyka obcego:
             if (przejscieNaJObcy) {
                 ustawListyNaJezykObcy();
@@ -2950,8 +2959,11 @@ public class MainActivity extends Activity implements View.OnLongClickListener {
             //jFranc = mGlob.FRANC;
         }
 
-        /*Sprawdza, czy kombinacje wybranych opcji sa takie same*/
+
         boolean takaSamaJak(KombinacjaOpcji nowaKombinacja) {
+        /* ****************************************************** */
+        /* Sprawdza, czy kombinacje wybranych opcji sa takie same */
+        /* ****************************************************** */
             if (this.ZRODLEM_JEST_KATALOG != nowaKombinacja.ZRODLEM_JEST_KATALOG) {
                 return false;
             }

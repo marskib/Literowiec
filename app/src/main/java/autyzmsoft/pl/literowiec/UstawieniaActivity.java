@@ -313,8 +313,10 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
           Dialog zapytanie;
           zapytanie = createAlertDialogWithButtons_Jezyki();
           zapytanie.show();
-          //pokazanie 'nowej' liczby obrazkow (atrapa/wymazanie de facto, maniana, bo j.obce to wstawka....):
-          sciezka.setText("        ");
+          //Przejscie na liste z Assets (zeby nie bylo problemow w MainActivity):
+          rb_zAssets.setChecked(true);
+          mGlob.ZRODLEM_JEST_KATALOG = false;
+          sciezka.setText("        "); //Pokazanie 'nowej' liczby obrazkow (atrapa/wymazanie de facto, maniana, bo j.obce to wstawka....):
       }
   }
 
@@ -415,33 +417,36 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
     /* Obsluga klikniec na radio buttony 'Obrazki z zasobow aplikacji', 'Obrazki z wlasnego katalogu' */
     /* ********************************************************************************************** */
 
-      //Jesli jest jezyk, to usuwam, zeby nie bylo niedomowien/problemow: (doklejka po dodaniu funkcjonalnosci 'j.obcy'),
+      //UWAGA - ponizej wstawka spowodowana dodanie funkconalnosci 'jezyk obcy':
+      //Jesli jest jezyk, to usuwam jego wybor, zeby nie bylo niedomowien/problemow: (doklejka po dodaniu funkcjonalnosci 'j.obcy'),
       //a liste z Assets ustawiam na standardową:
-      cb_ang.setChecked(false);
-      mGlob.ANG = false;
-      MainActivity.katalogAssets = "obrazki_demo_ver"; //w 'sztuczny; sposob przywracam wartosci, zeby dobrze policzylo ponizej...
-      if (mGlob.PELNA_WERSJA) {
-        MainActivity.katalogAssets = "obrazki_pelna_ver";
+      if (cb_ang.isChecked()) {
+        cb_ang.setChecked(false);
+        mGlob.ANG = false;
+        MainActivity.katalogAssets = "obrazki_demo_ver"; //w 'sztuczny; sposob przywracam wartosci, zeby dobrze policzylo ponizej w (****)...
+        if (mGlob.PELNA_WERSJA) {
+          MainActivity.katalogAssets = "obrazki_pelna_ver";
+        }
+        AssetManager mgr = getAssets();
+        try {
+          MainActivity.listaObrazkowAssets = mgr.list(MainActivity.katalogAssets);  //laduje wszystkie obrazki z Assets
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
-      AssetManager mgr = getAssets();
-      try {
-        MainActivity.listaObrazkowAssets = mgr.list(MainActivity.katalogAssets);  //laduje wszystkie obrazki z Assets
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      //koniec poprawek zwiazanych z 'jezykiem obcym'
+      //Wstawka - koniec poprawek zwiazanych z 'jezykiem obcym'
 
 
       if (arg0==rb_zAssets) {
-      sciezka.setText(""); //kosmetyka - znika z ekranu
-      //jesli kliknieto na "z zasobow aplikacji", to przełączam się na to nowe źródło:
-      mGlob.ZRODLEM_JEST_KATALOG = false;
-      //policzenie obrazkow w zasobach aplikacji (zeby uswiadomic usera...):
-      int liczba = MainActivity.listaObrazkowAssets.length;
-      sciezka.setText(liczba+" szt.");
-      toast("Liczba obrazków: "+liczba);
-      return;
-    }
+        sciezka.setText(""); //kosmetyka - znika z ekranu
+        //jesli kliknieto na "z zasobow aplikacji", to przełączam się na to nowe źródło:
+        mGlob.ZRODLEM_JEST_KATALOG = false;
+        //policzenie obrazkow w zasobach aplikacji (zeby uswiadomic usera...):
+        int liczba = MainActivity.listaObrazkowAssets.length;     // patrz (****) powyzej....
+        sciezka.setText(liczba+" szt.");
+        toast("Liczba obrazków: "+liczba);
+        return;
+      }
 
     if (arg0==rb_zKatalogu) {
 

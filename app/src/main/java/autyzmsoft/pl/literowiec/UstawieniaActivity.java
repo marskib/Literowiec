@@ -316,6 +316,7 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
           //Przejscie na liste z Assets (zeby nie bylo problemow w MainActivity):
           rb_zAssets.setChecked(true);
           mGlob.ZRODLEM_JEST_KATALOG = false;
+          MainActivity.katalogAssets = "obrazki_ang";
           sciezka.setText("        "); //Pokazanie 'nowej' liczby obrazkow (atrapa/wymazanie de facto, maniana, bo j.obce to wstawka....):
       }
   }
@@ -462,7 +463,7 @@ Zostawiam, bo dobry przyklad jak z 3 opcij checkBox zrobic 'ideologiczną' Radio
         Intent intent = new Intent(this, InternalExternalKlasa.class);
         this.startActivity(intent);
       }
-      //Wersja demo::
+      //Wersja demo:
       else {
         Intent intent = new Intent(this, WersjaDemoOstrzez.class);
         this.startActivity(intent); //w srodku zostanie wywolana InternalExternalKlasa

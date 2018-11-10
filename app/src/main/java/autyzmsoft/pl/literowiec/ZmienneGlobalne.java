@@ -28,7 +28,7 @@ import java.io.File;
 public class ZmienneGlobalne extends Application {
 
 
-  public final boolean PELNA_WERSJA = false;       //czy Pelna czy Darmowa wersja aplikacji
+  public final boolean PELNA_WERSJA = fal se;       //czy Pelna czy Darmowa wersja aplikacji
   public final boolean nieGrajJestemW105 = false;  //robocza na czas developmentu
 
   //Poziomy trudnosci:
